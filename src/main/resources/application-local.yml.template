@@ -1,0 +1,7 @@
+# src\main\resources\application-local.yml.template
+# COPIA ESTE ARCHIVO COMO application-local.yml Y CONFIGURA TUS CREDENCIALES
+spring:
+  datasource:
+    url: jdbc:postgresql://url-del-servidor/nombre-base-datos
+    username: tu-usuario
+    password: tu-password

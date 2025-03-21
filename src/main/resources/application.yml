@@ -1,0 +1,22 @@
+# src\main\resources\application.yml
+server:
+  port: 8090
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:MCvBIKwPaVjhmKBwFUdHDXzvfWeAZgaJ8XJr6cBsvNkPI9UvAWw7GzFMV6ZhHsI}
+      expiration: 86400000 # 1 día
+      refresh-token:
+        expiration: 604800000 # 7 días
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
