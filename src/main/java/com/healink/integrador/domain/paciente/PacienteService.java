@@ -3,14 +3,14 @@ package com.healink.integrador.domain.paciente;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.healink.integrador.core.service.GenericService;
+import com.healink.integrador.core.service.ServicioGenerico;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
-public class PacienteService extends GenericService<Paciente> {
+public class PacienteService extends ServicioGenerico<Paciente> {
 
     private final PacienteRepository pacienteRepository;
 

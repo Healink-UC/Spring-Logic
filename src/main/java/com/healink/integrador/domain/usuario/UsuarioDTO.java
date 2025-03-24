@@ -1,13 +1,13 @@
 package com.healink.integrador.domain.usuario;
 
-import com.healink.integrador.core.dto.BaseDTO;
+import com.healink.integrador.core.dto.DTOBase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class UsuarioDTO implements BaseDTO {
+public class UsuarioDTO implements DTOBase {
 
     private Long id;
 

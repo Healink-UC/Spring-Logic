@@ -1,6 +1,6 @@
 package com.healink.integrador.domain.paciente;
 
-import com.healink.integrador.core.dto.BaseDTO;
+import com.healink.integrador.core.dto.DTOBase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class PacienteDTO implements BaseDTO {
+public class PacienteDTO implements DTOBase {
 
     private Long id;
 

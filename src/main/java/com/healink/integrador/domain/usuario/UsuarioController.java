@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.healink.integrador.core.controller.GenericController;
+import com.healink.integrador.core.controller.ControladorGenerico;
 
 @RestController
 @RequestMapping("/api/usuarios")
-public class UsuarioController extends GenericController<Usuario, UsuarioDTO> {
+public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> {
 
     private final UsuarioService usuarioService;
 
@@ -22,7 +22,7 @@ public class UsuarioController extends GenericController<Usuario, UsuarioDTO> {
     @GetMapping("/correo/{correo}")
     public ResponseEntity<UsuarioDTO> getByCorreo(@PathVariable String correo) {
         return usuarioService.findByCorreo(correo)
-                .map(usuario -> ResponseEntity.ok(mapper.toDto(usuario)))
+                .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -31,7 +31,7 @@ public class UsuarioController extends GenericController<Usuario, UsuarioDTO> {
             @PathVariable("tipo") String tipoIdentificacion,
             @PathVariable("numero") String identificacion) {
         return usuarioService.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion)
-                .map(usuario -> ResponseEntity.ok(mapper.toDto(usuario)))
+                .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
 }

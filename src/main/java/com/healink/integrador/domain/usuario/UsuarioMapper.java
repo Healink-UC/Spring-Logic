@@ -4,16 +4,16 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.healink.integrador.core.mapper.GenericMapper;
+import com.healink.integrador.core.mapper.MapeadorGenerico;
 
 @Mapper(componentModel = "spring")
-public interface UsuarioMapper extends GenericMapper<Usuario, UsuarioDTO> {
+public interface UsuarioMapper extends MapeadorGenerico<Usuario, UsuarioDTO> {
 
     @Override
     @Mapping(target = "clave", ignore = true)
-    UsuarioDTO toDto(Usuario entity);
+    UsuarioDTO aDTO(Usuario entity);
 
     @Override
-    void updateEntityFromDto(UsuarioDTO dto, @MappingTarget Usuario entity);
+    void actualizarEntidadDesdeDto(UsuarioDTO dto, @MappingTarget Usuario entidad);
 
 }

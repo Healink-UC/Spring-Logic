@@ -1,4 +1,4 @@
-package com.healink.integrador.domain.paciente;
+package com.healink.integrador.domain.personal_medico;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,34 +11,28 @@ import java.time.LocalDate;
 import com.healink.integrador.core.entity.EntidadAuditable;
 
 @Entity
-@Table(name = "PACIENTES")
+@Table(name = "PERSONAL_MEDICO")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Paciente extends EntidadAuditable {
+public class PersonalMedico extends EntidadAuditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fecha_nacimiento")
-    private LocalDate fechaNacimiento;
+    @Column(name = "nombre_completo")
+    private String nombreCompleto;
 
-    @Column(name = "genero", length = 1)
-    private String genero;
+    @Column(name = "especialidad")
+    private String especialidad;
 
     @Column(name = "telefono")
     private String telefono;
 
-    @Column(name = "correo")
-    private String correo;
-
-    @Column(name = "direccion")
-    private String direccion;
-
-    @Column(name = "localidad")
-    private String localidad;
+    @Column(name = "entidad_id", nullable = false)
+    private Long entidadId;
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
@@ -46,6 +40,6 @@ public class Paciente extends EntidadAuditable {
     @Column(name = "fecha_registro")
     private LocalDate fechaRegistro = LocalDate.now();
 
-    @Column(name = "estado", length = 20)
+    @Column(name = "estado", length = 10)
     private String estado = "ACTIVO";
 }

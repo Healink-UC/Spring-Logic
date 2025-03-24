@@ -1,18 +1,12 @@
 package com.healink.integrador.domain.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.healink.integrador.core.entity.AuditableEntity;
+import com.healink.integrador.core.entity.EntidadAuditable;
 
 @Entity
 @Table(name = "USUARIOS")
@@ -20,7 +14,7 @@ import com.healink.integrador.core.entity.AuditableEntity;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario extends AuditableEntity {
+public class Usuario extends EntidadAuditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +42,6 @@ public class Usuario extends AuditableEntity {
     private String celular;
 
     @Column(name = "esta_activo")
-
     private Boolean estaActivo = true;
 
     @Column(name = "rol_id", nullable = false)
