@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuarios", description = "API para gestión de usuarios")
 public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> {
 
     private final UsuarioService usuarioService;

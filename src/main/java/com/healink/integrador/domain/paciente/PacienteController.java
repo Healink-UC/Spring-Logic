@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/pacientes")
+@Tag(name = "Pacientes", description = "API para gestión de pacientes")
 public class PacienteController extends ControladorGenerico<Paciente, PacienteDTO> {
 
     private final PacienteService pacienteService;

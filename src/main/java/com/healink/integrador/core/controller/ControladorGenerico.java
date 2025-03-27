@@ -1,5 +1,6 @@
 package com.healink.integrador.core.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ public abstract class ControladorGenerico<E extends EntidadBase, D extends DTOBa
 
     @PostMapping
     public ResponseEntity<D> crear(@Valid @RequestBody D dto) {
+        dto.setId(null);
         E entity = mapeador.aEntidad(dto);
         return new ResponseEntity<>(mapeador.aDTO(servicio.guardar(entity)), HttpStatus.CREATED);
     }
@@ -49,11 +51,16 @@ public abstract class ControladorGenerico<E extends EntidadBase, D extends DTOBa
     @PutMapping("/{id}")
     public ResponseEntity<D> actualizar(@PathVariable Long id, @Valid @RequestBody D dto) {
         try {
+            // Asegurarse que el ID en el DTO coincida con el de la URL
+            dto.setId(id);
             E existingEntity = servicio.obtenerPorId(id);
             mapeador.actualizarEntidadDesdeDto(dto, existingEntity);
-            return ResponseEntity.ok(mapeador.aDTO(servicio.guardar(existingEntity)));
-        } catch (Exception e) {
+            E updatedEntity = servicio.guardar(existingEntity);
+            return ResponseEntity.ok(mapeador.aDTO(updatedEntity));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -17,11 +17,15 @@ import com.healink.integrador.core.entity.EntidadAuditable;
 public class Rol extends EntidadAuditable {
 
     @Id
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nombre", length = 50, nullable = false)
     private String nombre;
 
     @Column(name = "descripcion")
     private String descripcion;
+
+    @Column(name = "permisos")
+    private String permisos;
 }
