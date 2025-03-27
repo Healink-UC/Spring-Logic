@@ -47,10 +47,4 @@ public class Usuario extends EntidadAuditable {
     @Column(name = "rol_id", nullable = false)
     private Long rolId;
 
-    // @Column(name = "ultimo_acceso")
-    // private LocalDateTime ultimoAcceso;
-
-    // @Column(name = "fecha_registro")
-    // private LocalDate fechaRegistro = LocalDate.now();
-
 }

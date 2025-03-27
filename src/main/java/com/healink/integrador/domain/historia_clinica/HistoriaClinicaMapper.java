@@ -11,5 +11,5 @@ public interface HistoriaClinicaMapper extends MapeadorGenerico<HistoriaClinica,
 
     @Override
     @Mapping(target = "fechaCreacion", ignore = true)
-    void actualizarEntidadDesdeDto(HistoriaClinicaDTO dto, @MappingTarget HistoriaClinica entidad);
+    void actualizarEntidadDesdeDTO(HistoriaClinicaDTO dto, @MappingTarget HistoriaClinica entidad);
 }

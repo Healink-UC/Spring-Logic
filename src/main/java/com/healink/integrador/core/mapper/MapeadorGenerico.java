@@ -19,5 +19,5 @@ public interface MapeadorGenerico<E extends EntidadBase, D extends DTOBase> {
     List<E> aListaEntidad(List<D> dtos);
 
     @Mapping(target = "id", ignore = true)
-    void actualizarEntidadDesdeDto(D dto, @MappingTarget E entity);
+    void actualizarEntidadDesdeDTO(D dto, @MappingTarget E entity);
 }

@@ -16,6 +16,6 @@ public interface RolMapper extends MapeadorGenerico<Rol, RolDTO> {
 
     // No actualizar el ID
     @Override
-    void actualizarEntidadDesdeDto(
+    void actualizarEntidadDesdeDTO(
             RolDTO dto, @MappingTarget Rol entity);
 }

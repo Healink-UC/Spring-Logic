@@ -11,5 +11,5 @@ public interface PersonalMedicoMapper extends MapeadorGenerico<PersonalMedico, P
 
     @Override
     @Mapping(target = "fechaRegistro", ignore = true)
-    void actualizarEntidadDesdeDto(PersonalMedicoDTO dto, @MappingTarget PersonalMedico entidad);
+    void actualizarEntidadDesdeDTO(PersonalMedicoDTO dto, @MappingTarget PersonalMedico entidad);
 }

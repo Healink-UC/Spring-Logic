@@ -11,5 +11,5 @@ public interface DatosClinicosMapper extends MapeadorGenerico<DatosClinicos, Dat
 
     @Override
     @Mapping(target = "fechaRegistro", ignore = true)
-    void actualizarEntidadDesdeDto(DatosClinicosDTO dto, @MappingTarget DatosClinicos entidad);
+    void actualizarEntidadDesdeDTO(DatosClinicosDTO dto, @MappingTarget DatosClinicos entidad);
 }

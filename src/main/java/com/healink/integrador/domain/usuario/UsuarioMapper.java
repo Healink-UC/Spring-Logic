@@ -14,6 +14,6 @@ public interface UsuarioMapper extends MapeadorGenerico<Usuario, UsuarioDTO> {
     UsuarioDTO aDTO(Usuario dto);
 
     @Override
-    void actualizarEntidadDesdeDto(UsuarioDTO dto, @MappingTarget Usuario entidad);
+    void actualizarEntidadDesdeDTO(UsuarioDTO dto, @MappingTarget Usuario entidad);
 
 }

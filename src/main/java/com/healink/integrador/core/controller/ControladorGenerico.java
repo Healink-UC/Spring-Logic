@@ -54,7 +54,7 @@ public abstract class ControladorGenerico<E extends EntidadBase, D extends DTOBa
             // Asegurarse que el ID en el DTO coincida con el de la URL
             dto.setId(id);
             E existingEntity = servicio.obtenerPorId(id);
-            mapeador.actualizarEntidadDesdeDto(dto, existingEntity);
+            mapeador.actualizarEntidadDesdeDTO(dto, existingEntity);
             E updatedEntity = servicio.guardar(existingEntity);
             return ResponseEntity.ok(mapeador.aDTO(updatedEntity));
         } catch (EntityNotFoundException e) {
