@@ -277,13 +277,14 @@ erDiagram
     ROLES ||--o{ USUARIOS : asignado_a
 
     ENTIDADES_SALUD ||--o{ CAMPANAS : organiza
-    ENTIDADES_SALUD ||--o{ EMBAJADORES : gestiona
+    ENTIDADES_SALUD ||--o{ EMBAJADORES_ENTIDADES : gestiona
+    EMBAJADORES ||--o{ EMBAJADORES_ENTIDADES : gestiona
     ENTIDADES_SALUD ||--o{ PERSONAL_MEDICO : emplea
 
     LOCALIZACION ||--o{ CAMPANAS : ubicada_en
 
-    CAMPANAS ||--o{ CAMPANA_SERVICIOS : incluye
-    SERVICIOS_MEDICOS ||--o{ CAMPANA_SERVICIOS : incluido_en
+    CAMPANAS ||--o{ SERVICIOS_CAMPANA : incluye
+    SERVICIOS_MEDICOS ||--o{ SERVICIOS_CAMPANA : incluido_en
 
     CAMPANAS ||--o{ CAMPANA_FACTORES : considera
     FACTORES_RIESGO ||--o{ CAMPANA_FACTORES : considerado_en
