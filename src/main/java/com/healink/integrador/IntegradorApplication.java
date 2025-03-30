@@ -17,8 +17,4 @@ public class IntegradorApplication {
         SpringApplication.run(IntegradorApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

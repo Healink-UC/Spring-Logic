@@ -8,13 +8,13 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "application.security.jwt")
 @Data
-public class JWTConfig {
-    private String secretKey;
-    private long expiration;
-    private RefreshToken refreshToken;
+public class ConfiguracionJWT {
+    private String llaveSecreta;
+    private long expiracion;
+    private TokenRefresco tokenRefresco;
 
     @Data
-    public static class RefreshToken {
-        private long expiration;
+    public static class TokenRefresco {
+        private long expiracion;
     }
 }
