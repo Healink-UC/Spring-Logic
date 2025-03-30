@@ -3,8 +3,6 @@ package com.healink.integrador.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 
@@ -12,12 +10,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "application.security.jwt")
 @Data
 public class ConfiguracionJWT {
-    @JsonProperty("secret-key")
     private String llaveSecreta;
-
     private long expiracion;
-
-    @JsonProperty("refresh-token")
     private TokenRefresco tokenRefresco;
 
     @Data
@@ -25,7 +19,7 @@ public class ConfiguracionJWT {
         private long expiracion;
     }
 
-    // Método de inicialización para validar la configuración
+    // Inicialización para validar la configuración
     @PostConstruct
     public void init() {
         if (llaveSecreta == null) {

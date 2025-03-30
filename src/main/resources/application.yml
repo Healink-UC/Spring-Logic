@@ -5,9 +5,9 @@ server:
 application:
   security:
     jwt:
-      secret-key: ${JWT_SECRET:MCvBIKwPaVjhmKBwFUdHDXzvfWeAZgaJ8XJr6cBsvNkPI9UvAWw7GzFMV6ZhHsI}
-      expiration: 86400 # 24 horas en segundos (no milisegundos)
-      refresh-token:
+      llave-secreta: ${JWT_SECRET:MCvBIKwPaVjhmKBwFUdHDXzvfWeAZgaJ8XJr6cBsvNkPI9UvAWw7GzFMV6ZhHsI}
+      expiracion: 86400 # 24 horas en segundos (no milisegundos)
+      token-refresco:
         expiration: 604800 # 7 días en segundos
 
 spring:
