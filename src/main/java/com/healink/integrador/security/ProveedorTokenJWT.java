@@ -56,6 +56,16 @@ public class ProveedorTokenJWT {
                 .compact();
     }
 
+    private Claims getClaims(String token) {
+        SecretKey llave = Keys.hmacShaKeyFor(Base64.getDecoder().decode(configJWT.getLlaveSecreta()));
+
+        return Jwts.parserBuilder()
+                .setSigningKey(llave)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String getUsername(String token) {
         return getClaims(token).getSubject();
     }
@@ -67,15 +77,5 @@ public class ProveedorTokenJWT {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private Claims getClaims(String token) {
-        SecretKey llave = Keys.hmacShaKeyFor(Base64.getDecoder().decode(configJWT.getLlaveSecreta()));
-
-        return Jwts.parserBuilder()
-                .setSigningKey(llave)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 }
