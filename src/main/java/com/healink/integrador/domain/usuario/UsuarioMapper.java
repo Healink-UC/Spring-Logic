@@ -5,13 +5,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import com.healink.integrador.core.mapper.MapeadorGenerico;
-import com.healink.integrador.domain.rol.Rol;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper extends MapeadorGenerico<Usuario, UsuarioDTO> {
 
     @Override
     @Mapping(target = "clave", ignore = true)
+    @Mapping(target = "rolId", source = "rol.id") // Aquí está la solución
     UsuarioDTO aDTO(Usuario entity);
 
     @Override
