@@ -27,6 +27,7 @@ public class ProveedorTokenJWT {
 
     private final ConfiguracionJWT configJWT;
     private final UserDetailsService userDetailsService; // Inyección
+    private final ListaNegraToken listaNegraToken;
 
     public Authentication getAuthentication(String token) {
         String username = getUsername(token);
@@ -72,6 +73,11 @@ public class ProveedorTokenJWT {
 
     public boolean validateToken(String token) {
         try {
+            // Verificar primero si el token está en la lista negra
+            if (listaNegraToken.estaEnListaNegra(token)) {
+                return false;
+            }
+
             Claims claims = getClaims(token);
             return !claims.getExpiration().before(new Date());
         } catch (Exception e) {
