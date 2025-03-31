@@ -5,12 +5,14 @@ server:
 application:
   security:
     jwt:
-      secret-key: ${JWT_SECRET:MCvBIKwPaVjhmKBwFUdHDXzvfWeAZgaJ8XJr6cBsvNkPI9UvAWw7GzFMV6ZhHsI}
-      expiration: 86400000 # 1 día
-      refresh-token:
-        expiration: 604800000 # 7 días
+      llave-secreta: ${JWT_SECRET:MCvBIKwPaVjhmKBwFUdHDXzvfWeAZgaJ8XJr6cBsvNkPI9UvAWw7GzFMV6ZhHsI}
+      expiracion: 86400 # 24 horas en segundos (no milisegundos)
+      token-refresco:
+        expiration: 604800 # 7 días en segundos
 
 spring:
+  # main:
+    # allow-bean-definition-overriding: true
   devtools:
     restart:
       enabled: true
@@ -32,4 +34,9 @@ spring:
     show-sql: true
   logging:
     level:
+      root: INFO
+      org.springframework: DEBUG
+      org.springframework.web: INFO
+      org.springframework.security: DEBUG
+      org.hibernate: INFO
       com.healink.integrador: DEBUG
