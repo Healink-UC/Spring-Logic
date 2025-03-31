@@ -11,7 +11,7 @@ public interface UsuarioMapper extends MapeadorGenerico<Usuario, UsuarioDTO> {
 
     @Override
     @Mapping(target = "clave", ignore = true)
-    @Mapping(target = "rolId", source = "rol.id") // Aquí está la solución
+    @Mapping(target = "rolId", source = "rol.id") // Extracción de Rol a rolId
     UsuarioDTO aDTO(Usuario entity);
 
     @Override
