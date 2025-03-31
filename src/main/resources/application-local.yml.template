@@ -4,4 +4,4 @@ spring:
   datasource:
     url: jdbc:postgresql://url-del-servidor/nombre-base-datos
     username: tu-usuario
-    password: tu-password
+    password: tu-clave
