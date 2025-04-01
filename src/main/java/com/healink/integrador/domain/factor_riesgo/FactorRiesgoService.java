@@ -29,7 +29,6 @@ public class FactorRiesgoService {
         factor.setNombre(factorDTO.getNombre());
         factor.setDescripcion(factorDTO.getDescripcion());
         factor.setTipo(factorDTO.getTipo());
-        System.out.println(factor);
         return factorRepository.save(factor);
     }
 
