@@ -2,9 +2,9 @@ package com.healink.integrador.enums;
 
 public enum EstadoCitacion {
     // AGENDADA|ATENDIDA|CANCELADA
-    AGENDADA("agendada"),
-    ATENDIDA("atendida"),
-    CANCELADA("cancelada");
+    AGENDADA("AGENDADA"),
+    ATENDIDA("ATENDIDA"),
+    CANCELADA("CANCELADA");
 
     private final String value;
 

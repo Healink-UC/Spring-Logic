@@ -1,10 +1,10 @@
 package com.healink.integrador.enums;
 
 public enum TipoPrescripcion {
-    MEDICAMENTO("medicamento"),
-    ESTILO_VIDA("estilo_vida"),
-    ACTIVIDAD_FISICA("actividad_fisica"),
-    DIETA("dieta");
+    MEDICAMENTO("MEDICAMENTO"),
+    ESTILO_VIDA("ESTILO_VIDA"),
+    ACTIVIDAD_FISICA("ACTIVIDAD_FISICA"),
+    DIETA("DIETA");
 
     private final String value;
 

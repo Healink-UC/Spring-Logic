@@ -1,9 +1,9 @@
 package com.healink.integrador.enums;
 
 public enum SeveridadDiagnostico {
-    LEVE("leve"),
-    MODERADA("moderada"),
-    GRAVE("grave");
+    LEVE("LEVE"),
+    MODERADA("MODERADA"),
+    GRAVE("GRAVE");
 
     private final String value;
 

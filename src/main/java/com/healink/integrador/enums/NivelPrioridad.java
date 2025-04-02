@@ -1,9 +1,9 @@
 package com.healink.integrador.enums;
 
 public enum NivelPrioridad {
-    ALTA("alta"),
-    MEDIA("media"),
-    BAJA("baja");
+    ALTA("ALTA"),
+    MEDIA("MEDIA"),
+    BAJA("BAJA");
 
     private final String value;
 

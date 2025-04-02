@@ -1,10 +1,10 @@
 package com.healink.integrador.enums;
 
 public enum TipoPrediccion {
-    RIESGO_CV("riesgo_cv"),
-    ASISTENCIA("asistencia"),
-    HOSPITALIZACION("hospitalizacion"),
-    REHOSPITALIZACION("rehospitalizacion");
+    RIESGO_CV("RIESGO_CV"),
+    ASISTENCIA("ASISTENCIA"),
+    HOSPITALIZACION("HOSPITALIZACION"),
+    REHOSPITALIZACION("REHOSPITALIZACION");
 
     private final String value;
 

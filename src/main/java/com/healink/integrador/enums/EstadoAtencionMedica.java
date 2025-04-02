@@ -1,9 +1,9 @@
 package com.healink.integrador.enums;
 
 public enum EstadoAtencionMedica {
-    EN_PROCESO("en_proceso"),
-    COMPLETADA("completada"),
-    CANCELADA("cancelada");
+    EN_PROCESO("EN_PROCESO"),
+    COMPLETADA("COMPLETADA"),
+    CANCELADA("CANCELADA");
 
     private final String value;
 

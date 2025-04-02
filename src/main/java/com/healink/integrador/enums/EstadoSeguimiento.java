@@ -1,9 +1,9 @@
 package com.healink.integrador.enums;
 
 public enum EstadoSeguimiento {
-    PENDIENTE("pendiente"),
-    REALIZADO("realizado"),
-    CANCELADO("cancelado");
+    PENDIENTE("PENDIENTE"),
+    REALIZADO("REALIZADO"),
+    CANCELADO("CANCELADO");
 
     private final String value;
 

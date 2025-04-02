@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum GeneroBiologico {
-    MASCULINO("m"),
-    FEMENINO("f");
+    MASCULINO("M"),
+    FEMENINO("F");
 
     private final String value;
 

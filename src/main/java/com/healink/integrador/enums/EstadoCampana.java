@@ -1,10 +1,10 @@
 package com.healink.integrador.enums;
 
 public enum EstadoCampana {
-    POSTULADA("postulada"),
-    ACTIVA("activa"),
-    FINALIZADA("finalizada"),
-    CANCELADA("cancelada");
+    POSTULADA("POSTULADA"),
+    ACTIVA("ACTIVA"),
+    FINALIZADA("FINALIZADA"),
+    CANCELADA("CANCELADA");
 
     private final String value;
 

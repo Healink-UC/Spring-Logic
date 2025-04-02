@@ -2,9 +2,9 @@ package com.healink.integrador.enums;
 
 public enum FactorRiesgo {
 
-    SOCIAL("social"),
-    AMBIENTAL("ambiental"),
-    RACIAL("racial");
+    SOCIAL("SOCIAL"),
+    AMBIENTAL("AMBIENTAL"),
+    RACIAL("RACIAL");
 
     private final String value;
 
