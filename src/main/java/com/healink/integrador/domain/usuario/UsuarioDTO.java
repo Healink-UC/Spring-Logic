@@ -2,11 +2,11 @@ package com.healink.integrador.domain.usuario;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.healink.integrador.core.dto.DTOBase;
+import com.healink.integrador.enums.TipoIdentificacion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -16,8 +16,7 @@ public class UsuarioDTO implements DTOBase {
     private Long id;
 
     @NotBlank(message = "El tipo de identificación es requerido")
-    @Pattern(regexp = "^(cc|ti|nit|rcn)$", message = "Tipo de identificación inválido")
-    private String tipoIdentificacion;
+    private TipoIdentificacion tipoIdentificacion;
 
     @NotBlank(message = "La identificación es requerida")
     private String identificacion;
