@@ -27,6 +27,7 @@ public class Paciente extends EntidadAuditable {
     private LocalDate fechaNacimiento;
 
     @Column(name = "genero", length = 1)
+    @Enumerated(EnumType.STRING)
     private GeneroBiologico genero;
 
     @Column(name = "direccion")

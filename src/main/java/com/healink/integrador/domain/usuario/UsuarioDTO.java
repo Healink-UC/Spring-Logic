@@ -7,6 +7,7 @@ import com.healink.integrador.enums.TipoIdentificacion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -15,7 +16,7 @@ public class UsuarioDTO implements DTOBase {
     @Schema(readOnly = true, description = "Indica es sólo lectura")
     private Long id;
 
-    @NotBlank(message = "El tipo de identificación es requerido")
+    @NotNull(message = "El tipo de identificación es requerido")
     private TipoIdentificacion tipoIdentificacion;
 
     @NotBlank(message = "La identificación es requerida")

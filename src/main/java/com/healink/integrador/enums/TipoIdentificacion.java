@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum TipoIdentificacion {
-    CC("cc"),
-    TI("ti"),
-    NIT("nit"),
-    RCN("rcn");
+    CC("CC"),
+    TI("TI"),
+    NIT("NIT"),
+    RCN("RCN");
 
     private final String value;
 

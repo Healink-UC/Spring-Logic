@@ -37,6 +37,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     private Long id;
 
     @Column(name = "tipo_identificacion", nullable = false, length = 3)
+    @Enumerated(EnumType.STRING)
     private TipoIdentificacion tipoIdentificacion;
 
     @Column(name = "identificacion", nullable = false)
@@ -81,7 +82,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Override
     public String getUsername() {
         // Combinación de tipo+identificación como "username" único
-        return this.tipoIdentificacion + ":" + this.identificacion;
+        return (tipoIdentificacion != null ? tipoIdentificacion.getValue() : "") + ":" + identificacion;
     }
 
     @Override
