@@ -190,7 +190,6 @@ erDiagram
     ATENCIONES_MEDICAS {
         int id PK
         int citacion_id FK
-        int medico_id FK
         timestamp fecha_hora_inicio
         timestamp fecha_hora_fin
         int duracion_real "minutos"
