@@ -24,13 +24,13 @@ public class FactorRiesgoController extends ControladorGenerico<FactorRiesgo, Fa
         this.factorService = factorService;
     }
 
-    @GetMapping("/{nombreFactor}")
+    @GetMapping("/nombre/{nombreFactor}")
     public ResponseEntity<List<FactorRiesgoDTO>> getByNombre(@PathVariable String nombreFactor) {
         List<FactorRiesgo> factores = factorService.findByNombre(nombreFactor);
         return ResponseEntity.ok(mapeador.aListaDTO(factores));
     }
 
-    @GetMapping("/{tipoFactor}")
+    @GetMapping("/tipo/{tipoFactor}")
     public ResponseEntity<List<FactorRiesgoDTO>> getbyTipo(@PathVariable String tipoFactor) {
         List<FactorRiesgo> factores = factorService.findByTipo(tipoFactor);
         return ResponseEntity.ok(mapeador.aListaDTO(factores));
