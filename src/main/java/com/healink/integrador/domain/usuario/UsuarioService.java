@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 import com.healink.integrador.domain.rol.RolRepository;
+import com.healink.integrador.enums.TipoIdentificacion;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -67,9 +68,11 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
     }
 
     @Transactional(readOnly = true)
-    public Optional<Usuario> findByTipoIdentificacionAndIdentificacion(String tipoIdentificacion,
+    public Optional<Usuario> findByTipoIdentificacionAndIdentificacion(
+            TipoIdentificacion tipoIdentificacion,
             String identificacion) {
-        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion);
+        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion,
+                identificacion);
     }
 
     // Implementación de UserDetailsService para autenticación
@@ -77,19 +80,19 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // El username en nuestro caso es "tipoIdentificacion:identificacion"
         String[] parts = username.split(":");
-
         if (parts.length != 2) {
             throw new UsernameNotFoundException("Formato de identificación inválido");
         }
+        try {
+            TipoIdentificacion tipoIdentificacion = TipoIdentificacion.fromValue(parts[0]);
+            String identificacion = parts[1];
 
-        String tipoIdentificacion = parts[0];
-        String identificacion = parts[1];
-
-        return usuarioRepository
-                .findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+            return usuarioRepository
+                    .findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        } catch (IllegalArgumentException e) {
+            throw new UsernameNotFoundException("Tipo de identificación inválido", e);
+        }
     }
-
 }

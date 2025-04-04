@@ -29,7 +29,6 @@ erDiagram
         varchar correo
         int usuario_id FK
         date fecha_registro
-        varchar estado "ACTIVA|INACTIVA|SUSPENDIDA"
     }
 
     EMBAJADORES {
@@ -38,7 +37,6 @@ erDiagram
         int usuario_id FK
         date fecha_registro
         int localizacion_id FK
-        varchar estado "ACTIVO|INACTIVO"
     }
 
     EMBAJADORES_ENTIDADES {
@@ -53,18 +51,16 @@ erDiagram
         int entidad_id FK
         int usuario_id FK
         date fecha_registro
-        varchar estado "ACTIVO|INACTIVO"
     }
 
     PACIENTES {
         int id PK
         date fecha_nacimiento
-        varchar genero "M|F|OTRO"
+        enum genero "M|F"
         varchar direccion
         id localizacion_id FK
         int usuario_id FK
         date fecha_registro
-        varchar estado "ACTIVO|INACTIVO"
     }
 
     LOCALIZACION {
@@ -88,8 +84,8 @@ erDiagram
         int min_participantes
         int max_participantes
         int entidad_id FK
-        varchar estado "POSTULADA|EJECUCION|FINALIZADA"
         date fecha_creacion
+        varchar estado "POSTULADA|EJECUCION|FINALIZADA|CANCELADA"
     }
 
     SERVICIOS_MEDICOS {
@@ -194,7 +190,6 @@ erDiagram
     ATENCIONES_MEDICAS {
         int id PK
         int citacion_id FK
-        int medico_id FK
         timestamp fecha_hora_inicio
         timestamp fecha_hora_fin
         int duracion_real "minutos"

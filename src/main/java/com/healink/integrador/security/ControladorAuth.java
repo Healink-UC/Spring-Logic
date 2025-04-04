@@ -64,7 +64,8 @@ public class ControladorAuth {
     public ResponseEntity<?> login(@RequestBody SolicitudAcceso solicitud) {
         try {
             // Autenticar
-            String identificador = solicitud.getTipoIdentificacion() + ":" + solicitud.getIdentificacion();
+            String tipoId = solicitud.getTipoIdentificacion();
+            String identificador = tipoId + ":" + solicitud.getIdentificacion();
 
             Authentication auth = gestorAutenticacion.authenticate(
                     new UsernamePasswordAuthenticationToken(identificador, solicitud.getClave()));
