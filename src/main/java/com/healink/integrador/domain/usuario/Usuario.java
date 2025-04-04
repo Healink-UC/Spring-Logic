@@ -33,7 +33,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tipo_identificacion", nullable = false, length = 3)
+    @Column(name = "tipo_identificacion", nullable = false, length = 3) 
     private String tipoIdentificacion;
 
     @Column(name = "identificacion", nullable = false)
