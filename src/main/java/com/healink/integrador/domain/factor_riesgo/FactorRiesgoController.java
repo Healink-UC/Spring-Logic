@@ -1,54 +1,39 @@
 package com.healink.integrador.domain.factor_riesgo;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.healink.integrador.core.controller.ControladorGenerico;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/factor-riesgo")
-public class FactorRiesgoController {
+@Tag(name = "Factores de riesgo")
+public class FactorRiesgoController extends ControladorGenerico<FactorRiesgo, FactorRiesgoDTO> {
 
-    @Autowired
-    private FactorRiesgoService factorService;
+    private final FactorRiesgoService factorService;
 
-    @PostMapping("/")
-    public ResponseEntity<FactorRiesgo> createFactorRiesgo(@RequestBody FactorRiesgoDTO factorDTO) {
-        FactorRiesgo factor = factorService.createFactorRiesgo(factorDTO);
-        return ResponseEntity.status(201).body(factor);
+    public FactorRiesgoController(FactorRiesgoService factorService, FactorRiesgoMapper factorRiesgoMapper) {
+        super(factorService, factorRiesgoMapper);
+        this.factorService = factorService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<FactorRiesgoDTO>> getFactoresRiesgo() {
-        return ResponseEntity.ok(factorService.getFactoresRiesgo());
+    @GetMapping("/{nombreFactor}")
+    public ResponseEntity<List<FactorRiesgoDTO>> getByNombre(@PathVariable String nombreFactor) {
+        List<FactorRiesgo> factores = factorService.findByNombre(nombreFactor);
+        return ResponseEntity.ok(mapeador.aListaDTO(factores));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FactorRiesgo> getFactorRiesgoById(@PathVariable Long id) {
-        Optional<FactorRiesgo> factor = factorService.getFactorRiesgoByID(id);
-        return factor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    @GetMapping("/{tipoFactor}")
+    public ResponseEntity<List<FactorRiesgoDTO>> getbyTipo(@PathVariable String tipoFactor) {
+        List<FactorRiesgo> factores = factorService.findByTipo(tipoFactor);
+        return ResponseEntity.ok(mapeador.aListaDTO(factores));
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FactorRiesgo> updateUser(@PathVariable Long id,
-            @RequestBody FactorRiesgo newFactorRiesgo) {
-        FactorRiesgo factorRiesgoUpdated = factorService.updateFactorRiesgo(id, newFactorRiesgo);
-        return ResponseEntity.ok(factorRiesgoUpdated);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        factorService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }

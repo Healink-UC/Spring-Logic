@@ -1,10 +1,12 @@
 package com.healink.integrador.domain.factor_riesgo;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-public interface FactorRiesgoRepository extends JpaRepository<FactorRiesgo, Long> {
-    FactorRiesgo findByNombre(String nombre);
+import com.healink.integrador.core.Repository.RepositorioGenerico;
 
-    FactorRiesgo findByTipo(String tipoFactorRiesgo);
+public interface FactorRiesgoRepository extends RepositorioGenerico<FactorRiesgo> {
+    List<FactorRiesgo> findByNombre(String nombre);
+
+    List<FactorRiesgo> findByTipo(String tipoFactorRiesgo);
 
 }

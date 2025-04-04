@@ -16,7 +16,7 @@ public class FactorRiesgoDTO implements DTOBase {
     @NotBlank(message = "La descripcion del factor de riesgo es requerida")
     private String descripcion;
 
-    @NotBlank(message = "El tipo de factor de riesgo es requerido")
+    // @NotBlank(message = "El tipo de factor de riesgo es requerido")
     private TipoFactorRiesgo tipo;
 
 }
