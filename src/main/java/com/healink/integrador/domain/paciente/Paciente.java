@@ -46,6 +46,7 @@ public class Paciente extends EntidadAuditable {
     @Column(name = "fecha_registro")
     private LocalDate fechaRegistro = LocalDate.now();
 
+    // Enumeración! o Bool!
     @Column(name = "estado", length = 20)
     private String estado = "ACTIVO";
 }

@@ -16,7 +16,6 @@ public class ConfiguracionMapeo {
         this.rolRepository = rolRepository;
     }
 
-    // @Bean
     public Rol rolFromId(Long id) {
         if (id == null)
             return null;
