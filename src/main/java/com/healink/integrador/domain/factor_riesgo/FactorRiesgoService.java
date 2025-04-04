@@ -21,13 +21,13 @@ public class FactorRiesgoService extends ServicioGenerico<FactorRiesgo> {
 
     @Transactional(readOnly = true)
     public List<FactorRiesgo> findByNombre(String nombreFactor) {
-        return factorRepository.findByNombre(nombreFactor);
+        return factorRepository.findByNombreContainingIgnoreCase(nombreFactor);
 
     }
 
     @Transactional(readOnly = true)
     public List<FactorRiesgo> findByTipo(String tipoFactorRiesgo) {
-        return factorRepository.findByTipo(tipoFactorRiesgo);
+        return factorRepository.findByTipoParcial(tipoFactorRiesgo);
 
     }
 }
