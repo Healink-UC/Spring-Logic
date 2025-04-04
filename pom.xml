@@ -121,13 +121,13 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        
-        <!-- JSON -->
-        <dependency>
+
+        <!-- JSON? -->
+        <!-- <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-55</artifactId>
             <version>2.16.2</version>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
     <build>
