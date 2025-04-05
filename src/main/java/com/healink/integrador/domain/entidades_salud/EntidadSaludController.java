@@ -21,7 +21,7 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
     }
 
     @GetMapping("/entidad_salud/{razon_social}")
-    public ResponseEntity<EntidadSaludDTO> getByUsuarioId(@PathVariable String razon_social) {
+    public ResponseEntity<EntidadSaludDTO> getByRazonSocial(@PathVariable String razon_social) {
         return entidadSaludService.findByRazonSocial(razon_social)
                 .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
                 .orElse(ResponseEntity.notFound().build());
