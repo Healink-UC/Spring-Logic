@@ -1,17 +1,12 @@
-package com.healink.integrador.domain.entidad_salud;
+package com.healink.integrador.domain.entidades_salud;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
-import com.healink.integrador.domain.paciente.Paciente;
-import com.healink.integrador.domain.paciente.PacienteDTO;
-import com.healink.integrador.domain.paciente.PacienteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/entidades_salud")

@@ -1,4 +1,4 @@
-package com.healink.integrador.domain.entidad_salud;
+package com.healink.integrador.domain.entidades_salud;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import jakarta.persistence.*;
