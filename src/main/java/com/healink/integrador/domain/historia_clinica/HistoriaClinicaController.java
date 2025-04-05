@@ -46,7 +46,7 @@ public class HistoriaClinicaController extends ControladorGenerico<HistoriaClini
                 .map(historia -> ResponseEntity.ok(mapeador.aDTO(historia)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @GetMapping("/paciente/{pacienteId}/triaje/{triajeId}")
     @Operation(summary = "Buscar historia clínica por paciente y triaje", description = "Obtiene la historia clínica asociada a un paciente y triaje específicos")
     public ResponseEntity<HistoriaClinicaDTO> buscarPorPacienteYTriajeId(
