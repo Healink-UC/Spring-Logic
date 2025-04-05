@@ -17,7 +17,7 @@ erDiagram
 
     ROLES {
         int id PK
-        varchar nombre "administrador|desarrollador|entidad_salud|medico|auxiliar|paciente|embajador"
+        varchar nombre "ADMINISTRADOR|DESARROLLADOR|ENTIDAD_SALUD|MEDICO|AUXILIAR|PACIENTE|EMBAJADOR"
         text descripcion
     }
 
