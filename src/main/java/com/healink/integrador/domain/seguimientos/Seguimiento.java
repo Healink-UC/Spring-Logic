@@ -37,6 +37,7 @@ public class Seguimiento extends EntidadAuditable {
     private LocalDate fecha_realizada;
     
     @Column(name = "tipo", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoSeguimiento tipo;
     
     @Column(name = "resultado", nullable = false)
@@ -46,8 +47,10 @@ public class Seguimiento extends EntidadAuditable {
     private String notas;
 
     @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
     private EstadoSeguimiento estado;
 
     @Column(name = "prioridad", nullable = false)
+    @Enumerated(EnumType.STRING)
     private NivelPrioridad prioridad;
 }

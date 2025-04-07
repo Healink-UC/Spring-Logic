@@ -1,9 +1,9 @@
 package com.healink.integrador.enums;
 
 public enum TipoRecomendaciones {
-    LLAMADA("MEDICAMENTO"),
-    SMS("ESTILO_VIDA"),
-    PRESENCIAL("PREVENCION");
+    MEDICAMENTO("MEDICAMENTO"),
+    ESTILO_VIDA("ESTILO_VIDA"),
+    PREVENCION("PREVENCION");
 
     private final String value;
 

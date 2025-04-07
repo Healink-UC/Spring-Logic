@@ -38,6 +38,7 @@ public class Diagnostico extends EntidadAuditable {
     private boolean es_principal;
 
     @Column(name = "severidad", nullable = false)
+    @Enumerated(EnumType.STRING)
     private SeveridadDiagnostico severidad;
 
     @Column(name = "fecha_diagnostico", nullable = false)

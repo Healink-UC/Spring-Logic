@@ -23,7 +23,7 @@ public class SeguimientoDTO implements DTOBase {
     
     private LocalDate fecha_realizada;
     
-    @NotBlank(message = "El tipo de seguimiento es requerido")
+    @NotNull(message = "El tipo de seguimiento es requerido")
     private String tipo;
 
     @NotBlank(message = "El resultado es requerido")
@@ -31,10 +31,10 @@ public class SeguimientoDTO implements DTOBase {
 
     private String notas;
 
-    @NotBlank(message = "El estado es requerido")
+    @NotNull(message = "El estado es requerido")
     private String estado;
 
-    @NotBlank(message = "La prioridad es requerido")
+    @NotNull(message = "La prioridad es requerido")
     private String prioridad;
 
 

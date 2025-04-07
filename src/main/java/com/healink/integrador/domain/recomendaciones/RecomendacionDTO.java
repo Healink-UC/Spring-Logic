@@ -23,11 +23,9 @@ public class RecomendacionDTO implements DTOBase {
     private String descripcion;
 
     @NotBlank(message = "El nivel de importancia es requerido")
-    @Pattern(regexp = "^(ALTA|MEDIA|BAJA)$", message = "Tipo de recomendación inválido. Debe ser 'alta', 'media' o 'baja'.")
     private String nivel_importancia;
 
     @NotBlank(message = "El tipo de recomendación es requerido")
-    @Pattern(regexp = "^(MEDICAMENTO|ESTILO_VIDA|PREVENCION)$", message = "Tipo de recomendación inválido. Debe ser 'medicamento', 'estilo_vida' o 'prevencion'.")
     private String tipo;
 
     @NotNull(message = "La fecha de creacion es requerida")

@@ -33,7 +33,7 @@ public class AtencionMedicaDTO implements DTOBase {
 
     private String notasEstructuradas;
 
-    @NotBlank(message = "El estado es requerido")
-    private EstadoAtencionMedica estado;
+    @NotNull(message = "El estado es requerido")
+    private String estado;
 
 }
