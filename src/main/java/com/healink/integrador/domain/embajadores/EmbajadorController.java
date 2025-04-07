@@ -3,7 +3,7 @@ package com.healink.integrador.domain.embajadores;
 import com.healink.integrador.core.controller.ControladorGenerico;
 import com.healink.integrador.core.mapper.MapeadorGenerico;
 import com.healink.integrador.core.service.ServicioGenerico;
-import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
+// import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

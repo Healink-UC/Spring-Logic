@@ -1,7 +1,7 @@
 package com.healink.integrador.domain.servicios_campanas;
 
 import com.healink.integrador.core.service.ServicioGenerico;
-import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
+// import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

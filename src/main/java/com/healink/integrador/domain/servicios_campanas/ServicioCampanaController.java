@@ -1,8 +1,8 @@
 package com.healink.integrador.domain.servicios_campanas;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
-import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
-import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
+// import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
+// import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

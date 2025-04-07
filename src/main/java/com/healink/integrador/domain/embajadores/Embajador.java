@@ -1,7 +1,7 @@
 package com.healink.integrador.domain.embajadores;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.entidades_salud.EntidadSalud;
+// import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
