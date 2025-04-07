@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.enums.EstadoAtencionMedica;
+
 
 @Entity
 @Table(name = "ATENCIONES_MEDICAS")
@@ -42,5 +43,6 @@ public class AtencionMedica extends EntidadAuditable {
     private String notasEstructuradas;
 
     @Column(name = "estado", nullable = false)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoAtencionMedica estado;
 }

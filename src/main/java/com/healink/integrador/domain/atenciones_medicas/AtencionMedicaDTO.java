@@ -2,13 +2,12 @@ package com.healink.integrador.domain.atenciones_medicas;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
+import com.healink.integrador.enums.EstadoAtencionMedica;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -35,7 +34,6 @@ public class AtencionMedicaDTO implements DTOBase {
     private String notasEstructuradas;
 
     @NotBlank(message = "El estado es requerido")
-    @Pattern(regexp = "^(EN_PROCESO|COMPLETADA|CANCELADA)$", message = "Estado de atención médica inválido. Debe ser 'EN_PROCESO', 'PROCESADA' o 'CANCELADA'.")
-    private String estado;
+    private EstadoAtencionMedica estado;
 
 }
