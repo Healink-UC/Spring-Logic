@@ -1,0 +1,17 @@
+package com.healink.integrador.domain.servicios_campanas;
+
+import com.healink.integrador.core.dto.DTOBase;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class ServicioCampanaDTO implements DTOBase {
+
+    private Long id;
+
+    @NotNull(message = "El nombre es requerido")
+    private String nombre;
+
+    @NotNull(message = "La descripción es requerida")
+    private String descripcion;
+}
