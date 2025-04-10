@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
 
 
+
 @Entity
 @Table(name = "ATENCIONES_MEDICAS")
 @Data
