@@ -3,6 +3,7 @@ package com.healink.integrador.domain.prescripciones;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.dto.DTOBase;
+import com.healink.integrador.enums.TipoPrescripcion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.enums.EstadoAtencionMedica;
+
 
 
 @Entity

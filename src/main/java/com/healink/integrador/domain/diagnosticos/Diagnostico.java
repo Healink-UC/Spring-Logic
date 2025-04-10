@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
+import com.healink.integrador.enums.SeveridadDiagnostico;
 
 import java.time.LocalDate;
 

@@ -85,7 +85,7 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
             throw new UsernameNotFoundException("Formato de identificación inválido");
         }
         try {
-            TipoIdentificacion tipoIdentificacion = TipoIdentificacion.valueOf(parts[0]);
+            TipoIdentificacion tipoIdentificacion = TipoIdentificacion.fromValue(parts[0]);
             String identificacion = parts[1];
 
             return usuarioRepository
