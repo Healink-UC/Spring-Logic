@@ -22,6 +22,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class ConfiguracionSeguridad {
+
     private final FiltroTokenJWT filtroTokenJWT;
 
     public ConfiguracionSeguridad(FiltroTokenJWT filtroTokenJWT) {

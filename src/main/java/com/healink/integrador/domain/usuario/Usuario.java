@@ -65,10 +65,9 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id")
     private Rol rol;
-    // @Column(name = "rol_id", nullable = false)
-    // private Long rolId;
 
-    // Métodos de UserDetails
+    // Métodos de UserDetails //
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + rol.getNombre().toUpperCase()));
