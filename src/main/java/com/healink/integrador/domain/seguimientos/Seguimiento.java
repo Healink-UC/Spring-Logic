@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
+import com.healink.integrador.enums.EstadoSeguimiento;
+import com.healink.integrador.enums.NivelPrioridad;
+import com.healink.integrador.enums.TipoSeguimiento;
 
 import java.time.LocalDate;
 
@@ -34,7 +37,8 @@ public class Seguimiento extends EntidadAuditable {
     private LocalDate fecha_realizada;
     
     @Column(name = "tipo", nullable = false)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoSeguimiento tipo;
     
     @Column(name = "resultado", nullable = false)
     private String resultado;
@@ -43,8 +47,10 @@ public class Seguimiento extends EntidadAuditable {
     private String notas;
 
     @Column(name = "estado", nullable = false)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoSeguimiento estado;
 
     @Column(name = "prioridad", nullable = false)
-    private String prioridad;
+    @Enumerated(EnumType.STRING)
+    private NivelPrioridad prioridad;
 }
