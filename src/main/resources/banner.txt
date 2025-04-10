@@ -1,3 +1,9 @@
+
+Developers:
+- Camilo Andrés Giraldo
+- Juan David Díaz Castaño
+- Julian Rivera Castaño
+- Over Haider Castrillón V.
         _    _            _ _       _
 =======| |  | |          | (_)     | |   __ _ _
    .   | |__| | ___  __ _| |_ _ __ | | __\ \ \ \
