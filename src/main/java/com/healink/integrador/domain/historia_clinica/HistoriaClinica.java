@@ -21,7 +21,7 @@ public class HistoriaClinica extends EntidadAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 

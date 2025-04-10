@@ -31,12 +31,12 @@ public class UsuarioDTO implements DTOBase {
     @Email(message = "Correo electrónico inválido")
     private String correo;
 
-    // Solo permitir setear la clave en solicitudes, nunca devolverla en respuestas
+    // Setear la clave en solicitudes, nunca devolverla en respuestas
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String clave;
 
     private String celular;
-    private Boolean estaActivo = true; // Valor predeterminado
+    private Boolean estaActivo = true;
 
     // @NotNull(message = "El rol es requerido")
     private Long rolId;
