@@ -82,7 +82,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Override
     public String getUsername() {
         // Combinación de tipo+identificación como "username" único
-        return (tipoIdentificacion != null ? tipoIdentificacion.getValue() : "") + ":" + identificacion;
+        return (tipoIdentificacion != null ? tipoIdentificacion.name() : "") + ":" + identificacion;
     }
 
     @Override
