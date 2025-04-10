@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+import com.healink.integrador.enums.EstadoAtencionMedica;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.enums.EstadoAtencionMedica;
 
 
 
@@ -28,7 +29,7 @@ public class AtencionMedica extends EntidadAuditable {
 
     @Column(name = "citacion_id", nullable = false)
     private Long citacionId;
-    
+
     @Column(name = "fecha_hora_inicio", nullable = false)
     private Timestamp fechaHoraInicio;
 

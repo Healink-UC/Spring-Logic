@@ -22,6 +22,7 @@ import com.healink.integrador.domain.usuario.Usuario;
 import com.healink.integrador.domain.usuario.UsuarioDTO;
 import com.healink.integrador.domain.usuario.UsuarioMapper;
 import com.healink.integrador.domain.usuario.UsuarioService;
+import com.healink.integrador.enums.TipoIdentificacion;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,11 +65,15 @@ public class ControladorAuth {
     public ResponseEntity<?> login(@RequestBody SolicitudAcceso solicitud) {
         try {
             // Autenticar
-            String tipoId = solicitud.getTipoIdentificacion();
-            String identificador = tipoId + ":" + solicitud.getIdentificacion();
+            TipoIdentificacion tipoId = solicitud.getTipoIdentificacion();
+            String credencial = tipoId + ":" + solicitud.getIdentificacion();
+
+            System.out.println("Identificador: " + credencial); // Debugging
 
             Authentication auth = gestorAutenticacion.authenticate(
-                    new UsernamePasswordAuthenticationToken(identificador, solicitud.getClave()));
+                    new UsernamePasswordAuthenticationToken(
+                            credencial,
+                            solicitud.getClave()));
 
             // Obtener usuario autenticado
             Usuario usuario = (Usuario) auth.getPrincipal();
@@ -83,7 +88,8 @@ public class ControladorAuth {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Error de autenticación: " + e.getMessage() + " - " + e.getClass().getSimpleName());
         }
     }
 

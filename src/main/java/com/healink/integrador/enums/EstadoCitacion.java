@@ -1,6 +1,6 @@
 package com.healink.integrador.enums;
 
-public enum EstadoCitacion {}
+public enum EstadoCitacion {
     AGENDADA,
     ATENDIDA,
     CANCELADA
