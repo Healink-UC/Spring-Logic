@@ -13,6 +13,7 @@ import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.enums.EstadoAtencionMedica;
 
 
+
 @Entity
 @Table(name = "ATENCIONES_MEDICAS")
 @Data
