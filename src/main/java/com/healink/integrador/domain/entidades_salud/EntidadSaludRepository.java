@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface EntidadSaludRepository extends RepositorioGenerico<EntidadSalud> {
     Optional<EntidadSalud> findByRazonSocial(String razonSocial);
-    Optional<EntidadSalud> findByUsuario(Long usuarioId);
+
+    Optional<EntidadSalud> findByUsuarioId(Long usuarioId);
 }

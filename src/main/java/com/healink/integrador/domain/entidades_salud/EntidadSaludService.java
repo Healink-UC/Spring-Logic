@@ -24,6 +24,6 @@ public class EntidadSaludService extends ServicioGenerico<EntidadSalud> {
 
     @Transactional(readOnly = true)
     public Optional<EntidadSalud> findByUsuarioId(Long usuarioId) {
-        return entidadSaludRepository.findByUsuario(usuarioId);
+        return entidadSaludRepository.findByUsuarioId(usuarioId);
     }
 }

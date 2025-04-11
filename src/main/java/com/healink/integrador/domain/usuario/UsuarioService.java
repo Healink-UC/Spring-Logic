@@ -75,8 +75,6 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
                 identificacion);
     }
 
-    // Implementación de UserDetailsService para autenticación
-    // Este método se llama cuando se intenta autenticar un usuario
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -85,7 +83,7 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
             throw new UsernameNotFoundException("Formato de identificación inválido");
         }
         try {
-            TipoIdentificacion tipoIdentificacion = TipoIdentificacion.fromValue(parts[0]);
+            TipoIdentificacion tipoIdentificacion = TipoIdentificacion.valueOf(parts[0]);
             String identificacion = parts[1];
 
             return usuarioRepository

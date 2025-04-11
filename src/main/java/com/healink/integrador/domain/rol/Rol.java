@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
 
 @Entity
@@ -26,6 +27,6 @@ public class Rol extends EntidadAuditable {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "permisos")
-    private String permisos;
+    @Column(name = "permisos", columnDefinition = "jsonb")
+    private JsonNode permisos;
 }
