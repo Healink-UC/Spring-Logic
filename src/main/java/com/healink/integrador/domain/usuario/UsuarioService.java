@@ -71,10 +71,7 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
     public Optional<Usuario> findByTipoIdentificacionAndIdentificacion(
             TipoIdentificacion tipoIdentificacion,
             String identificacion) {
-
-        TipoIdentificacion tipo = tipoIdentificacion;
-        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(
-                tipo,
+        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion,
                 identificacion);
     }
 

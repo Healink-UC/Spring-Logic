@@ -35,8 +35,7 @@ public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> 
             @PathVariable("tipo") TipoIdentificacion tipoIdentificacion,
             @PathVariable("numero") String identificacion) {
         return usuarioService.findByTipoIdentificacionAndIdentificacion(
-                tipoIdentificacion,
-                identificacion)
+                tipoIdentificacion, identificacion)
                 .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }

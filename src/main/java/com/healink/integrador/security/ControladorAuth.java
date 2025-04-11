@@ -68,8 +68,6 @@ public class ControladorAuth {
             TipoIdentificacion tipoId = solicitud.getTipoIdentificacion();
             String credencial = tipoId + ":" + solicitud.getIdentificacion();
 
-            System.out.println("Identificador: " + credencial); // Debugging
-
             Authentication auth = gestorAutenticacion.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             credencial,

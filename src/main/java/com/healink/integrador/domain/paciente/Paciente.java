@@ -41,4 +41,9 @@ public class Paciente extends EntidadAuditable {
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
+
+    // Enumeración! o Bool!
+    @Column(name = "estado", length = 20)
+    private String estado = "ACTIVO";
+
 }
