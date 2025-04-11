@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.paciente.Paciente;
 import com.healink.integrador.domain.seguimientos.Seguimiento;

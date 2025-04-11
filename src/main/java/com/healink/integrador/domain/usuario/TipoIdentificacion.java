@@ -1,4 +1,4 @@
-package com.healink.integrador.enums;
+package com.healink.integrador.domain.usuario;
 
 public enum TipoIdentificacion {
     CC,
