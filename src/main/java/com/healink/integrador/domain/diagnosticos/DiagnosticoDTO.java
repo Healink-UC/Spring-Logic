@@ -28,8 +28,7 @@ public class DiagnosticoDTO implements DTOBase {
     @NotNull(message = "Es requerido indicar si es el diagnóstico principal")
     private boolean es_principal;
 
-    @NotBlank(message = "Es requerido indicar la severidad del diagnóstico")
-    @Pattern(regexp = "^(LEVE|MODERADA|GRAVE)$", message = "Tipo de severidad inválida. Debe ser 'leve', 'moderada' o 'grave'.")
+    @NotNull(message = "Es requerido indicar la severidad del diagnóstico")
     private String severidad;
 
     @NotNull(message = "La fecha de diagnostico es requerida")

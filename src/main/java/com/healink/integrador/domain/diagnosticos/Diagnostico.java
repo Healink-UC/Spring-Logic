@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
+import com.healink.integrador.enums.SeveridadDiagnostico;
 
 import java.time.LocalDate;
 
@@ -37,7 +38,8 @@ public class Diagnostico extends EntidadAuditable {
     private boolean es_principal;
 
     @Column(name = "severidad", nullable = false)
-    private String severidad;
+    @Enumerated(EnumType.STRING)
+    private SeveridadDiagnostico severidad;
 
     @Column(name = "fecha_diagnostico", nullable = false)
     private LocalDate fecha_diagnostico;

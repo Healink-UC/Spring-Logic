@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.diagnosticos.Diagnostico;
+import com.healink.integrador.enums.NivelPrioridad;
+import com.healink.integrador.enums.TipoRecomendaciones;
 
 @Entity
 @Table(name = "RECOMENDACIONES")
@@ -29,8 +31,10 @@ public class Recomendacion extends EntidadAuditable {
     private String descripcion;
 
     @Column(name = "nivel_importancia", nullable = false)
-    private String nivel_importancia;
+    @Enumerated(EnumType.STRING)
+    private NivelPrioridad nivel_importancia;
 
     @Column(name = "tipo", nullable = false)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoRecomendaciones tipo;
 }
