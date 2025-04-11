@@ -2,6 +2,7 @@ package com.healink.integrador.domain.predicciones;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
 
 import jakarta.validation.constraints.NotBlank;
@@ -25,8 +26,8 @@ public class PrediccionesDTO implements DTOBase {
     @NotBlank(message = "El nivel de confianza es requerido")
     private float confianza;
 
-    // @NotBlank(message = "El nombre de factor de riesgo es requerido")
-    // private String factoresInfluyentes;
+    @NotNull(message = "Factores influyentes es requerido")
+    private JsonNode factoresInfluyentes;
 
     @NotBlank(message = "La fecha de prediccion es requerida")
     private LocalDate fechaPrediccion;
