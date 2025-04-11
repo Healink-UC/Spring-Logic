@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.rol.Rol;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 @Entity
 @Table(name = "USUARIOS", uniqueConstraints = {

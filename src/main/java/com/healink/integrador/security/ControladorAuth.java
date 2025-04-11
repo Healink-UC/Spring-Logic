@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import com.healink.integrador.domain.usuario.Usuario;
 import com.healink.integrador.domain.usuario.UsuarioDTO;
 import com.healink.integrador.domain.usuario.UsuarioMapper;
 import com.healink.integrador.domain.usuario.UsuarioService;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

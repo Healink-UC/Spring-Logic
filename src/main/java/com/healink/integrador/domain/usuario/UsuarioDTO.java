@@ -2,7 +2,6 @@ package com.healink.integrador.domain.usuario;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.healink.integrador.core.dto.DTOBase;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

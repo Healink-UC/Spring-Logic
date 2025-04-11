@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.enums.GeneroBiologico;
 
 @Entity
 @Table(name = "PACIENTES")

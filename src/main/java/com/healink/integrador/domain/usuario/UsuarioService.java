@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 import com.healink.integrador.domain.rol.RolRepository;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import jakarta.persistence.EntityNotFoundException;
 

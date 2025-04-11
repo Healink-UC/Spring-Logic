@@ -13,8 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.healink.integrador.config.ConfiguracionJWT;
+import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import com.healink.integrador.domain.usuario.Usuario;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 @ExtendWith(MockitoExtension.class)
 class ProveedorTokenJWTTest {
