@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,10 +32,8 @@ public class Triaje extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // relaciones
-    @ManyToOne
-    @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Paciente paciente;
+    @Column(name = "paciente_id")
+    private Long pacienteId;
 
     @Column(name = "fecha_triaje", nullable = false)
     private LocalDate fechaTriaje;
@@ -93,5 +92,10 @@ public class Triaje extends EntidadAuditable {
     @Column(name = "nivel_prioridad", nullable = false)
     @Enumerated(EnumType.STRING)
     private NivelPrioridad nivelPrioridad;
+
+    // relaciones
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Paciente paciente;
 
 }
