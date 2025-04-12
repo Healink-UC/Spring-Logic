@@ -13,61 +13,61 @@ public class TriajeDTO implements DTOBase {
 
     private Long id;
 
-    @NotBlank(message = "El id del paciente es requerido")
+    @NotNull(message = "El id del paciente es requerido")
     private Long pacienteId;
 
-    @NotBlank(message = "La fecha del triaje es requerido")
+    @NotNull(message = "La fecha del triaje es requerido")
     private LocalDate fechaTriaje;
 
-    @NotBlank(message = "La edad es requerida")
+    @NotNull(message = "La edad es requerida")
     private int edad;
 
-    @NotBlank(message = "La presión sistólica es requerida")
+    @NotNull(message = "La presión sistólica es requerida")
     private float presionSistolica;
 
-    @NotBlank(message = "La presion diastólica es requerida")
+    @NotNull(message = "La presion diastólica es requerida")
     private float presionDiastolica;
 
-    @NotBlank(message = "El colesterol total es requerido")
+    @NotNull(message = "El colesterol total es requerido")
     private float colesterolTotal;
 
-    @NotBlank(message = "El hdl es requerido")
+    @NotNull(message = "El hdl es requerido")
     private float hdl;
 
-    @NotBlank(message = "Debe registrar si el paciente fuma")
+    @NotNull(message = "Debe registrar si el paciente fuma")
     private boolean tabaquismo;
 
-    @NotBlank(message = "Debe registrar si el paciente bebe")
+    @NotNull(message = "Debe registrar si el paciente bebe")
     private boolean alcoholismo;
 
-    @NotBlank(message = "Debe registrar si el paciente presenta diabetes")
+    @NotNull(message = "Debe registrar si el paciente presenta diabetes")
     private boolean diabetes;
 
-    @NotBlank(message = "El peso del paciente es requerido")
+    @NotNull(message = "El peso del paciente es requerido")
     private float peso;
 
-    @NotBlank(message = "La talla del paciente es requerida")
+    @NotNull(message = "La talla del paciente es requerida")
     private float talla;
 
-    @NotBlank(message = "El IMC del paciente es requerido")
+    @NotNull(message = "El IMC del paciente es requerido")
     private float imc;
 
-    @NotBlank(message = "Debe registrar si el paciente tiene dolo de pecho")
+    @NotNull(message = "Debe registrar si el paciente tiene dolo de pecho")
     private boolean dolorPecho;
 
-    @NotBlank(message = "Debe registrar si el paciente tiene dolor irradiado")
+    @NotNull(message = "Debe registrar si el paciente tiene dolor irradiado")
     private boolean dolorIrradiado;
 
-    @NotBlank(message = "Debe registrar si el paciente presenta sudoracion")
+    @NotNull(message = "Debe registrar si el paciente presenta sudoracion")
     private boolean sudoracion;
 
-    @NotBlank(message = "Debe registrar si el paciente presenta nauseas")
+    @NotNull(message = "Debe registrar si el paciente presenta nauseas")
     private boolean nauseas;
 
-    @NotBlank(message = "Debe registrar si el paciente tiene antecedenres cardiacos")
+    @NotNull(message = "Debe registrar si el paciente tiene antecedenres cardiacos")
     private boolean antecedentesCardiacos;
 
-    @NotBlank(message = "Debe registrar el riesgo cardiovascular del paciente")
+    @NotNull(message = "Debe registrar el riesgo cardiovascular del paciente")
     private float resultadoRiesgoCardiovascular;
 
     @NotNull(message = "El triaje debe tener un nivel de prioridad válido")
