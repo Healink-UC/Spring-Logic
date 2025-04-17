@@ -7,7 +7,6 @@ import com.healink.integrador.core.dto.DTOBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -24,8 +23,7 @@ public class SeguimientoDTO implements DTOBase {
     
     private LocalDate fecha_realizada;
     
-    @NotBlank(message = "El tipo de seguimiento es requerido")
-    @Pattern(regexp = "^(LLAMADA|SMS|PRESENCIAL)$", message = "Tipo de seguimiento inválido. Debe ser 'llamada', 'sms' o 'presencial'.")
+    @NotNull(message = "El tipo de seguimiento es requerido")
     private String tipo;
 
     @NotBlank(message = "El resultado es requerido")
@@ -33,12 +31,10 @@ public class SeguimientoDTO implements DTOBase {
 
     private String notas;
 
-    @NotBlank(message = "El estado es requerido")
-    @Pattern(regexp = "^(REALIZADO|PENDIENTE|CANCELADO)$", message = "Estado de seguimiento inválido. Debe ser 'realizado', 'pendiente' o 'cancelado'.")
+    @NotNull(message = "El estado es requerido")
     private String estado;
 
-    @NotBlank(message = "La prioridad es requerido")
-    @Pattern(regexp = "^(ALTA|MEDIA|BAJA)$", message = "Prioridad inválida. Debe ser 'alta', 'media' o 'baja'.")
+    @NotNull(message = "La prioridad es requerido")
     private String prioridad;
 
 
