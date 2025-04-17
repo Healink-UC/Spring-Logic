@@ -9,9 +9,9 @@ public class ServicioMedicoDTO implements DTOBase {
 
     private Long id;
 
-    @NotNull(message = "El nombre es requerido")
+    @NotNull(message = "El nombre del servicio médico es requerido")
     private String nombre;
 
-    @NotNull(message = "La descripción es requerida")
+    @NotNull(message = "La descripción del servicio médico es requerida")
     private String descripcion;
 }
