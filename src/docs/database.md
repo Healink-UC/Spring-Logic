@@ -19,6 +19,7 @@ erDiagram
         int id PK
         varchar nombre "administrador|desarrollador|entidad_salud|medico|auxiliar|paciente|embajador"
         text descripcion
+        jsonb permisos
     }
 
     ENTIDADES_SALUD {
@@ -193,8 +194,6 @@ erDiagram
         timestamp fecha_hora_inicio
         timestamp fecha_hora_fin
         int duracion_real "minutos"
-        text notas_medicas
-        json notas_estructuradas
         varchar estado "EN_PROCESO|COMPLETADA|CANCELADA"
     }
 
@@ -252,7 +251,6 @@ erDiagram
         text entrada_texto
         text respuesta_texto
         varchar intent_detectado
-        json entidades_detectadas
         json contexto_conversacion
     }
 

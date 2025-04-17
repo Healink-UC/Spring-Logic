@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.enums.GeneroBiologico;
 
 @Entity
 @Table(name = "PACIENTES")
@@ -41,4 +40,9 @@ public class Paciente extends EntidadAuditable {
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
+
+    // Enumeración! o Bool!
+    @Column(name = "estado", length = 20)
+    private String estado = "ACTIVO";
+
 }

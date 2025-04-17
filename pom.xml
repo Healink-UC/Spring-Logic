@@ -110,23 +110,34 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Testing -->
+        <!-- Para pruebas unitarias -->
+
+        <!-- Spring Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Spring Security Test -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- Add dependencies here -->
+        <!-- JUnit 5 -->
         <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.1.0</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Jackson para procesamiento JSON -->
@@ -141,6 +152,8 @@
             <artifactId>hypersistence-utils-hibernate-60</artifactId>
             <version>3.5.0</version>
         </dependency>
+
+        
     </dependencies>
 
     <build>

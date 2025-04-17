@@ -3,8 +3,6 @@ package com.healink.integrador.domain.usuario;
 import org.springframework.stereotype.Repository;
 
 import com.healink.integrador.core.Repository.RepositorioGenerico;
-// import com.healink.integrador.enums.TipoIdentificacion;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import java.util.Optional;
 

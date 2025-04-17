@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 import com.healink.integrador.domain.rol.RolRepository;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -71,10 +70,7 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
     public Optional<Usuario> findByTipoIdentificacionAndIdentificacion(
             TipoIdentificacion tipoIdentificacion,
             String identificacion) {
-
-        TipoIdentificacion tipo = tipoIdentificacion;
-        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(
-                tipo,
+        return usuarioRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion,
                 identificacion);
     }
 

@@ -1,6 +1,6 @@
 package com.healink.integrador.security;
 
-import com.healink.integrador.enums.TipoIdentificacion;
+import com.healink.integrador.domain.usuario.TipoIdentificacion;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

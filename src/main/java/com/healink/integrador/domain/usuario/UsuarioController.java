@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
-import com.healink.integrador.enums.TipoIdentificacion;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -35,8 +34,7 @@ public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> 
             @PathVariable("tipo") TipoIdentificacion tipoIdentificacion,
             @PathVariable("numero") String identificacion) {
         return usuarioService.findByTipoIdentificacionAndIdentificacion(
-                tipoIdentificacion,
-                identificacion)
+                tipoIdentificacion, identificacion)
                 .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
