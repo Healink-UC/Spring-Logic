@@ -1,8 +1,6 @@
 package com.healink.integrador.domain.servicios_campanas;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
-import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
-import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/servicios_campana")
+@RequestMapping("/api/servicios-campana")
 @Tag(name = "ServiciosCampana", description = "API para gestión de servicios campana")
 public class ServicioCampanaController extends ControladorGenerico<ServicioCampana, ServicioCampanaDTO> {
 
@@ -25,7 +23,7 @@ public class ServicioCampanaController extends ControladorGenerico<ServicioCampa
         this.servicioCampanaService = servicioCampanaService;
     }
 
-    @GetMapping("/servicio_campana/servicio/{servicioId}")
+    @GetMapping("/servicio/{servicioId}")
     public ResponseEntity<List<ServicioCampanaDTO>> getByServicioId(@PathVariable Long servicioId) {
         return servicioCampanaService.findByServicioId(servicioId)
                 .map(servicios_campana -> ResponseEntity.ok(
@@ -36,7 +34,7 @@ public class ServicioCampanaController extends ControladorGenerico<ServicioCampa
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/servicio_campana/campana/{campanaId}")
+    @GetMapping("/campana/{campanaId}")
     public ResponseEntity<List<ServicioCampanaDTO>> getByCampanaId(@PathVariable Long campanaId) {
         return servicioCampanaService.findByCampanaId(campanaId)
                 .map(servicios_campana -> ResponseEntity.ok(
