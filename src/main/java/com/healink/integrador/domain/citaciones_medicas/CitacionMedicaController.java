@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/citaciones_medicas")
+@RequestMapping("/api/citaciones-medicas")
 @Tag(name = "Datos Clínicos", description = "API para gestión de datos clínicos de pacientes")
 public class CitacionMedicaController extends ControladorGenerico<CitacionMedica, CitacionMedicaDTO> {
 
@@ -28,7 +28,7 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
         this.citacionMedicaMapper = citacionMedicaMapper;
     }
 
-    @GetMapping("/citacion_medica/paciente/{pacienteId}")
+    @GetMapping("/paciente/{pacienteId}")
     @Operation(summary = "Buscar citaciones medicas por paciente", description = "Obtiene todos los citaciones medicas de un paciente específico")
     public ResponseEntity<List<CitacionMedicaDTO>> buscarPorPacienteId(@PathVariable Long pacienteId) {
         return citacionMedicaService.getByPacienteId(pacienteId)
@@ -40,7 +40,7 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/citacion_medica/medico/{medicoId}")
+    @GetMapping("/medico/{medicoId}")
     @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
     public ResponseEntity<List<CitacionMedicaDTO>> buscarPorMedicoId(@PathVariable Long medicoId) {
         return citacionMedicaService.getByMedicoId(medicoId)
@@ -52,7 +52,7 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/citacion_medica/campana/{campanaId}")
+    @GetMapping("/campana/{campanaId}")
     @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
     public ResponseEntity<List<CitacionMedicaDTO>> buscarPorCamapnaId(@PathVariable Long campanaId) {
         return citacionMedicaService.getByCampanaId(campanaId)
