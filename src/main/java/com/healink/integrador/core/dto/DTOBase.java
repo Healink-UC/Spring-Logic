@@ -7,4 +7,5 @@ public interface DTOBase extends Serializable {
     Long getId();
 
     void setId(Long id);
+
 }

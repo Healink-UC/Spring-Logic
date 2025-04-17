@@ -8,7 +8,7 @@ import com.healink.integrador.core.mapper.MapeadorGenerico;
 
 @Mapper(componentModel = "spring")
 public interface PrescripcionMapper extends MapeadorGenerico<Prescripcion, PrescripcionDTO> {
-        
+
     @Override
     @Mapping(target = "diagnostico_id", source = "diagnostico.id") // Extracción de Rol a rolId
     PrescripcionDTO aDTO(Prescripcion entity);
@@ -16,7 +16,7 @@ public interface PrescripcionMapper extends MapeadorGenerico<Prescripcion, Presc
     @Override
     @Mapping(target = "diagnostico.id", source = "diagnostico_id")
     Prescripcion aEntidad(PrescripcionDTO dto);
-    
+
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "diagnostico.id", source = "diagnostico_id")

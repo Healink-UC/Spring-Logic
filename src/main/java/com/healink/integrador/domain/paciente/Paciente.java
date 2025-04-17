@@ -26,26 +26,23 @@ public class Paciente extends EntidadAuditable {
     private LocalDate fechaNacimiento;
 
     @Column(name = "genero", length = 1)
-    private String genero;
-
-    @Column(name = "telefono")
-    private String telefono;
-
-    @Column(name = "correo")
-    private String correo;
+    @Enumerated(EnumType.STRING)
+    private GeneroBiologico genero;
 
     @Column(name = "direccion")
     private String direccion;
 
-    @Column(name = "localidad")
+    @Column(name = "fecha_registro")
+    private LocalDate fechaRegistro = LocalDate.now();
+
+    @Column(name = "localizacion_id")
     private String localidad;
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
 
-    @Column(name = "fecha_registro")
-    private LocalDate fechaRegistro = LocalDate.now();
-
+    // Enumeración! o Bool!
     @Column(name = "estado", length = 20)
     private String estado = "ACTIVO";
+
 }

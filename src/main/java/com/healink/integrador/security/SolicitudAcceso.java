@@ -1,12 +1,18 @@
 package com.healink.integrador.security;
 
+import com.healink.integrador.domain.usuario.TipoIdentificacion;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class SolicitudAcceso {
+
     @NotBlank
-    private String tipoIdentificacion;
+    @Enumerated(EnumType.STRING)
+    private TipoIdentificacion tipoIdentificacion;
 
     @NotBlank
     private String identificacion;

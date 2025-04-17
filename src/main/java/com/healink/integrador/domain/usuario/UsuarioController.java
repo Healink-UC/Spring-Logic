@@ -31,9 +31,10 @@ public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> 
 
     @GetMapping("/identificacion/{tipo}/{numero}")
     public ResponseEntity<UsuarioDTO> getByIdentificacion(
-            @PathVariable("tipo") String tipoIdentificacion,
+            @PathVariable("tipo") TipoIdentificacion tipoIdentificacion,
             @PathVariable("numero") String identificacion) {
-        return usuarioService.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion)
+        return usuarioService.findByTipoIdentificacionAndIdentificacion(
+                tipoIdentificacion, identificacion)
                 .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
