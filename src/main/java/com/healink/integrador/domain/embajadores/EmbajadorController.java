@@ -26,14 +26,14 @@ public class EmbajadorController extends ControladorGenerico<Embajador, Embajado
         this.embajadorService = embajadorService;
     }
 
-    @GetMapping("/embajador/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<EmbajadorDTO> getByUsuario(@PathVariable Long usuarioId) {
         return embajadorService.findByUsuario(usuarioId)
                 .map(embajador -> ResponseEntity.ok(mapeador.aDTO(embajador)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/embajador/{entidadId}")
+    @GetMapping("/entidad/{entidadId}")
     public ResponseEntity<List<EmbajadorDTO>> getByUsuarioId(@PathVariable Long entidadId) {
         return embajadorService.findByEntidad(entidadId)
                 .map(embajadores -> ResponseEntity.ok(

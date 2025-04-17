@@ -12,7 +12,7 @@ public class EmbajadorDTO implements DTOBase {
 
     private Long id;
 
-    @NotNull(message = "El nombre_completo es requerido")
+    @NotNull(message = "El nombre completo es requerido")
     private String nombreCompleto;
 
     @NotNull(message = "El telefono es requerido")
