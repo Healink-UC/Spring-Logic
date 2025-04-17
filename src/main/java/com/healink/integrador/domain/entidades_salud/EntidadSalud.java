@@ -17,10 +17,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EntidadSalud extends EntidadAuditable {
 
-    public enum Estado {
-        ACTIVO, INACTIVO, SUSPENDIDO, PENDIENTE
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

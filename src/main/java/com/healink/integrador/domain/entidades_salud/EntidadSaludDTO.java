@@ -19,7 +19,7 @@ public class EntidadSaludDTO implements DTOBase {
     @NotNull(message = "La dirección es requerida")
     private String direccion;
 
-    @NotNull(message = "El telefono es requerido")
+    @NotNull(message = "El teléfono es requerido")
     private String telefono;
 
     @NotNull(message = "El ID de usuario es requerido")
@@ -28,5 +28,5 @@ public class EntidadSaludDTO implements DTOBase {
     private LocalDate fechaRegistro = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
-    private EntidadSalud.Estado estado = EntidadSalud.Estado.ACTIVO;
+    private Estado estado = Estado.ACTIVO;
 }

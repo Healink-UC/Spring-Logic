@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/entidades_salud")
+@RequestMapping("/api/entidades-salud")
 @Tag(name = "EntidadesSalud", description = "API para gestión de entidades de salud")
 public class EntidadSaludController extends ControladorGenerico<EntidadSalud, EntidadSaludDTO> {
 
@@ -20,14 +20,14 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
         this.entidadSaludService = entidadSaludService;
     }
 
-    @GetMapping("/entidad_salud/{razon_social}")
+    @GetMapping("/entidad/{razon_social}")
     public ResponseEntity<EntidadSaludDTO> getByRazonSocial(@PathVariable String razon_social) {
         return entidadSaludService.findByRazonSocial(razon_social)
                 .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/entidad_salud/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<EntidadSaludDTO> getByUsuarioId(@PathVariable Long usuarioId) {
         return entidadSaludService.findByUsuarioId(usuarioId)
                 .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
