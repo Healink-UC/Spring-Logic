@@ -9,9 +9,9 @@ public class ServicioCampanaDTO implements DTOBase {
 
     private Long id;
 
-    @NotNull(message = "El nombre es requerido")
+    @NotNull(message = "El nombre de la campaña es requerido")
     private String nombre;
 
-    @NotNull(message = "La descripción es requerida")
+    @NotNull(message = "La descripción de la campaña es requerida")
     private String descripcion;
 }
