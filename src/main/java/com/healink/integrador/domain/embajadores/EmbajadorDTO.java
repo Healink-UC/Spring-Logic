@@ -12,7 +12,7 @@ public class EmbajadorDTO implements DTOBase {
 
     private Long id;
 
-    @NotNull(message = "El nombre_completo es requerido")
+    @NotNull(message = "El nombre completo es requerido")
     private String nombreCompleto;
 
     @NotNull(message = "El telefono es requerido")
@@ -27,5 +27,5 @@ public class EmbajadorDTO implements DTOBase {
     private LocalDate fechaRegistro = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
-    private Embajador.Estado estado = Embajador.Estado.ACTIVO;
+    private Estado estado = Estado.ACTIVO;
 }

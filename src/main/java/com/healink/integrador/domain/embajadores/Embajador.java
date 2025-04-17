@@ -1,7 +1,6 @@
 package com.healink.integrador.domain.embajadores;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,10 +16,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Embajador extends EntidadAuditable {
-
-    public enum Estado {
-        ACTIVO, INACTIVO, SUSPENDIDO, PENDIENTE
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
