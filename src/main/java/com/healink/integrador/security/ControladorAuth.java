@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import com.healink.integrador.domain.usuario.Usuario;
 import com.healink.integrador.domain.usuario.UsuarioDTO;
 import com.healink.integrador.domain.usuario.UsuarioMapper;
@@ -64,10 +65,13 @@ public class ControladorAuth {
     public ResponseEntity<?> login(@RequestBody SolicitudAcceso solicitud) {
         try {
             // Autenticar
-            String identificador = solicitud.getTipoIdentificacion() + ":" + solicitud.getIdentificacion();
+            TipoIdentificacion tipoId = solicitud.getTipoIdentificacion();
+            String credencial = tipoId + ":" + solicitud.getIdentificacion();
 
             Authentication auth = gestorAutenticacion.authenticate(
-                    new UsernamePasswordAuthenticationToken(identificador, solicitud.getClave()));
+                    new UsernamePasswordAuthenticationToken(
+                            credencial,
+                            solicitud.getClave()));
 
             // Obtener usuario autenticado
             Usuario usuario = (Usuario) auth.getPrincipal();
@@ -82,7 +86,8 @@ public class ControladorAuth {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Error de autenticación: " + e.getMessage() + " - " + e.getClass().getSimpleName());
         }
     }
 

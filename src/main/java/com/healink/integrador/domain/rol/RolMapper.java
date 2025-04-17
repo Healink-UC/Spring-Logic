@@ -4,9 +4,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import com.healink.integrador.core.json.JsonMapper;
 import com.healink.integrador.core.mapper.MapeadorGenerico;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { JsonMapper.class })
 public interface RolMapper extends MapeadorGenerico<Rol, RolDTO> {
     @Override
     RolDTO aDTO(Rol entity);

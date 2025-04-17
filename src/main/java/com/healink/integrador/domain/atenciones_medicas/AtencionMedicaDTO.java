@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -29,13 +27,12 @@ public class AtencionMedicaDTO implements DTOBase {
     @NotNull(message = "La duración real es requerida")
     private int duracionReal;
 
-    @NotBlank(message = "Las notas médicas son requeridas")
-    private String notasMedicas;
+    @NotNull(message = "Las notas médicas son requeridas")
+    private JsonNode notasMedicas;
 
-    private String notasEstructuradas;
+    private JsonNode notasEstructuradas;
 
-    @NotBlank(message = "El estado es requerido")
-    @Pattern(regexp = "^(EN_PROCESO|COMPLETADA|CANCELADA)$", message = "Estado de atención médica inválido. Debe ser 'EN_PROCESO', 'PROCESADA' o 'CANCELADA'.")
+    @NotNull(message = "El estado es requerido")
     private String estado;
 
 }

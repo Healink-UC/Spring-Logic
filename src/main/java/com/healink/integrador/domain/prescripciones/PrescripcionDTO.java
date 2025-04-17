@@ -7,7 +7,6 @@ import com.healink.integrador.core.dto.DTOBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -19,8 +18,7 @@ public class PrescripcionDTO implements DTOBase {
     @NotNull(message = "El identificador del diagnostico es requerido")
     private Long diagnostico_id;
 
-    @NotBlank(message = "El tipo de prescripción es requerido")
-    @Pattern(regexp = "^(MEDICAMENTO|ESTILO_VIDA|ACTIVIDAD_FISICA|DIETA)$", message = "Tipo de prescripción inválido. Debe ser 'medicamento', 'estilo_vida', 'actividad_fisica' o 'dieta'.")
+    @NotNull(message = "El tipo de prescripción es requerido")
     private String tipo;
 
     @NotBlank(message = "La descripción es requerida")
