@@ -11,7 +11,8 @@ public interface UsuarioRepository extends RepositorioGenerico<Usuario> {
 
     Optional<Usuario> findByCorreo(String correo);
 
-    Optional<Usuario> findByTipoIdentificacionAndIdentificacion(String tipoIdentificacion,
+    Optional<Usuario> findByTipoIdentificacionAndIdentificacion(
+            TipoIdentificacion tipoIdentificacion,
             String identificacion);
 
     boolean existsByCorreo(String correo);

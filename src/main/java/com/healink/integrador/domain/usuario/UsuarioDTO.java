@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -16,9 +15,8 @@ public class UsuarioDTO implements DTOBase {
     @Schema(readOnly = true, description = "Indica es sólo lectura")
     private Long id;
 
-    @NotBlank(message = "El tipo de identificación es requerido")
-    @Pattern(regexp = "^(cc|ti|nit|rcn)$", message = "Tipo de identificación inválido")
-    private String tipoIdentificacion;
+    @NotNull(message = "El tipo de identificación es requerido")
+    private TipoIdentificacion tipoIdentificacion;
 
     @NotBlank(message = "La identificación es requerida")
     private String identificacion;
@@ -32,12 +30,12 @@ public class UsuarioDTO implements DTOBase {
     @Email(message = "Correo electrónico inválido")
     private String correo;
 
-    // Solo permitir setear la clave en solicitudes, nunca devolverla en respuestas
+    // Setear la clave en solicitudes, nunca devolverla en respuestas
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String clave;
 
     private String celular;
-    private Boolean estaActivo = true; // Valor predeterminado
+    private Boolean estaActivo = true;
 
     // @NotNull(message = "El rol es requerido")
     private Long rolId;

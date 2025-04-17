@@ -1,8 +1,10 @@
 package com.healink.integrador.domain.rol;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -18,7 +20,7 @@ public class RolDTO implements DTOBase {
     @NotBlank(message = "Poner alguna cosita")
     private String descripcion;
 
-    @NotBlank(message = "Permisos dentro del aplicativo")
-    private String permisos;
+    @NotNull(message = "Permisos dentro del aplicativo")
+    private JsonNode permisos;
 
 }

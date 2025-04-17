@@ -37,7 +37,8 @@ public class Diagnostico extends EntidadAuditable {
     private boolean es_principal;
 
     @Column(name = "severidad", nullable = false)
-    private String severidad;
+    @Enumerated(EnumType.STRING)
+    private SeveridadDiagnostico severidad;
 
     @Column(name = "fecha_diagnostico", nullable = false)
     private LocalDate fecha_diagnostico;

@@ -34,7 +34,8 @@ public class ProveedorTokenJWT {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         return new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+                userDetails, null,
+                userDetails.getAuthorities());
     }
 
     public String createToken(Usuario usuario) {

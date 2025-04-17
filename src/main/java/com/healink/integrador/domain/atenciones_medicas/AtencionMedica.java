@@ -7,9 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
+
+
 
 @Entity
 @Table(name = "ATENCIONES_MEDICAS")
@@ -25,7 +26,7 @@ public class AtencionMedica extends EntidadAuditable {
 
     @Column(name = "citacion_id", nullable = false)
     private Long citacionId;
-    
+
     @Column(name = "fecha_hora_inicio", nullable = false)
     private Timestamp fechaHoraInicio;
 
@@ -35,12 +36,13 @@ public class AtencionMedica extends EntidadAuditable {
     @Column(name = "duracion_real", nullable = false)
     private int duracionReal;
 
-    @Column(name = "notas_medicas", nullable = false)
-    private String notasMedicas;
+    @Column(name = "notas_medicas", nullable = false, columnDefinition = "jsonb")
+    private JsonNode notasMedicas;
 
-    @Column(name = "notas_estructuradas")
-    private String notasEstructuradas;
+    @Column(name = "notas_estructuradas", columnDefinition = "jsonb")
+    private JsonNode notasEstructuradas;
 
     @Column(name = "estado", nullable = false)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoAtencionMedica estado;
 }

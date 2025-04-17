@@ -19,12 +19,14 @@ import com.healink.integrador.domain.rol.Rol;
 
 @Entity
 @Table(name = "USUARIOS", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "tipo_identificacion", "identificacion" }),
-        @UniqueConstraint(columnNames = { "correo" })
+        @UniqueConstraint(columnNames = {
+                "identificacion", "correo"
+        }),
 })
 @Getter
 @Setter
-@ToString(exclude = "clave") // Excluir clave de toString por seguridad
+// Excluir clave de toString por seguridad
+@ToString(exclude = "clave")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario extends EntidadAuditable implements UserDetails {
@@ -33,8 +35,9 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tipo_identificacion", nullable = false, length = 3) 
-    private String tipoIdentificacion;
+    @Column(name = "tipo_identificacion", nullable = false, length = 3)
+    @Enumerated(EnumType.STRING)
+    private TipoIdentificacion tipoIdentificacion;
 
     @Column(name = "identificacion", nullable = false)
     private String identificacion;
@@ -77,8 +80,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Override
     public String getUsername() {
-        // Combinación de tipo+identificación como "username" único
-        return this.tipoIdentificacion + ":" + this.identificacion;
+        return tipoIdentificacion + ":" + identificacion;
     }
 
     @Override

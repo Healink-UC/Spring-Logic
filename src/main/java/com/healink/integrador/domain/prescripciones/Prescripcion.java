@@ -28,7 +28,8 @@ public class Prescripcion extends EntidadAuditable {
     private Diagnostico diagnostico;
     
     @Column(name = "tipo", nullable = false)
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoPrescripcion tipo;
 
     @Column(name = "descripcion", nullable = false)
     private String descripcion;
