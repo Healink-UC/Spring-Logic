@@ -3,14 +3,18 @@ package com.healink.integrador.domain.campana;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +42,7 @@ public class Campana extends EntidadAuditable {
     @Column(name = "localizacion_id", nullable = false)
     private Long localizacionId;
 
-    // @ManyToOne
+    // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "localizacion_id", referencedColumnName = "id", insertable
     // = false, updatable = false)
     // private Localizacion localizacion; // TODO falta todo paquete localizacion
@@ -59,10 +63,9 @@ public class Campana extends EntidadAuditable {
     @Column(name = "entidad_id", nullable = false)
     private Long entidadId;
 
-    // @ManyToOne
-    // @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable =
-    // false, updatable = false)
-    // private Entidad entidad; // TODO falta todo paquete entidad salud(julian)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EntidadSalud entidad;
 
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
