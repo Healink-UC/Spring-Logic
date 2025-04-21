@@ -2,6 +2,7 @@ package com.healink.integrador.domain.interacciones_chatbot;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +33,5 @@ public class InteraccionChatbotDTO implements DTOBase {
 
     private String intent_detectado;
 
-    private String entidades_detectadas;
-
-    private String contexto_conversacion;
+    private JsonNode contexto_conversacion;
 }

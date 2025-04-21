@@ -4,9 +4,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;
 
+import com.healink.integrador.core.json.JsonMapper;
 import com.healink.integrador.core.mapper.MapeadorGenerico;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {JsonMapper.class})
 public interface InteraccionChatbotMapper extends MapeadorGenerico<InteraccionChatbot, InteraccionChatbotDTO> {
     
     @Override
