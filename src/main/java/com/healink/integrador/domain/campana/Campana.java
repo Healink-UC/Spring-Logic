@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.entidades_salud.EntidadSalud;
+import com.healink.integrador.domain.localizacion.Localizacion;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,11 +43,9 @@ public class Campana extends EntidadAuditable {
     @Column(name = "localizacion_id", nullable = false)
     private Long localizacionId;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "localizacion_id", referencedColumnName = "id", insertable
-    // = false, updatable = false)
-    // private Localizacion localizacion; // TODO falta todo paquete localizacion
-    // (julian)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "localizacion_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Localizacion localizacion;
 
     @Column(name = "fecha_limite_inscripcion", nullable = false)
     private LocalDate fechaLimiteInscripcion;
