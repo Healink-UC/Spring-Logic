@@ -42,7 +42,7 @@ public class CitacionMedica extends EntidadAuditable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
-    private String estado;
+    private Estado estado;
 
     @Column(name = "prediccion_asistencia", precision = 5, scale = 2)
     private BigDecimal prediccionAsistencia;  // 0-100%
