@@ -2,7 +2,6 @@ package com.healink.integrador.domain.atenciones_medicas;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,11 +25,6 @@ public class AtencionMedicaDTO implements DTOBase {
 
     @NotNull(message = "La duración real es requerida")
     private int duracionReal;
-
-    @NotNull(message = "Las notas médicas son requeridas")
-    private JsonNode notasMedicas;
-
-    private JsonNode notasEstructuradas;
 
     @NotNull(message = "El estado es requerido")
     private String estado;
