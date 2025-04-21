@@ -15,7 +15,7 @@ public class EmbajadorDTO implements DTOBase {
     @NotNull(message = "El nombre completo es requerido")
     private String nombreCompleto;
 
-    @NotNull(message = "El telefono es requerido")
+    @NotNull(message = "El teléfono es requerido")
     private String telefono;
 
     @NotNull(message = "El ID de la entidad es requerida")
