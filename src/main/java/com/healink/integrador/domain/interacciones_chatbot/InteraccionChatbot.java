@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.paciente.Paciente;
 import com.healink.integrador.domain.seguimientos.Seguimiento;
@@ -44,9 +45,6 @@ public class InteraccionChatbot extends EntidadAuditable {
     @Column(name = "intent_detectado", nullable = false)
     private String intent_detectado;
 
-    @Column(name = "entidades_detectadas")
-    private String entidades_detectadas;
-
-    @Column(name = "contexto_conversacion")
-    private String contexto_conversacion;
+    @Column(name = "contexto_conversacion", columnDefinition = "jsonb")
+    private JsonNode contexto_conversacion;
 }
