@@ -20,12 +20,4 @@ public class LocalizacionController extends ControladorGenerico<Localizacion, Lo
         super(localizacionService, localizacionMapper);
         this.localizacionService = localizacionService;
     }
-
-    @GetMapping("/localizaciones/{localizacionId}")
-    public ResponseEntity<LocalizacionDTO> getById(@PathVariable Long localizacionId) {
-        return localizacionService.buscarPorId(localizacionId)
-                .map(localizacion -> ResponseEntity.ok(mapeador.aDTO(localizacion)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
 }
