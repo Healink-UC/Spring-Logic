@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.paciente.Paciente;
 
 import jakarta.persistence.Column;
@@ -33,14 +34,11 @@ public class Predicciones extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // relaciones
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id", nullable = false)
-    private Paciente paciente;
+    @Column(name = "paciente_id", nullable = false, insertable = false, updatable = false)
+    private Long pacienteId;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "campana_id", nullable = false)
-    // private Campana campana; //TODO: tener campaña en develop
+    @Column(name = "campana_id", nullable = false, insertable = false, updatable = false)
+    private Long campanaId;
 
     @Column(name = "valor_prediccion", nullable = false)
     private float valorPrediccion;
@@ -60,4 +58,13 @@ public class Predicciones extends EntidadAuditable {
     @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoPrediccion tipo;
+
+    // relaciones
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", nullable = false)
+    private Paciente paciente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campana_id", nullable = false)
+    private Campana campana;
 }
