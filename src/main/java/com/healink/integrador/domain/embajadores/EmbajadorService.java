@@ -20,11 +20,11 @@ public class EmbajadorService extends ServicioGenerico<Embajador> {
 
     @Transactional(readOnly = true)
     public Optional<List<Embajador>> findByEntidad(Long entidadId) {
-        return embajadorRepository.findByEntidad(entidadId);
+        return embajadorRepository.findByEntidadId(entidadId);
     }
 
     @Transactional(readOnly = true)
     public Optional<Embajador> findByUsuario(Long usuarioId) {
-        return embajadorRepository.findByUsuario(usuarioId);
+        return embajadorRepository.findByUsuarioId(usuarioId);
     }
 }
