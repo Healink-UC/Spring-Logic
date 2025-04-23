@@ -14,22 +14,22 @@ public class PrediccionesDTO implements DTOBase {
 
     private Long id;
 
-    @NotBlank(message = "El id del paciente es requerido")
+    @NotNull(message = "El id del paciente es requerido")
     private Long pacienteId;
 
-    @NotBlank(message = "El id de la campaña es requerido")
+    @NotNull(message = "El id de la campaña es requerido")
     private Long campanaId;
 
-    @NotBlank(message = "El valor de predicción es requerido")
+    @NotNull(message = "El valor de predicción es requerido")
     private float valorPrediccion;
 
-    @NotBlank(message = "El nivel de confianza es requerido")
+    @NotNull(message = "El nivel de confianza es requerido")
     private float confianza;
 
     @NotNull(message = "Factores influyentes es requerido")
     private JsonNode factoresInfluyentes;
 
-    @NotBlank(message = "La fecha de prediccion es requerida")
+    @NotNull(message = "La fecha de prediccion es requerida")
     private LocalDate fechaPrediccion;
 
     @NotBlank(message = "La version del modelo es requerida")
