@@ -10,9 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/predicciones")
 @Tag(name = "Predicciones")
-public class PrediccionesController extends ControladorGenerico<Predicciones, PrediccionesDTO> {
+public class PrediccionController extends ControladorGenerico<Prediccion, PrediccionDTO> {
 
-    public PrediccionesController(PrediccionesService prediccionService, PrediccionesMapper prediccionMapper) {
+    public PrediccionController(PrediccionService prediccionService, PrediccionMapper prediccionMapper) {
         super(prediccionService, prediccionMapper);
     }
 }

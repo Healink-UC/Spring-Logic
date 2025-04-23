@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class PrediccionesDTO implements DTOBase {
+public class PrediccionDTO implements DTOBase {
 
     private Long id;
 
