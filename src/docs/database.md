@@ -119,10 +119,6 @@ erDiagram
         int paciente_id FK
         date fecha_triaje
         int edad
-        decimal presion_sistolica
-        decimal presion_diastolica
-        decimal colesterol_total
-        decimal hdl
         boolean tabaquismo
         boolean alcoholismo
         boolean diabetes
@@ -149,9 +145,6 @@ erDiagram
         decimal frecuencia_cardiaca_max
         decimal saturacion_oxigeno
         decimal temperatura
-        decimal peso
-        decimal talla
-        decimal imc
         text observaciones
     }
 
@@ -174,7 +167,7 @@ erDiagram
         int duracion_estimada "minutos"
         varchar estado "AGENDADA|ATENDIDA|CANCELADA"
         decimal prediccion_asistencia "0-100%"
-        int prioridad "1-5"
+        varchar codTicket "Ej: OCV21"
         text notas
     }
 
