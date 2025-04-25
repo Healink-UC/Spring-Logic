@@ -1,6 +1,9 @@
 package com.healink.integrador.domain.servicios_campanas;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.campana.Campana;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
+import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +27,12 @@ public class ServicioCampana extends EntidadAuditable {
 
     @Column(name = "campana_id", nullable = false)
     private Long campanaId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "servicio_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private ServicioMedico servicioMedico;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campana_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Campana campana;
 }
