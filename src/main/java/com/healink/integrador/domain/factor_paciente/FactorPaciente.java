@@ -3,7 +3,9 @@ package com.healink.integrador.domain.factor_paciente;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.factor_riesgo.FactorRiesgo;
 import com.healink.integrador.domain.paciente.Paciente;
+import com.healink.integrador.domain.triaje.Triaje;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,18 +33,14 @@ public class FactorPaciente extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // relaciones
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id", nullable = false)
-    private Paciente paciente;
+    @Column(name = "paciente_id", nullable = false)
+    private Long pacienteId;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "factor_id", nullable = false)
-    // private Factor factor; TODO: faltan las entidades (Factor riesgo)
+    @Column(name = "factor_id", nullable = false)
+    private Long factorId;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "triaje_id", nullable = false)
-    // private Triaje triaje;TODO: faltan las entidades (Triaje)
+    @Column(name = "triaje_id", nullable = false)
+    private Long triajeId;
 
     @Column(name = "valor", nullable = false, length = 350)
     private String valor;
@@ -50,4 +48,16 @@ public class FactorPaciente extends EntidadAuditable {
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
 
+    // relaciones
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", nullable = false, insertable = false, updatable = false)
+    private Paciente paciente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "factor_id", nullable = false, insertable = false, updatable = false)
+    private FactorRiesgo factor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "triaje_id", nullable = false, insertable = false, updatable = false)
+    private Triaje triaje;
 }
