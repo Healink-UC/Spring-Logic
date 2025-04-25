@@ -1,6 +1,7 @@
 package com.healink.integrador.domain.entidades_salud;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,4 +40,8 @@ public class EntidadSalud extends EntidadAuditable {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private Estado estado = Estado.ACTIVO;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Usuario usuario;
 }
