@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/citaciones-medicas")
-@Tag(name = "Datos Clínicos", description = "API para gestión de datos clínicos de pacientes")
+@Tag(name = "Citaciones Médicas", description = "API para gestión de citaciones médicas de pacientes")
 public class CitacionMedicaController extends ControladorGenerico<CitacionMedica, CitacionMedicaDTO> {
 
     private final CitacionMedicaService citacionMedicaService;
