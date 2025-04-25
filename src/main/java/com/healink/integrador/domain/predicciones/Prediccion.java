@@ -7,6 +7,9 @@ import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.paciente.Paciente;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.Type;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,10 +37,10 @@ public class Prediccion extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "paciente_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 
-    @Column(name = "campana_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "campana_id", nullable = false)
     private Long campanaId;
 
     @Column(name = "valor_prediccion", nullable = false)
@@ -47,6 +50,7 @@ public class Prediccion extends EntidadAuditable {
     private float confianza;
 
     @Column(name = "factores_influyentes", nullable = false, columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
     private JsonNode factoresInfluyentes;
 
     @Column(name = "fecha_prediccion", nullable = false)
@@ -61,10 +65,10 @@ public class Prediccion extends EntidadAuditable {
 
     // relaciones
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id", nullable = false)
+    @JoinColumn(name = "paciente_id", nullable = false, insertable = false, updatable = false)
     private Paciente paciente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campana_id", nullable = false)
+    @JoinColumn(name = "campana_id", nullable = false, insertable = false, updatable = false)
     private Campana campana;
 }
