@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmbajadorRepository extends RepositorioGenerico<Embajador> {
-    Optional<List<Embajador>> findByEntidad(Long entidadId);
-    Optional<Embajador> findByUsuario(Long usuarioId);
+    Optional<List<Embajador>> findByEntidadId(Long entidadId);
+
+    Optional<Embajador> findByUsuarioId(Long usuarioId);
 }
