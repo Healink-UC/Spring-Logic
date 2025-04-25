@@ -25,6 +25,7 @@ public class EntidadSaludDTO implements DTOBase {
     @NotNull(message = "El ID de usuario es requerido")
     private Long usuarioId;
 
+    @NotNull(message = "La fecha registro es requerida")
     private LocalDate fechaRegistro = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
