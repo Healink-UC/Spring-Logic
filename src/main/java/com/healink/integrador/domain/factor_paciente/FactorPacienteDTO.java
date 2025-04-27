@@ -23,7 +23,7 @@ public class FactorPacienteDTO implements DTOBase {
     private Long triajeId;
 
     @NotBlank(message = "El nombre de factor de riesgo es requerido")
-    private String valor; // TODO: nombre muy generico, verificar
+    private String observacion;
 
     @NotNull(message = "La fecha de registro es requerida")
     private LocalDate fecha_registro;

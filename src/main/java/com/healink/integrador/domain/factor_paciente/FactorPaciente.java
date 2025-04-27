@@ -42,8 +42,8 @@ public class FactorPaciente extends EntidadAuditable {
     @Column(name = "triaje_id", nullable = false)
     private Long triajeId;
 
-    @Column(name = "valor", nullable = false, length = 350)
-    private String valor;
+    @Column(name = "observacion", nullable = false, length = 350)
+    private String observacion;
 
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
