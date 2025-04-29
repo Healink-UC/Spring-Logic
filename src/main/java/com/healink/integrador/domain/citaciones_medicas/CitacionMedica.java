@@ -50,8 +50,8 @@ public class CitacionMedica extends EntidadAuditable {
     @Column(name = "prediccion_asistencia", precision = 5, scale = 2)
     private BigDecimal prediccionAsistencia;  // 0-100%
 
-    @Column(name = "prioridad")
-    private Integer prioridad;  // 1-5
+    @Column(name = "codigo_ticket")
+    private String codigoTicket;  // 1-5
 
     @Column(name = "notas")
     private String notas;

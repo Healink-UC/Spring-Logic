@@ -11,7 +11,11 @@ import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.paciente.Paciente;
 import com.healink.integrador.domain.seguimientos.Seguimiento;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.Type;
+
 import java.sql.Timestamp;
+
 
 @Entity
 @Table(name = "INTERACCIONES_CHATBOT")
@@ -46,5 +50,6 @@ public class InteraccionChatbot extends EntidadAuditable {
     private String intent_detectado;
 
     @Column(name = "contexto_conversacion", columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
     private JsonNode contexto_conversacion;
 }

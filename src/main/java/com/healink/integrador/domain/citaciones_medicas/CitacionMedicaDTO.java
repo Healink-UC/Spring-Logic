@@ -41,8 +41,8 @@ public class CitacionMedicaDTO implements DTOBase {
     @NotNull(message = "El campo predicción asistencia es requerido")
     private BigDecimal prediccionAsistencia;  // 0-100%
 
-    @NotNull(message = "El campo prioridad es requerido")
-    private Integer prioridad;  // 1-5
+    @NotNull(message = "El campo codigoTicket es requerido")
+    private String codigoTicket;  // 1-5
 
     @NotNull(message = "El campo notas es requerido")
     private String notas;

@@ -1,16 +1,11 @@
 package com.healink.integrador.domain.citaciones_medicas;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
-import com.healink.integrador.domain.datos_clinicos.DatosClinicos;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 

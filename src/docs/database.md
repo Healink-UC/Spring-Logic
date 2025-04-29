@@ -72,7 +72,6 @@ erDiagram
         varchar localidad
         decimal latitud
         decimal longitud
-        geography geopoint
     }
 
     CAMPANAS {
@@ -167,7 +166,7 @@ erDiagram
         int duracion_estimada "minutos"
         varchar estado "AGENDADA|ATENDIDA|CANCELADA"
         decimal prediccion_asistencia "0-100%"
-        varchar codTicket "Ej: OCV21"
+        varchar codigoTicket "Ej: OCV21"
         text notas
     }
 
@@ -231,7 +230,7 @@ erDiagram
         varchar tipo "RIESGO_CV|ASISTENCIA|HOSPITALIZACION|REHOSPITALIZACION"
         decimal valor_prediccion "0-100%"
         decimal confianza "0-100%"
-        json factores_influyentes
+        jsonb factores_influyentes
         date fecha_prediccion
         varchar modelo_version
     }
@@ -244,7 +243,7 @@ erDiagram
         text entrada_texto
         text respuesta_texto
         varchar intent_detectado
-        json contexto_conversacion
+        jsonb contexto_conversacion
     }
 
     RECOMENDACIONES {
