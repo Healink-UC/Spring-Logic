@@ -152,7 +152,7 @@ erDiagram
         int paciente_id FK
         int factor_id FK
         int triaje_id FK
-        varchar valor
+        varchar observacion
         date fecha_registro
     }
 
