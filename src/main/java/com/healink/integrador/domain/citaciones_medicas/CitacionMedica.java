@@ -25,13 +25,13 @@ public class CitacionMedica extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "paciente_id", nullable = false)
+    @Column(name = "paciente_id", insertable = false, updatable = false)
     private Long pacienteId;
 
-    @Column(name = "campana_id", nullable = false)
+    @Column(name = "campana_id", insertable = false, updatable = false)
     private Long campanaId;
 
-    @Column(name = "medico_id", nullable = false)
+    @Column(name = "medico_id", insertable = false, updatable = false)
     private Long medicoId;
 
     @Column(name = "hora_programada")
@@ -57,14 +57,14 @@ public class CitacionMedica extends EntidadAuditable {
     private String notas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "campana_id", referencedColumnName = "id")
     private EntidadSalud entidad;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "paciente_id", referencedColumnName = "id")
     private Paciente paciente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medico_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "medico_id", referencedColumnName = "id")
     private PersonalMedico personalMedico;
 }
