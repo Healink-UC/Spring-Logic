@@ -3,6 +3,7 @@
 
 **/application-local.yml
 **/application-local.properties
+**/application-test.yml
 .env
 
 *.key
