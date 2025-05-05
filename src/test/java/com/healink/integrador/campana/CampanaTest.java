@@ -78,7 +78,7 @@ class CampanaTest {
 
     @Test
     @Transactional
-    void testGuardarNuevaCampana() {
+    void guardarNuevaCampanaTest() {
         rolRepository.save(rol);
         usuarioRepository.save(usuario);
         entidadRepository.save(entidad);
