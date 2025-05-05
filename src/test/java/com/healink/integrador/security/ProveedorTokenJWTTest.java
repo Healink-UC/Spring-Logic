@@ -3,6 +3,9 @@ package com.healink.integrador.security;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.healink.integrador.config.ConfiguracionJWT;
+import com.healink.integrador.domain.rol.Rol;
 import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import com.healink.integrador.domain.usuario.Usuario;
 
@@ -40,7 +46,12 @@ class ProveedorTokenJWTTest {
         when(configJWT.getLlaveSecreta()).thenReturn(llaveSecretaMock);
         when(configJWT.getExpiracion()).thenReturn(3600L); // 1 hora
 
-        // Crear usuario mock
+        // Crear rol mock
+        Rol rolMock = new Rol();
+        rolMock.setId(1L);
+        rolMock.setNombre("USER");
+
+        // Crear usuario mock con rol
         usuarioMock = new Usuario();
         usuarioMock.setId(1L);
         usuarioMock.setTipoIdentificacion(TipoIdentificacion.CC);
@@ -48,7 +59,10 @@ class ProveedorTokenJWTTest {
         usuarioMock.setNombres("Juan");
         usuarioMock.setApellidos("Pérez");
         usuarioMock.setClave("password");
-        usuarioMock.setRol(null); // Asigna un rol si es necesario
+        usuarioMock.setRol(rolMock);
+
+        // En lugar de mockear getAuthorities, usaremos un objeto real
+        // La clase Usuario debe tener una implementación adecuada de getAuthorities()
     }
 
     @Test
