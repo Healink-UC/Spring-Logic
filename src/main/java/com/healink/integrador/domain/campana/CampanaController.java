@@ -32,7 +32,7 @@ public class CampanaController extends ControladorGenerico<Campana, CampanaDTO> 
 
     @GetMapping("/fecha-inicio")
     public ResponseEntity<List<CampanaDTO>> getByFechaInicio() {
-        List<Campana> campanas = this.campanaService.getByFechaLimite();
+        List<Campana> campanas = this.campanaService.getByFechaInicio();
         return ResponseEntity.ok(mapeador.aListaDTO(campanas));
     }
 
