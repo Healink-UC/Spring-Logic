@@ -20,7 +20,7 @@ public class PacienteDTO implements DTOBase {
 
     @NotNull(message = "El género es requerido")
     @Enumerated(EnumType.STRING)
-    private String genero;
+    private GeneroBiologico genero;
 
     private String direccion;
 
