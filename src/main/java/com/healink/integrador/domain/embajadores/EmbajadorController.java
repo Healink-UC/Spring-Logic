@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/embajadores")
-@Tag(name = "Embajadores", description = "API para gestión de embajadores de salud")
+@Tag(name = "Embajdores", description = "API para gestión de embajadores de salud")
 public class EmbajadorController extends ControladorGenerico<Embajador, EmbajadorDTO> {
 
     private EmbajadorService  embajadorService;
