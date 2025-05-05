@@ -63,16 +63,46 @@ class CampanaTest {
     }
 
     Rol rol = new Rol(null, "administrador", "una descripcion", permisos);
-    Usuario usuario = new Usuario(null, TipoIdentificacion.CC, "124343", "pepito", "perez", "correo@me.com", "12345",
+    Usuario usuario = new Usuario(
+            null, TipoIdentificacion.CC, "124343",
+            "pepito", "perez", "correo@me.com", "12345",
             "12123123",
             true, rol);
-    EntidadSalud entidad = new EntidadSalud(null, "una razon social", "calle falsa 123", "123444", 1L,
-            java.time.LocalDate.parse("2025-05-05"), Estado.ACTIVO, usuario);
-    Localizacion localizacion = new Localizacion(null, "Caldas", "Manizales", "una vereda", "una localidad", 0.0, 0.0);
+    EntidadSalud entidad = new EntidadSalud(
+            null, "una razon social",
+            "calle falsa 123", "123444", 1L,
+            LocalDate.parse("2025-05-05"), Estado.ACTIVO, usuario);
+    Localizacion localizacion = new Localizacion(
+            null, "Caldas", "Manizales",
+            "una vereda", "una localidad", 0.0, 0.0);
 
     @Test
     @Transactional
     void testGuardarNuevaCampana() {
+        rolRepository.save(rol);
+        usuarioRepository.save(usuario);
+        entidadRepository.save(entidad);
+        localizacionRepository.save(localizacion);
 
+        campana = new CampanaDTO();
+        campana.setId(1L);
+        campana.setNombre("campaña prueba");
+        campana.setDescripcion("descripcion de prueba");
+        campana.setEntidadId(1L);
+        campana.setFechaInicio(LocalDate.parse("2025-05-05"));
+        campana.setFechaLimite(LocalDate.parse("2025-05-12"));
+        campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+        campana.setMinParticipantes(10);
+        campana.setMaxParticipantes(50);
+        campana.setLocalizacionId(1L);
+        campana.setEstado(EstadoCampana.POSTULADA);
+
+        ResponseEntity<CampanaDTO> res = campanaController.crear(campana);
+
+        ResponseEntity<CampanaDTO> expectedResponse = campanaController.buscarPorId(1L);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.OK, expectedResponse.getStatusCode());
+        assertEquals(res.getBody(), expectedResponse.getBody());
     }
 }
