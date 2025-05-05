@@ -33,5 +33,5 @@ public class Rol extends EntidadAuditable {
 
     @Column(name = "permisos", columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
-    private JsonNode permisos;
+    private transient JsonNode permisos;
 }
