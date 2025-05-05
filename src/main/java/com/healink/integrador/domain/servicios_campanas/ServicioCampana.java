@@ -2,7 +2,6 @@ package com.healink.integrador.domain.servicios_campanas;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.campana.Campana;
-import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 import com.healink.integrador.domain.servicios_medicos.ServicioMedico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
