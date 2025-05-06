@@ -21,11 +21,11 @@ public class RecomendacionDTO implements DTOBase {
     @NotBlank(message = "La descripción es requerida")
     private String descripcion;
 
-    @NotBlank(message = "El nivel de importancia es requerido")
-    private String nivel_importancia;
+    @NotNull(message = "El nivel de importancia es requerido")
+    private NivelPrioridad nivel_importancia;
 
-    @NotBlank(message = "El tipo de recomendación es requerido")
-    private String tipo;
+    @NotNull(message = "El tipo de recomendación es requerido")
+    private TipoRecomendaciones tipo;
 
     @NotNull(message = "La fecha de creacion es requerida")
     private LocalDate fecha_creacion;

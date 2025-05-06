@@ -9,6 +9,8 @@ import java.util.Optional;
 @Repository
 public interface CitacionMedicaRepository extends RepositorioGenerico<CitacionMedica> {
     Optional<List<CitacionMedica>> findByCampanaId(Long campanaId);
+
     Optional<List<CitacionMedica>> findByPacienteId(Long pacienteId);
+
     Optional<List<CitacionMedica>> findByMedicoId(Long medicoId);
 }

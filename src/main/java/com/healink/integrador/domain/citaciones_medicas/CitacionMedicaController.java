@@ -14,49 +14,50 @@ import java.util.stream.Collectors;
 @Tag(name = "Citaciones Médicas", description = "API para gestión de citaciones médicas de pacientes")
 public class CitacionMedicaController extends ControladorGenerico<CitacionMedica, CitacionMedicaDTO> {
 
-    private final CitacionMedicaService citacionMedicaService;
-    private final CitacionMedicaMapper citacionMedicaMapper;
+        private final CitacionMedicaService citacionMedicaService;
+        private final CitacionMedicaMapper citacionMedicaMapper;
 
-    public CitacionMedicaController(CitacionMedicaService citacionMedicaService, CitacionMedicaMapper citacionMedicaMapper) {
-        super(citacionMedicaService, citacionMedicaMapper);
-        this.citacionMedicaService = citacionMedicaService;
-        this.citacionMedicaMapper = citacionMedicaMapper;
-    }
+        public CitacionMedicaController(CitacionMedicaService citacionMedicaService,
+                        CitacionMedicaMapper citacionMedicaMapper) {
+                super(citacionMedicaService, citacionMedicaMapper);
+                this.citacionMedicaService = citacionMedicaService;
+                this.citacionMedicaMapper = citacionMedicaMapper;
+        }
 
-    @GetMapping("/paciente/{pacienteId}")
-    @Operation(summary = "Buscar citaciones medicas por paciente", description = "Obtiene todos los citaciones medicas de un paciente específico")
-    public ResponseEntity<List<CitacionMedicaDTO>> buscarPorPacienteId(@PathVariable Long pacienteId) {
-        return citacionMedicaService.getByPacienteId(pacienteId)
-                .map(citaciones_medicas -> ResponseEntity.ok(
-                        citaciones_medicas.stream()
-                                .map(citacion_medica -> citacionMedicaMapper.aDTO(citacion_medica))
-                                .collect(Collectors.toList())
-                ))
-                .orElse(ResponseEntity.notFound().build());
-    }
+        @GetMapping("/paciente/{pacienteId}")
+        @Operation(summary = "Buscar citaciones medicas por paciente", description = "Obtiene todos los citaciones medicas de un paciente específico")
+        public ResponseEntity<List<CitacionMedicaDTO>> buscarPorPacienteId(@PathVariable Long pacienteId) {
+                return citacionMedicaService.getByPacienteId(pacienteId)
+                                .map(citaciones_medicas -> ResponseEntity.ok(
+                                                citaciones_medicas.stream()
+                                                                .map(citacion_medica -> citacionMedicaMapper
+                                                                                .aDTO(citacion_medica))
+                                                                .collect(Collectors.toList())))
+                                .orElse(ResponseEntity.notFound().build());
+        }
 
-    @GetMapping("/medico/{medicoId}")
-    @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
-    public ResponseEntity<List<CitacionMedicaDTO>> buscarPorMedicoId(@PathVariable Long medicoId) {
-        return citacionMedicaService.getByMedicoId(medicoId)
-                .map(citaciones_medicas -> ResponseEntity.ok(
-                        citaciones_medicas.stream()
-                                .map(citacion_medica -> citacionMedicaMapper.aDTO(citacion_medica))
-                                .collect(Collectors.toList())
-                ))
-                .orElse(ResponseEntity.notFound().build());
-    }
+        @GetMapping("/medico/{medicoId}")
+        @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
+        public ResponseEntity<List<CitacionMedicaDTO>> buscarPorMedicoId(@PathVariable Long medicoId) {
+                return citacionMedicaService.getByMedicoId(medicoId)
+                                .map(citaciones_medicas -> ResponseEntity.ok(
+                                                citaciones_medicas.stream()
+                                                                .map(citacion_medica -> citacionMedicaMapper
+                                                                                .aDTO(citacion_medica))
+                                                                .collect(Collectors.toList())))
+                                .orElse(ResponseEntity.notFound().build());
+        }
 
-    @GetMapping("/campana/{campanaId}")
-    @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
-    public ResponseEntity<List<CitacionMedicaDTO>> buscarPorCamapnaId(@PathVariable Long campanaId) {
-        return citacionMedicaService.getByCampanaId(campanaId)
-                .map(citaciones_medicas -> ResponseEntity.ok(
-                        citaciones_medicas.stream()
-                                .map(citacion_medica -> citacionMedicaMapper.aDTO(citacion_medica))
-                                .collect(Collectors.toList())
-                ))
-                .orElse(ResponseEntity.notFound().build());
-    }
+        @GetMapping("/campana/{campanaId}")
+        @Operation(summary = "Buscar citaciones medicas por medico", description = "Obtiene todos los citaciones medicas de un medico específico")
+        public ResponseEntity<List<CitacionMedicaDTO>> buscarPorCamapnaId(@PathVariable Long campanaId) {
+                return citacionMedicaService.getByCampanaId(campanaId)
+                                .map(citaciones_medicas -> ResponseEntity.ok(
+                                                citaciones_medicas.stream()
+                                                                .map(citacion_medica -> citacionMedicaMapper
+                                                                                .aDTO(citacion_medica))
+                                                                .collect(Collectors.toList())))
+                                .orElse(ResponseEntity.notFound().build());
+        }
 
 }
