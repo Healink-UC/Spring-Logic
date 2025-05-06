@@ -1,7 +1,6 @@
 package com.healink.integrador.domain.localizacion;
 
 import com.healink.integrador.core.dto.DTOBase;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
