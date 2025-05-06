@@ -57,8 +57,8 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Column(name = "celular")
     private String celular;
 
-    @Column(name = "esta_activo")
-    private Boolean estaActivo = true;
+    @Column(name = "estado")
+    private Estado estado = Estado.ACTIVO;
 
     // Asegúrate de tener esta relación en lugar de rolId
     @ManyToOne(fetch = FetchType.EAGER)
@@ -100,7 +100,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.estaActivo;
+        return this.estado == Estado.ACTIVO;
     }
 
 }

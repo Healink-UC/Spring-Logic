@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.diagnosticos.Diagnostico;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "PRESCRIPCIONES")
 @Data
@@ -45,7 +43,4 @@ public class Prescripcion extends EntidadAuditable {
 
     @Column(name = "indicaciones_especiales")
     private String indicaciones_especiales;
-
-    @Column(name = "fecha_prescripcion", nullable = false)
-    private LocalDate fecha_prescripcion;
 }

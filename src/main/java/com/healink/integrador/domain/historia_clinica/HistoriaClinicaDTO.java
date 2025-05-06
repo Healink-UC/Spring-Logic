@@ -18,7 +18,13 @@ public class HistoriaClinicaDTO implements DTOBase {
 
     private Long datosClinicosId;
 
-    private Long citacionId;
+    private Long diagnosticoId;
+
+    private Long recomendacionId;
+
+    private Long seguimientoId;
+
+    private Long prescripcionId;
 
     @PositiveOrZero(message = "La probabilidad de rehospitalización debe ser un valor positivo o cero")
     private Double probRehospitalizacion;

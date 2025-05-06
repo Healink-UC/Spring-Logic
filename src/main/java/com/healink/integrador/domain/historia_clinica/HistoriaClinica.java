@@ -6,9 +6,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.tools.Diagnostic;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.datos_clinicos.DatosClinicos;
+import com.healink.integrador.domain.diagnosticos.Diagnostico;
+import com.healink.integrador.domain.prescripciones.Prescripcion;
+import com.healink.integrador.domain.recomendaciones.Recomendacion;
+import com.healink.integrador.domain.seguimientos.Seguimiento;
+import com.healink.integrador.domain.triaje.Triaje;
 
 @Entity
 @Table(name = "HISTORIAS_CLINICAS")
@@ -22,21 +28,33 @@ public class HistoriaClinica extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "paciente_id", nullable = false)
+    @Column(name = "paciente_id", nullable = false, unique = true)
     private Long pacienteId;
 
-    @Column(name = "triaje_id")
-    private Long triajeId;
+    @OneToOne
+    @JoinColumn(name = "triaje_id", referencedColumnName = "id")
+    private Triaje ultimoTriaje;
 
-    @Column(name = "datos_clinicos_id")
-    private Long datosClinicosId;
+    @OneToOne
+    @JoinColumn(name = "datos_clinicos_id", referencedColumnName = "id")
+    private DatosClinicos ultimosDatosClinicos;
 
-    @Column(name = "citacion_id")
-    private Long citacionId;
+    @OneToOne
+    @JoinColumn(name = "diagnostico_id", referencedColumnName = "id")
+    private Diagnostico ultimoDiagnostico;
+
+    @OneToOne
+    @JoinColumn(name = "recomendacion_id", referencedColumnName = "id")
+    private Recomendacion ultimaRecomendacion;
+
+    @OneToOne
+    @JoinColumn(name = "seguimiento_id", referencedColumnName = "id")
+    private Seguimiento ultimoSeguimiento;
+
+    @OneToOne
+    @JoinColumn(name = "prescripcion_id", referencedColumnName = "id")
+    private Prescripcion ultimaPrescripcion;
 
     @Column(name = "prob_rehospitalizacion")
     private Double probRehospitalizacion;
-
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion = LocalDateTime.now();
 }

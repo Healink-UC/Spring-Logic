@@ -1,7 +1,5 @@
 package com.healink.integrador.domain.prescripciones;
 
-import java.time.LocalDate;
-
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,8 +32,5 @@ public class PrescripcionDTO implements DTOBase {
     private String duracion;
 
     private String indicaciones_especiales;
-
-    @NotNull(message = "La fecha de prescripción es requerida")
-    private LocalDate fecha_prescripción;
 
 }

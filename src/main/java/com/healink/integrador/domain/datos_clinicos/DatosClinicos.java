@@ -25,9 +25,6 @@ public class DatosClinicos extends EntidadAuditable {
     @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 
-    @Column(name = "fecha_registro")
-    private LocalDate fechaRegistro = LocalDate.now();
-
     @Column(name = "presion_sistolica")
     private Double presionSistolica;
 

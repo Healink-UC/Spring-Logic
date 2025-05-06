@@ -35,23 +35,8 @@ public class Triaje extends EntidadAuditable {
     @Column(name = "paciente_id")
     private Long pacienteId;
 
-    @Column(name = "fecha_triaje", nullable = false)
-    private LocalDate fechaTriaje;
-
     @Column(name = "edad", nullable = false)
     private int edad;
-
-    @Column(name = "presion_sistolica", nullable = false)
-    private float presionSistolica;
-
-    @Column(name = "presion_diastolica", nullable = false)
-    private float presionDiastolica;
-
-    @Column(name = "colesterol_total", nullable = false)
-    private float colesterolTotal;
-
-    @Column(name = "hdl", nullable = false)
-    private float hdl;
 
     @Column(name = "tabaquismo", nullable = false)
     private boolean tabaquismo;
@@ -61,15 +46,6 @@ public class Triaje extends EntidadAuditable {
 
     @Column(name = "diabetes", nullable = false)
     private boolean diabetes;
-
-    @Column(name = "peso", nullable = false)
-    private float peso;
-
-    @Column(name = "talla", nullable = false)
-    private float talla;
-
-    @Column(name = "imc", nullable = false)
-    private float imc;
 
     @Column(name = "dolor_pecho", nullable = false)
     private boolean dolorPecho;
