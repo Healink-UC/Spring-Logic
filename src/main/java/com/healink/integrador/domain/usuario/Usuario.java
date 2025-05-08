@@ -64,8 +64,9 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rol_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Rol rol;
-    // @Column(name = "rol_id", nullable = false)
-    // private Long rolId;
+    
+    @Column(name = "rol_id", nullable = false)
+    private Long rolId;
 
     // Métodos de UserDetails
     @Override
