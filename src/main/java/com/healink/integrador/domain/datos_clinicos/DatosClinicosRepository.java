@@ -15,7 +15,4 @@ public interface DatosClinicosRepository extends RepositorioGenerico<DatosClinic
     List<DatosClinicos> findByPacienteId(Long pacienteId);
 
     Page<DatosClinicos> findByPacienteId(Long pacienteId, Pageable pageable);
-
-    List<DatosClinicos> findByPacienteIdAndFechaRegistroBetween(
-            Long pacienteId, LocalDate fechaInicio, LocalDate fechaFin);
 }

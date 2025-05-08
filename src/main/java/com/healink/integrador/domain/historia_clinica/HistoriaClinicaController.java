@@ -39,23 +39,6 @@ public class HistoriaClinicaController extends ControladorGenerico<HistoriaClini
         return ResponseEntity.ok(pagina.map(historia -> mapeador.aDTO(historia)));
     }
 
-    @GetMapping("/citacion/{citacionId}")
-    @Operation(summary = "Buscar historia clínica por citación", description = "Obtiene la historia clínica asociada a una citación específica")
-    public ResponseEntity<HistoriaClinicaDTO> buscarPorCitacionId(@PathVariable Long citacionId) {
-        return historiaClinicaService.buscarPorCitacionId(citacionId)
-                .map(historia -> ResponseEntity.ok(mapeador.aDTO(historia)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-    
-    @GetMapping("/paciente/{pacienteId}/triaje/{triajeId}")
-    @Operation(summary = "Buscar historia clínica por paciente y triaje", description = "Obtiene la historia clínica asociada a un paciente y triaje específicos")
-    public ResponseEntity<HistoriaClinicaDTO> buscarPorPacienteYTriajeId(
-            @PathVariable Long pacienteId, @PathVariable Long triajeId) {
-        return historiaClinicaService.buscarPorPacienteYTriajeId(pacienteId, triajeId)
-                .map(historia -> ResponseEntity.ok(mapeador.aDTO(historia)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/riesgo-rehospitalizacion")
     @Operation(summary = "Buscar historias clínicas por riesgo de rehospitalización", description = "Obtiene las historias clínicas con riesgo de rehospitalización superior al umbral especificado")
     public ResponseEntity<List<HistoriaClinicaDTO>> buscarPorRiesgoRehospitalizacion(

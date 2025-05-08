@@ -10,8 +10,7 @@ erDiagram
         varchar clave
         varchar celular
         timestamp ultimo_acceso
-        boolean esta_activo
-        date fecha_registro
+        varchar estado "ACTIVO|INACTIVO|SUSPENDIDO|PENDIENTE"
         int rol_id FK
     }
 
@@ -25,18 +24,12 @@ erDiagram
     ENTIDADES_SALUD {
         int id PK
         varchar razon_social
-        varchar direccion
-        varchar telefono
-        varchar correo
         int usuario_id FK
-        date fecha_registro
     }
 
     EMBAJADORES {
         int id PK
-        varchar telefono
         int usuario_id FK
-        date fecha_registro
         int localizacion_id FK
     }
 
@@ -51,17 +44,14 @@ erDiagram
         varchar especialidad
         int entidad_id FK
         int usuario_id FK
-        date fecha_registro
     }
 
     PACIENTES {
         int id PK
         date fecha_nacimiento
-        enum genero "M|F"
-        varchar direccion
+        enum genero "MASCULINO|FEMENINO"
         id localizacion_id FK
         int usuario_id FK
-        date fecha_registro
     }
 
     LOCALIZACION {
@@ -72,7 +62,6 @@ erDiagram
         varchar localidad
         decimal latitud
         decimal longitud
-        geography geopoint
     }
 
     CAMPANAS {
@@ -81,11 +70,10 @@ erDiagram
         text descripcion
         int localizacion_id FK
         date fecha_inicio
-        date fecha_limite
+        date fecha_limite_inscripcion
         int min_participantes
         int max_participantes
         int entidad_id FK
-        date fecha_creacion
         varchar estado "POSTULADA|EJECUCION|FINALIZADA|CANCELADA"
     }
 
@@ -117,32 +105,23 @@ erDiagram
     TRIAJES {
         int id PK
         int paciente_id FK
-        date fecha_triaje
         int edad
-        decimal presion_sistolica
-        decimal presion_diastolica
-        decimal colesterol_total
-        decimal hdl
         boolean tabaquismo
         boolean alcoholismo
         boolean diabetes
-        decimal peso
-        decimal talla
-        decimal imc
         boolean dolor_pecho
         boolean dolor_irradiado
         boolean sudoracion
         boolean nauseas
         boolean antecedentes_cardiacos
+        boolean hipertension
         decimal resultado_riesgo_cv "0-1"
         varchar descripcion
-        varchar nivel_prioridad "ALTA|MEDIA|BAJA"
     }
 
     DATOS_CLINICOS {
         int id PK
         int paciente_id FK
-        date fecha_registro
         decimal presion_sistolica
         decimal presion_diastolica
         decimal frecuencia_cardiaca_min
@@ -159,9 +138,7 @@ erDiagram
         int id PK
         int paciente_id FK
         int factor_id FK
-        int triaje_id FK
         varchar observacion
-        date fecha_registro
     }
 
     CITACIONES {
@@ -174,18 +151,20 @@ erDiagram
         int duracion_estimada "minutos"
         varchar estado "AGENDADA|ATENDIDA|CANCELADA"
         decimal prediccion_asistencia "0-100%"
-        int prioridad "1-5"
+        varchar codigoTicket "Ej: OCV21"
         text notas
     }
 
     HISTORIAS_CLINICAS {
         int id PK
         int paciente_id FK
-        int triaje_id FK
-        int datos_clinicos_id FK
-        int citacion_id FK
+        int ultimo_triaje_id FK
+        int ultimos_datos_clinicos_id FK
+        int ultimo_diagnostico_id FK
+        int ultima_recomendacion_id FK
+        int ultimo_seguimiento_id FK
+        int ultima_prescripcion_id FK
         decimal prob_rehospitalizacion "0-100%"
-        date fecha_creacion
     }
 
     ATENCIONES_MEDICAS {
@@ -204,7 +183,6 @@ erDiagram
         text descripcion
         boolean es_principal
         varchar severidad "LEVE|MODERADA|GRAVE"
-        date fecha_diagnostico
     }
 
     PRESCRIPCIONES {
@@ -216,7 +194,6 @@ erDiagram
         varchar frecuencia
         varchar duracion
         text indicaciones_especiales
-        date fecha_prescripcion
     }
 
     SEGUIMIENTOS {
@@ -238,8 +215,7 @@ erDiagram
         varchar tipo "RIESGO_CV|ASISTENCIA|HOSPITALIZACION|REHOSPITALIZACION"
         decimal valor_prediccion "0-100%"
         decimal confianza "0-100%"
-        json factores_influyentes
-        date fecha_prediccion
+        jsonb factores_influyentes
         varchar modelo_version
     }
 
@@ -247,11 +223,10 @@ erDiagram
         int id PK
         int paciente_id FK
         int seguimiento_id FK
-        timestamp fecha_hora
         text entrada_texto
         text respuesta_texto
         varchar intent_detectado
-        json contexto_conversacion
+        jsonb contexto_conversacion
     }
 
     RECOMENDACIONES {
@@ -260,7 +235,6 @@ erDiagram
         text descripcion
         varchar nivel_importancia "ALTA|MEDIA|BAJA"
         varchar tipo "MEDICAMENTO|ESTILO_VIDA|PREVENCION"
-        date fecha_creacion
     }
 
     USUARIOS ||--o{ ENTIDADES_SALUD : tiene

@@ -39,14 +39,8 @@ public class FactorPaciente extends EntidadAuditable {
     @Column(name = "factor_id", nullable = false)
     private Long factorId;
 
-    @Column(name = "triaje_id", nullable = false)
-    private Long triajeId;
-
     @Column(name = "observacion", nullable = false, length = 350)
     private String observacion;
-
-    @Column(name = "fecha_registro", nullable = false)
-    private LocalDate fechaRegistro;
 
     // relaciones
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +51,4 @@ public class FactorPaciente extends EntidadAuditable {
     @JoinColumn(name = "factor_id", nullable = false, insertable = false, updatable = false)
     private FactorRiesgo factor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "triaje_id", nullable = false, insertable = false, updatable = false)
-    private Triaje triaje;
 }

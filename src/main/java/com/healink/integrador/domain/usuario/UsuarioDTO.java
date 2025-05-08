@@ -35,7 +35,7 @@ public class UsuarioDTO implements DTOBase {
     private String clave;
 
     private String celular;
-    private Boolean estaActivo = true;
+    private Estado estado = Estado.ACTIVO;
 
     // @NotNull(message = "El rol es requerido")
     private Long rolId;
