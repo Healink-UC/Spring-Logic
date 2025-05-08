@@ -71,6 +71,16 @@ class CampanaTest {
     CampanaDTO campana = null;
     ObjectMapper mapper = null;
 
+    // Nuevos objetos
+    Rol nuevoRol = null;
+    Usuario nuevoUsuario = null;
+    EntidadSalud nuevaEntidad = null;
+    Localizacion nuevaLocalizacion = null;
+
+    // datos para el inicio de sesion
+    private static final String USUARIO = "12345";
+    private static final String PASSWORD = "12345";
+
     // Este método se ejecutará antes de cada test
     @BeforeEach
     void setup() {
@@ -94,8 +104,8 @@ class CampanaTest {
 
         rol = new Rol(null, "administrador", "una descripcion", permisos);
         usuario = new Usuario(
-                null, TipoIdentificacion.CC, "124343",
-                "pepito", "perez", "correo@me.com", "12345",
+                null, TipoIdentificacion.CC, USUARIO,
+                "pepito", "perez", "correo@me.com", PASSWORD,
                 "12123123",
                 Estado.ACTIVO, rol, 1L);
         entidad = new EntidadSalud(
@@ -106,20 +116,27 @@ class CampanaTest {
                 null, "Caldas", "Manizales",
                 "una vereda", "una localidad", 0.0, 0.0);
 
+        nuevoRol = rolRepository.save(rol);
+        usuario.setRolId(nuevoRol.getId());
+        usuario.setRol(nuevoRol);
+
+        nuevoUsuario = usuarioRepository.save(usuario);
+        entidad.setUsuarioId(nuevoUsuario.getId());
+
+        nuevaEntidad = entidadRepository.save(entidad);
+        nuevaLocalizacion = localizacionRepository.save(localizacion);
+
     }
 
     @Test
     void guardarNuevaCampanaTest() {
-        rolRepository.save(rol);
-        usuarioRepository.save(usuario);
-        entidadRepository.save(entidad);
-        localizacionRepository.save(localizacion);
+        System.out.println("\n Primer test");
 
         campana = new CampanaDTO();
         campana.setId(1L);
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
-        campana.setEntidadId(1L);
+        campana.setEntidadId(nuevaEntidad.getId());
         campana.setFechaInicio(LocalDate.parse("2025-05-05"));
         campana.setFechaLimite(LocalDate.parse("2025-05-12"));
         campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
@@ -135,10 +152,5 @@ class CampanaTest {
         assertNotNull(res);
         assertEquals(HttpStatus.OK, expectedResponse.getStatusCode());
         assertEquals(res.getBody(), expectedResponse.getBody());
-    }
-
-    @Test
-    void guardarCampanaSinLocalizacionTest() {
-
     }
 }
