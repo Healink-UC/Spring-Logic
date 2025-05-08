@@ -133,7 +133,6 @@ class CampanaTest {
         System.out.println("\n Primer test");
 
         campana = new CampanaDTO();
-        campana.setId(1L);
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
         campana.setEntidadId(nuevaEntidad.getId());
@@ -142,15 +141,23 @@ class CampanaTest {
         campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
         campana.setMinParticipantes(10);
         campana.setMaxParticipantes(50);
-        campana.setLocalizacionId(1L);
+        campana.setLocalizacionId(nuevaLocalizacion.getId());
         campana.setEstado(EstadoCampana.POSTULADA);
 
         ResponseEntity<CampanaDTO> res = campanaController.crear(campana);
+        Long idCreado = null;
+        CampanaDTO body = res.getBody();
+        if (body != null) {
+            idCreado = body.getId();
+        } else {
+            throw new AssertionError("Response body is null");
+        }
 
-        ResponseEntity<CampanaDTO> expectedResponse = campanaController.buscarPorId(1L);
+        ResponseEntity<CampanaDTO> expectedResponse = campanaController.buscarPorId(idCreado);
 
         assertNotNull(res);
         assertEquals(HttpStatus.OK, expectedResponse.getStatusCode());
         assertEquals(res.getBody(), expectedResponse.getBody());
     }
+
 }
