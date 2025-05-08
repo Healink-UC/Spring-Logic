@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.healink.integrador.domain.campana.CampanaController;
 import com.healink.integrador.domain.campana.CampanaDTO;
 import com.healink.integrador.domain.campana.EstadoCampana;
@@ -176,9 +175,16 @@ class CampanaTest {
 
     @Test
     void guardarCampanaSinLocalizacionTest() {
-        System.out.println("\n Segundo test");
-
         campana = new CampanaDTO();
+        campana.setNombre("campaña prueba");
+        campana.setDescripcion("descripcion de prueba");
+        campana.setEntidadId(nuevaEntidad.getId());
+        campana.setFechaInicio(LocalDate.parse("2025-05-05"));
+        campana.setFechaLimite(LocalDate.parse("2025-05-12"));
+        campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+        campana.setMinParticipantes(10);
+        campana.setMaxParticipantes(50);
+        campana.setEstado(EstadoCampana.POSTULADA);
 
         // guardar hash clave
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
@@ -196,19 +202,16 @@ class CampanaTest {
                 // Acceder al atributo "token"
                 token = json.get("token").asText();
 
-                MvcResult result = mockMvc.perform(post("/api/campana")
+                mockMvc.perform(post("/api/campana")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(campana)))
                         .andExpect(status().isBadRequest())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
-                        .andExpect(jsonPath("$.validationErrors.localizacionId")
-                                .value("La campaña debe tener una localizacion"))
-                        .andReturn(); // Verifica el mensaje de error en
-                                      // 'localizacionId'
-                String responseBody = result.getResponse().getContentAsString();
-                System.out.println("📦 JSON Response: " + responseBody);
+                        .andExpect(jsonPath("$.validationErrors.localizacionId")// Verifica el mensaje de error en
+                                .value("La campaña debe tener una localizacion")); // 'localizacionId'
+
             }
 
         } catch (Exception e) {
