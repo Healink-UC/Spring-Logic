@@ -18,11 +18,11 @@ import com.healink.integrador.domain.campana.CampanaDTO;
 import com.healink.integrador.domain.campana.EstadoCampana;
 import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import com.healink.integrador.domain.entidades_salud.EntidadSaludRepository;
-import com.healink.integrador.domain.entidades_salud.Estado;
 import com.healink.integrador.domain.localizacion.Localizacion;
 import com.healink.integrador.domain.localizacion.LocalizacionRepository;
 import com.healink.integrador.domain.rol.Rol;
 import com.healink.integrador.domain.rol.RolRepository;
+import com.healink.integrador.domain.usuario.Estado;
 import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import com.healink.integrador.domain.usuario.Usuario;
 import com.healink.integrador.domain.usuario.UsuarioRepository;
@@ -67,11 +67,11 @@ class CampanaTest {
             null, TipoIdentificacion.CC, "124343",
             "pepito", "perez", "correo@me.com", "12345",
             "12123123",
-            true, rol);
+            Estado.ACTIVO, rol, 1L);
     EntidadSalud entidad = new EntidadSalud(
             null, "una razon social",
-            "calle falsa 123", "123444", 1L,
-            LocalDate.parse("2025-05-05"), Estado.ACTIVO, usuario);
+            1L,
+            usuario);
     Localizacion localizacion = new Localizacion(
             null, "Caldas", "Manizales",
             "una vereda", "una localidad", 0.0, 0.0);
