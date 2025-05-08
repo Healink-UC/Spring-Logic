@@ -40,10 +40,10 @@ public class TriajeDTO implements DTOBase {
     @NotNull(message = "Debe registrar si el paciente tiene antecedenres cardiacos")
     private boolean antecedentesCardiacos;
 
+    @NotNull(message = "Debe registrar si el paciente padece hipertension")
+    private boolean hipertension;
+
     @NotNull(message = "Debe registrar el riesgo cardiovascular del paciente")
     private float resultadoRiesgoCardiovascular;
-
-    @NotNull(message = "El triaje debe tener un nivel de prioridad válido")
-    private NivelPrioridad nivelPrioridad;
 
 }

@@ -14,16 +14,22 @@ public class HistoriaClinicaDTO implements DTOBase {
     @NotNull(message = "El ID de paciente es requerido")
     private Long pacienteId;
 
+    @NotNull(message = "El ID del triaje es requerido")
     private Long triajeId;
 
+    @NotNull(message = "El ID de los datos clínicos es requerido")
     private Long datosClinicosId;
 
+    @NotNull(message = "El ID del diagnóstico es requerido")
     private Long diagnosticoId;
 
+    @NotNull(message = "El ID de la recomendación es requerido")
     private Long recomendacionId;
 
+    @NotNull(message = "El ID del seguimiento es requerido")
     private Long seguimientoId;
 
+    @NotNull(message = "El ID de la prescripción es requerido")
     private Long prescripcionId;
 
     @PositiveOrZero(message = "La probabilidad de rehospitalización debe ser un valor positivo o cero")

@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.healink.integrador.domain.paciente.Paciente;
-import com.healink.integrador.domain.triaje.NivelPrioridad;
 import com.healink.integrador.domain.triaje.Triaje;
 import com.healink.integrador.domain.triaje.TriajeRepository;
 import com.healink.integrador.domain.triaje.TriajeService;
@@ -52,7 +51,6 @@ class TriajeYRiesgoServiceTest {
         triajeMock.setNauseas(false);
         triajeMock.setAntecedentesCardiacos(false);
         triajeMock.setResultadoRiesgoCardiovascular(25.5f);
-        triajeMock.setNivelPrioridad(NivelPrioridad.MEDIA);
         triajeMock.setPaciente(pacienteMock);
     }
 
@@ -70,7 +68,6 @@ class TriajeYRiesgoServiceTest {
         assertNotNull(resultado);
         assertEquals(triajeMock.getId(), resultado.getId());
         assertEquals(triajeMock.getResultadoRiesgoCardiovascular(), resultado.getResultadoRiesgoCardiovascular());
-        assertEquals(triajeMock.getNivelPrioridad(), resultado.getNivelPrioridad());
 
         // Verify
         verify(triajeRepository).save(triajeMock);

@@ -7,8 +7,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import com.healink.integrador.domain.triaje.NivelPrioridad;
 import com.healink.integrador.domain.triaje.TriajeDTO;
 
 import jakarta.validation.ConstraintViolation;
@@ -41,7 +39,6 @@ class TriajeYRiesgoDTOTest {
         triajeDTO.setNauseas(false);
         triajeDTO.setAntecedentesCardiacos(false);
         triajeDTO.setResultadoRiesgoCardiovascular(25.5f);
-        triajeDTO.setNivelPrioridad(NivelPrioridad.MEDIA);
     }
 
     // CP-TRIAJ-01: Triaje completo con todos los datos válidos
@@ -117,40 +114,5 @@ class TriajeYRiesgoDTOTest {
 
         ConstraintViolation<TriajeDTO> violation = violations.iterator().next();
         assertEquals("pacienteId", violation.getPropertyPath().toString(), "La violación debería ser para pacienteId");
-    }
-
-    // Prueba de valor de nivel de prioridad
-    @Test
-    @DisplayName("Nivel de prioridad válido no debe producir violaciones")
-    void triaje_conNivelPrioridadValido_noDebeProducirViolaciones() {
-        // Arrange - Probar todos los valores de la enumeración
-        for (NivelPrioridad nivel : NivelPrioridad.values()) {
-            triajeDTO.setNivelPrioridad(nivel);
-
-            // Act
-            Set<ConstraintViolation<TriajeDTO>> violations = validator.validate(triajeDTO);
-
-            // Assert
-            assertTrue(violations.isEmpty(), "No debería haber violaciones para nivel prioridad " + nivel);
-        }
-    }
-
-    // Prueba de nivel de prioridad null
-    @Test
-    @DisplayName("Nivel de prioridad null debe producir violación")
-    void triaje_conNivelPrioridadNull_debeProducirViolacion() {
-        // Arrange
-        triajeDTO.setNivelPrioridad(null);
-
-        // Act
-        Set<ConstraintViolation<TriajeDTO>> violations = validator.validate(triajeDTO);
-
-        // Assert
-        assertFalse(violations.isEmpty(), "Debería haber violaciones para nivelPrioridad null");
-
-        boolean hayViolacionNivelPrioridad = violations.stream()
-                .anyMatch(v -> "nivelPrioridad".equals(v.getPropertyPath().toString()));
-
-        assertTrue(hayViolacionNivelPrioridad, "Debería haber una violación para nivelPrioridad");
     }
 }

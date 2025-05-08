@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.tools.Diagnostic;
-
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.datos_clinicos.DatosClinicos;
 import com.healink.integrador.domain.diagnosticos.Diagnostico;

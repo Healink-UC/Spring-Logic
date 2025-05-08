@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.healink.integrador.domain.triaje.NivelPrioridad;
 import com.healink.integrador.domain.triaje.Triaje;
 import com.healink.integrador.domain.triaje.TriajeController;
 import com.healink.integrador.domain.triaje.TriajeDTO;
@@ -66,7 +65,6 @@ class TriajeYRiesgoControllerTest {
         triajeDTOMock.setNauseas(false);
         triajeDTOMock.setAntecedentesCardiacos(false);
         triajeDTOMock.setResultadoRiesgoCardiovascular(25.5f);
-        triajeDTOMock.setNivelPrioridad(NivelPrioridad.MEDIA);
 
         // Configurar entidad mock
         triajeMock = new Triaje();
@@ -82,7 +80,6 @@ class TriajeYRiesgoControllerTest {
         triajeMock.setNauseas(false);
         triajeMock.setAntecedentesCardiacos(false);
         triajeMock.setResultadoRiesgoCardiovascular(25.5f);
-        triajeMock.setNivelPrioridad(NivelPrioridad.MEDIA);
     }
 
     // CP-TRIAJ-01: Triaje completo con todos los datos válidos

@@ -1,14 +1,10 @@
 package com.healink.integrador.domain.triaje;
 
-import java.time.LocalDate;
-
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.paciente.Paciente;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -62,12 +58,11 @@ public class Triaje extends EntidadAuditable {
     @Column(name = "antecedentes_cardiacos", nullable = false)
     private boolean antecedentesCardiacos;
 
+    @Column(name = "hipertension", nullable = false)
+    private boolean hipertension;
+
     @Column(name = "resultado_riesgo_cardiovascular", nullable = false)
     private float resultadoRiesgoCardiovascular;
-
-    @Column(name = "nivel_prioridad", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private NivelPrioridad nivelPrioridad;
 
     // relaciones
     @ManyToOne(fetch = FetchType.LAZY)

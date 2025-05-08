@@ -61,8 +61,8 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     private Estado estado = Estado.ACTIVO;
 
     // Asegúrate de tener esta relación en lugar de rolId
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rol_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Rol rol;
     // @Column(name = "rol_id", nullable = false)
     // private Long rolId;
