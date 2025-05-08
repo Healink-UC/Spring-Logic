@@ -1,7 +1,7 @@
 package com.healink.integrador.domain.citaciones_medicas;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.entidades_salud.EntidadSalud;
+import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.paciente.Paciente;
 import com.healink.integrador.domain.personal_medico.PersonalMedico;
 import jakarta.persistence.*;
@@ -50,15 +50,15 @@ public class CitacionMedica extends EntidadAuditable {
     @Column(name = "prediccion_asistencia", precision = 5, scale = 2)
     private BigDecimal prediccionAsistencia;  // 0-100%
 
-    @Column(name = "prioridad")
-    private Integer prioridad;  // 1-5
+    @Column(name = "codigo_ticket")
+    private String codigoTicket;  // 1-5
 
     @Column(name = "notas")
     private String notas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private EntidadSalud entidad;
+    @JoinColumn(name = "campana_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Campana campana;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)

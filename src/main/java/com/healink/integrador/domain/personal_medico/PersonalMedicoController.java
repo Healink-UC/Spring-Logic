@@ -40,13 +40,6 @@ public class PersonalMedicoController extends ControladorGenerico<PersonalMedico
         return ResponseEntity.ok(mapeador.aListaDTO(medicos));
     }
 
-    @GetMapping("/estado/{estado}")
-    @Operation(summary = "Buscar médicos por estado", description = "Obtiene todos los médicos con un estado específico")
-    public ResponseEntity<List<PersonalMedicoDTO>> buscarPorEstado(@PathVariable String estado) {
-        List<PersonalMedico> medicos = personalMedicoService.buscarPorEstado(estado);
-        return ResponseEntity.ok(mapeador.aListaDTO(medicos));
-    }
-
     @GetMapping("/especialidad/{especialidad}")
     @Operation(summary = "Buscar médicos por especialidad", description = "Obtiene todos los médicos de una especialidad específica")
     public ResponseEntity<List<PersonalMedicoDTO>> buscarPorEspecialidad(@PathVariable String especialidad) {

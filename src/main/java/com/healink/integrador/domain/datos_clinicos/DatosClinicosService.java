@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -41,11 +40,5 @@ public class DatosClinicosService extends ServicioGenerico<DatosClinicos> {
     @Transactional(readOnly = true)
     public Page<DatosClinicos> buscarPorPacienteId(Long pacienteId, Pageable pageable) {
         return datosClinicosRepository.findByPacienteId(pacienteId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public List<DatosClinicos> buscarPorPacienteYRangoFechas(
-            Long pacienteId, LocalDate fechaInicio, LocalDate fechaFin) {
-        return datosClinicosRepository.findByPacienteIdAndFechaRegistroBetween(pacienteId, fechaInicio, fechaFin);
     }
 }

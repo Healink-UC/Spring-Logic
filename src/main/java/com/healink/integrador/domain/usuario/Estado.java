@@ -1,4 +1,4 @@
-package com.healink.integrador.domain.entidades_salud;
+package com.healink.integrador.domain.usuario;
 
 public enum Estado {
     ACTIVO, INACTIVO, SUSPENDIDO, PENDIENTE

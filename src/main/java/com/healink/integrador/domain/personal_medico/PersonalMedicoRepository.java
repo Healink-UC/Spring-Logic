@@ -14,7 +14,5 @@ public interface PersonalMedicoRepository extends RepositorioGenerico<PersonalMe
 
     List<PersonalMedico> findByEntidadId(Long entidadId);
 
-    List<PersonalMedico> findByEstado(String estado);
-
     List<PersonalMedico> findByEspecialidad(String especialidad);
 }

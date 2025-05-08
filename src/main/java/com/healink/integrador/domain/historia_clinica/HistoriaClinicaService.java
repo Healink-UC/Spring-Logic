@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.healink.integrador.core.service.ServicioGenerico;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,16 +28,6 @@ public class HistoriaClinicaService extends ServicioGenerico<HistoriaClinica> {
     @Transactional(readOnly = true)
     public Page<HistoriaClinica> buscarPorPacienteId(Long pacienteId, Pageable pageable) {
         return historiaClinicaRepository.findByPacienteId(pacienteId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<HistoriaClinica> buscarPorCitacionId(Long citacionId) {
-        return historiaClinicaRepository.findByCitacionId(citacionId);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<HistoriaClinica> buscarPorPacienteYTriajeId(Long pacienteId, Long triajeId) {
-        return historiaClinicaRepository.findByPacienteIdAndTriajeId(pacienteId, triajeId);
     }
 
     @Transactional(readOnly = true)

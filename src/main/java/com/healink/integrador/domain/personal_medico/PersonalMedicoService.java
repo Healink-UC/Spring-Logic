@@ -43,11 +43,6 @@ public class PersonalMedicoService extends ServicioGenerico<PersonalMedico> {
     }
 
     @Transactional(readOnly = true)
-    public List<PersonalMedico> buscarPorEstado(String estado) {
-        return personalMedicoRepository.findByEstado(estado);
-    }
-
-    @Transactional(readOnly = true)
     public List<PersonalMedico> buscarPorEspecialidad(String especialidad) {
         return personalMedicoRepository.findByEspecialidad(especialidad);
     }
