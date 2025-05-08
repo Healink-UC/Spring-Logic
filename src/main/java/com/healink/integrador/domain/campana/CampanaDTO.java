@@ -19,25 +19,25 @@ public class CampanaDTO implements DTOBase {
     @NotBlank(message = "La campaña debe tener una descripcion")
     private String descripcion;
 
-    @NotBlank(message = "La campaña debe tener una localizacion")
+    @NotNull(message = "La campaña debe tener una localizacion")
     private Long localizacionId;
 
-    @NotBlank(message = "La campaña debe tener una fecha límite")
+    @NotNull(message = "La campaña debe tener una fecha límite")
     private LocalDate fechaLimiteInscripcion;
 
-    @NotBlank(message = "La campaña debe tener una fecha de inicio")
+    @NotNull(message = "La campaña debe tener una fecha de inicio")
     private LocalDate fechaInicio;
 
-    @NotBlank(message = "La campaña debe tener una fecha de finalizacion")
+    @NotNull(message = "La campaña debe tener una fecha de finalizacion")
     private LocalDate fechaLimite;
 
-    @NotBlank(message = "La campaña debe tener un número mínimo de participantes")
+    @NotNull(message = "La campaña debe tener un número mínimo de participantes")
     private int minParticipantes;
 
-    @NotBlank(message = "La campaña debe tener un número máximo de participantes")
+    @NotNull(message = "La campaña debe tener un número máximo de participantes")
     private int maxParticipantes;
 
-    @NotBlank(message = "La campaña debe estar asociada a una entidad")
+    @NotNull(message = "La campaña debe estar asociada a una entidad")
     private Long entidadId;
 
     @NotNull(message = "La campaña debe tener un estado válido")
