@@ -143,8 +143,6 @@ class CampanaTest {
 
     @Test
     void guardarNuevaCampanaTest() {
-        System.out.println("\n Primer test");
-
         campana = new CampanaDTO();
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
