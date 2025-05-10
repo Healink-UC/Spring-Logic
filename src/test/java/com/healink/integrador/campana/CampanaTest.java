@@ -228,6 +228,18 @@ class CampanaTest {
         // guardar hash clave
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
         try {
+            campana = new CampanaDTO();
+            campana.setNombre("campaña prueba");
+            campana.setDescripcion("descripcion de prueba");
+            campana.setEntidadId(nuevaEntidad.getId());
+            campana.setFechaInicio(LocalDate.parse("2025-05-05"));
+            campana.setFechaLimite(LocalDate.parse("2025-05-12"));
+            campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+            campana.setMinParticipantes(10);
+            campana.setMaxParticipantes(201);
+            campana.setLocalizacionId(nuevaLocalizacion.getId());
+            campana.setEstado(EstadoCampana.POSTULADA);
+
             // Crear un objeto de solicitud de acceso con los datos proporcionados
             SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, PASSWORD);
             ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
@@ -248,7 +260,8 @@ class CampanaTest {
                         .andExpect(status().isBadRequest())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
-                ;
+                        .andExpect(jsonPath("$.validationErrors.maxParticipantes")// Verifica el mensaje de error en
+                                .value("El número máximo de participantes de la campaña es 200."));
 
             }
 
