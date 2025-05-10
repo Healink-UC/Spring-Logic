@@ -201,7 +201,7 @@ class CampanaTest {
                 // Acceder al atributo "token"
                 token = json.get("token").asText();
 
-                MvcResult result = mockMvc.perform(post("/api/campana")
+                mockMvc.perform(post("/api/campana")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(campana)))
@@ -209,11 +209,8 @@ class CampanaTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.minParticipantes")// Verifica el mensaje de error en
-                                .value("El número mínimo de participantes de la campaña es 10")) // 'localizacionId'
-                        .andReturn();
+                                .value("El número mínimo de participantes de la campaña es 10"));
 
-                String responseBody = result.getResponse().getContentAsString();
-                System.out.println("📦 JSON Response: " + responseBody);
             }
 
         } catch (Exception e) {
@@ -272,6 +269,7 @@ class CampanaTest {
         }
     }
 
+    // Clases inválidas
     @Test
     void guardarCampanaSinLocalizacionTest() {
         campana = new CampanaDTO();
