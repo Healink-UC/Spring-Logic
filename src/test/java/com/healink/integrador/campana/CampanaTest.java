@@ -172,6 +172,44 @@ class CampanaTest {
     }
 
     @Test
+    void guardarCampanaMenorNumeroParticipantesTest() {
+        // guardar hash clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+        try {
+            // Crear un objeto de solicitud de acceso con los datos proporcionados
+            SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, PASSWORD);
+            ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
+            String token = "";
+            if (res.getStatusCode().value() == 200) {
+                // Obtener el body como objeto genérico
+                Object body = res.getBody();
+                // Convertirlo a JSON
+                JsonNode json = mapper.convertValue(body, JsonNode.class);
+
+                // Acceder al atributo "token"
+                token = json.get("token").asText();
+
+                MvcResult result = mockMvc.perform(post("/api/campana")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(null)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                        .andReturn();
+
+                String responseBody = result.getResponse().getContentAsString();
+                System.out.println("📦 JSON Response: " + responseBody);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            System.out.println(e);
+        }
+    }
+
+    @Test
     void guardarCampanaSinLocalizacionTest() {
         campana = new CampanaDTO();
         campana.setNombre("campaña prueba");
