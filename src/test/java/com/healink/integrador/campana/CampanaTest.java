@@ -224,6 +224,42 @@ class CampanaTest {
     }
 
     @Test
+    void guardarCampanaMayorNumeroMaxParticipantesTest() {
+        // guardar hash clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+        try {
+            // Crear un objeto de solicitud de acceso con los datos proporcionados
+            SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, PASSWORD);
+            ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
+            String token = "";
+            if (res.getStatusCode().value() == 200) {
+                // Obtener el body como objeto genérico
+                Object body = res.getBody();
+                // Convertirlo a JSON
+                JsonNode json = mapper.convertValue(body, JsonNode.class);
+
+                // Acceder al atributo "token"
+                token = json.get("token").asText();
+
+                mockMvc.perform(post("/api/campana")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(campana)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
+                ;
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            System.out.println(e);
+        }
+    }
+
+    @Test
     void guardarCampanaSinLocalizacionTest() {
         campana = new CampanaDTO();
         campana.setNombre("campaña prueba");
