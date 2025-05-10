@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -313,6 +314,47 @@ class CampanaTest {
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.localizacionId")// Verifica el mensaje de error en
                                 .value("La campaña debe tener una localizacion")); // 'localizacionId'
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    void campañaConFechaInicioAnteriorHoyTest() {
+        // guardar hash clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+        try {
+            // Crear un objeto de solicitud de acceso con los datos proporcionados
+            SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, PASSWORD);
+            ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
+            String token = "";
+            if (res.getStatusCode().value() == 200) {
+                // Obtener el body como objeto genérico
+                Object body = res.getBody();
+                // Convertirlo a JSON
+                JsonNode json = mapper.convertValue(body, JsonNode.class);
+
+                // Acceder al atributo "token"
+                token = json.get("token").asText();
+
+                MvcResult result = mockMvc.perform(post("/api/campana")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(null)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
+                        .andExpect(jsonPath("$.validationErrors.localizacionId")// Verifica el mensaje de error en
+                                .value("La campaña debe tener una localizacion"))
+                        .andReturn();
+
+                String responseBody = result.getResponse().getContentAsString();
+                System.out.println("\n📦 JSON Response: " + responseBody);
 
             }
 
