@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.healink.integrador.core.dto.DTOBase;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -25,12 +26,15 @@ public class CampanaDTO implements DTOBase {
     private Long localizacionId;
 
     @NotNull(message = "La campaña debe tener una fecha límite")
+    @FutureOrPresent(message = "La fecha límite de inscripcion debe ser hoy o una fecha posterior")
     private LocalDate fechaLimiteInscripcion;
 
     @NotNull(message = "La campaña debe tener una fecha de inicio")
+    @FutureOrPresent(message = "La fecha de inicio debe ser hoy o una fecha posterior")
     private LocalDate fechaInicio;
 
     @NotNull(message = "La campaña debe tener una fecha de finalizacion")
+    @FutureOrPresent(message = "La fecha de finalizacion debe ser hoy o una fecha posterior")
     private LocalDate fechaLimite;
 
     @NotNull(message = "La campaña debe tener un número mínimo de participantes")

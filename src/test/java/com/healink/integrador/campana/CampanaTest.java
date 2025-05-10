@@ -93,6 +93,10 @@ class CampanaTest {
     private static final String USUARIO = "12345";
     private static final String PASSWORD = "12345";
 
+    private static final LocalDate FECHA_INICIO = LocalDate.now();
+    private static final LocalDate FECHA_FIN = LocalDate.now();
+    private static final LocalDate FECHA_LIMITE = LocalDate.now();
+
     // Este método se ejecutará antes de cada test
     @BeforeEach
     void setup() {
@@ -148,9 +152,9 @@ class CampanaTest {
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
         campana.setEntidadId(nuevaEntidad.getId());
-        campana.setFechaInicio(LocalDate.parse("2025-05-05"));
-        campana.setFechaLimite(LocalDate.parse("2025-05-12"));
-        campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+        campana.setFechaInicio(FECHA_INICIO.plusDays(2));
+        campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+        campana.setFechaLimite(FECHA_FIN.plusDays(7));
         campana.setMinParticipantes(10);
         campana.setMaxParticipantes(50);
         campana.setLocalizacionId(nuevaLocalizacion.getId());
@@ -181,9 +185,9 @@ class CampanaTest {
             campana.setNombre("campaña prueba");
             campana.setDescripcion("descripcion de prueba");
             campana.setEntidadId(nuevaEntidad.getId());
-            campana.setFechaInicio(LocalDate.parse("2025-05-05"));
-            campana.setFechaLimite(LocalDate.parse("2025-05-12"));
-            campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+            campana.setFechaInicio(FECHA_INICIO.plusDays(2));
+            campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+            campana.setFechaLimite(FECHA_FIN.plusDays(7));
             campana.setMinParticipantes(9);
             campana.setMaxParticipantes(50);
             campana.setLocalizacionId(nuevaLocalizacion.getId());
@@ -230,9 +234,9 @@ class CampanaTest {
             campana.setNombre("campaña prueba");
             campana.setDescripcion("descripcion de prueba");
             campana.setEntidadId(nuevaEntidad.getId());
-            campana.setFechaInicio(LocalDate.parse("2025-05-05"));
-            campana.setFechaLimite(LocalDate.parse("2025-05-12"));
-            campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+            campana.setFechaInicio(FECHA_INICIO.plusDays(2));
+            campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+            campana.setFechaLimite(FECHA_FIN.plusDays(7));
             campana.setMinParticipantes(10);
             campana.setMaxParticipantes(201);
             campana.setLocalizacionId(nuevaLocalizacion.getId());
@@ -277,9 +281,9 @@ class CampanaTest {
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
         campana.setEntidadId(nuevaEntidad.getId());
-        campana.setFechaInicio(LocalDate.parse("2025-05-05"));
-        campana.setFechaLimite(LocalDate.parse("2025-05-12"));
-        campana.setFechaLimiteInscripcion(LocalDate.parse("2025-05-04"));
+        campana.setFechaInicio(FECHA_INICIO.plusDays(2));
+        campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+        campana.setFechaLimite(FECHA_FIN.plusDays(7));
         campana.setMinParticipantes(10);
         campana.setMaxParticipantes(50);
         campana.setEstado(EstadoCampana.POSTULADA);
