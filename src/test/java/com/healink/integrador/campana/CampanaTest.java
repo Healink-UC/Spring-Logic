@@ -326,6 +326,17 @@ class CampanaTest {
 
     @Test
     void campañaConFechaInicioAnteriorHoyTest() {
+        campana = new CampanaDTO();
+        campana.setNombre("campaña prueba");
+        campana.setDescripcion("descripcion de prueba");
+        campana.setEntidadId(nuevaEntidad.getId());
+        campana.setFechaInicio(FECHA_INICIO.minusDays(1));
+        campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+        campana.setFechaLimite(FECHA_FIN.plusDays(7));
+        campana.setMinParticipantes(10);
+        campana.setMaxParticipantes(50);
+        campana.setLocalizacionId(nuevaLocalizacion.getId());
+        campana.setEstado(EstadoCampana.POSTULADA);
         // guardar hash clave
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
         try {
@@ -342,19 +353,15 @@ class CampanaTest {
                 // Acceder al atributo "token"
                 token = json.get("token").asText();
 
-                MvcResult result = mockMvc.perform(post("/api/campana")
+                mockMvc.perform(post("/api/campana")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(null)))
+                        .content(objectMapper.writeValueAsString(campana)))
                         .andExpect(status().isBadRequest())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
-                        .andExpect(jsonPath("$.validationErrors.localizacionId")// Verifica el mensaje de error en
-                                .value("La campaña debe tener una localizacion"))
-                        .andReturn();
-
-                String responseBody = result.getResponse().getContentAsString();
-                System.out.println("\n📦 JSON Response: " + responseBody);
+                        .andExpect(jsonPath("$.validationErrors.fechaInicio")// Verifica el mensaje de error en
+                                .value("La fecha de inicio debe ser hoy o una fecha posterior"));
 
             }
 
