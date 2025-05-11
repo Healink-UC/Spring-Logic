@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,13 +22,7 @@ public class DatosClinicosService extends ServicioGenerico<DatosClinicos> {
 
     @Override
     public DatosClinicos guardar(DatosClinicos datosClinicos) {
-        // Calcular IMC si peso y talla están disponibles
-        if (datosClinicos.getPeso() != null && datosClinicos.getTalla() != null && datosClinicos.getTalla() > 0) {
-            double centimetrosEnMetros = 100;
-            double tallaMts = datosClinicos.getTalla() / centimetrosEnMetros;
-            datosClinicos.setImc(datosClinicos.getPeso() / (tallaMts * tallaMts));
-        }
-
+        // Ya no se calcula IMC ni se usan peso/talla
         return super.guardar(datosClinicos);
     }
 
@@ -41,11 +34,5 @@ public class DatosClinicosService extends ServicioGenerico<DatosClinicos> {
     @Transactional(readOnly = true)
     public Page<DatosClinicos> buscarPorPacienteId(Long pacienteId, Pageable pageable) {
         return datosClinicosRepository.findByPacienteId(pacienteId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public List<DatosClinicos> buscarPorPacienteYRangoFechas(
-            Long pacienteId, LocalDate fechaInicio, LocalDate fechaFin) {
-        return datosClinicosRepository.findByPacienteIdAndFechaRegistroBetween(pacienteId, fechaInicio, fechaFin);
     }
 }

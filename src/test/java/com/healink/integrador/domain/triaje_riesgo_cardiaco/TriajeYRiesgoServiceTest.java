@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.healink.integrador.domain.paciente.Paciente;
-import com.healink.integrador.domain.triaje.NivelPrioridad;
 import com.healink.integrador.domain.triaje.Triaje;
 import com.healink.integrador.domain.triaje.TriajeRepository;
 import com.healink.integrador.domain.triaje.TriajeService;
@@ -42,25 +41,20 @@ class TriajeYRiesgoServiceTest {
         triajeMock = new Triaje();
         triajeMock.setId(1L);
         triajeMock.setPacienteId(1L);
-        triajeMock.setFechaTriaje(LocalDate.now());
         triajeMock.setEdad(45);
-        triajeMock.setPresionSistolica(140.0f);
-        triajeMock.setPresionDiastolica(85.0f);
-        triajeMock.setColesterolTotal(210.0f);
-        triajeMock.setHdl(45.0f);
+        triajeMock.setPeso(70.5f);
+        triajeMock.setEstatura(1.75f);
         triajeMock.setTabaquismo(true);
         triajeMock.setAlcoholismo(false);
         triajeMock.setDiabetes(false);
-        triajeMock.setPeso(70.0f);
-        triajeMock.setTalla(1.75f);
-        triajeMock.setImc(22.9f);
         triajeMock.setDolorPecho(false);
         triajeMock.setDolorIrradiado(false);
         triajeMock.setSudoracion(false);
         triajeMock.setNauseas(false);
         triajeMock.setAntecedentesCardiacos(false);
-        triajeMock.setResultadoRiesgoCardiovascular(25.5f);
-        triajeMock.setNivelPrioridad(NivelPrioridad.MEDIA);
+        triajeMock.setHipertension(false);
+        triajeMock.setDescripcion("Triaje de prueba");
+        triajeMock.setFechaTriaje(LocalDate.now());
         triajeMock.setPaciente(pacienteMock);
     }
 
@@ -77,9 +71,7 @@ class TriajeYRiesgoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(triajeMock.getId(), resultado.getId());
-        assertEquals(triajeMock.getPresionSistolica(), resultado.getPresionSistolica());
-        assertEquals(triajeMock.getResultadoRiesgoCardiovascular(), resultado.getResultadoRiesgoCardiovascular());
-        assertEquals(triajeMock.getNivelPrioridad(), resultado.getNivelPrioridad());
+        assertEquals(triajeMock.getDescripcion(), resultado.getDescripcion());
 
         // Verify
         verify(triajeRepository).save(triajeMock);
@@ -99,44 +91,6 @@ class TriajeYRiesgoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(18, resultado.getEdad());
-
-        // Verify
-        verify(triajeRepository).save(triajeMock);
-    }
-
-    // CP-TRIAJ-13: Presión arterial = 90 mmHg (límite inferior válido)
-    @Test
-    @DisplayName("CP-TRIAJ-13: Presión arterial = 90 mmHg (límite inferior válido)")
-    void guardarTriaje_conPresionArterial90_debeGuardarCorrectamente() {
-        // Arrange
-        triajeMock.setPresionSistolica(90.0f);
-        when(triajeRepository.save(triajeMock)).thenReturn(triajeMock);
-
-        // Act
-        Triaje resultado = triajeService.guardar(triajeMock);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(90.0f, resultado.getPresionSistolica());
-
-        // Verify
-        verify(triajeRepository).save(triajeMock);
-    }
-
-    // CP-TRIAJ-15: Presión arterial = 200 mmHg (límite superior válido)
-    @Test
-    @DisplayName("CP-TRIAJ-15: Presión arterial = 200 mmHg (límite superior válido)")
-    void guardarTriaje_conPresionArterial200_debeGuardarCorrectamente() {
-        // Arrange
-        triajeMock.setPresionSistolica(200.0f);
-        when(triajeRepository.save(triajeMock)).thenReturn(triajeMock);
-
-        // Act
-        Triaje resultado = triajeService.guardar(triajeMock);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(200.0f, resultado.getPresionSistolica());
 
         // Verify
         verify(triajeRepository).save(triajeMock);

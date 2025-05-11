@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "ENTIDADES_SALUD")
@@ -25,21 +24,8 @@ public class EntidadSalud extends EntidadAuditable {
     @Column(name = "razon_social")
     private String razonSocial;
 
-    @Column(name = "direccion")
-    private String direccion;
-
-    @Column(name = "telefono")
-    private String telefono;
-
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
-
-    @Column(name = "fecha_registro")
-    private LocalDate fechaRegistro = LocalDate.now();
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private Estado estado = Estado.ACTIVO;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)

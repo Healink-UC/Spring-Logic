@@ -1,6 +1,6 @@
 package com.healink.integrador.domain.predicciones;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
@@ -50,18 +50,24 @@ public class Prediccion extends EntidadAuditable {
     private float confianza;
 
     @Column(name = "factores_influyentes", nullable = false, columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
     private JsonNode factoresInfluyentes;
 
     @Column(name = "fecha_prediccion", nullable = false)
-    private LocalDate fechaPrediccion;
+    private LocalDateTime fechaPrediccion;
 
-    @Column(name = "modeloVersion", nullable = false)
+    @Column(name = "modelo_version", nullable = false)
     private String modeloVersion;
 
     @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoPrediccion tipo;
+
+    @Column(name = "nivel_riesgo")
+    @Enumerated(EnumType.STRING)
+    private NivelRiesgo nivelRiesgo;
+
+    @Column(name = "recomendaciones", columnDefinition = "jsonb")
+    private JsonNode recomendaciones;
 
     // relaciones
     @ManyToOne(fetch = FetchType.LAZY)

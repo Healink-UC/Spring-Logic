@@ -1,12 +1,7 @@
 package com.healink.integrador.domain.citaciones_medicas;
 
 import com.healink.integrador.core.dto.DTOBase;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -33,16 +28,16 @@ public class CitacionMedicaDTO implements DTOBase {
     private LocalDateTime horaAtencion;
 
     @NotNull(message = "El campo duración estimada es requerido")
-    private Integer duracionEstimada;  // en minutos
+    private Integer duracionEstimada; // en minutos
 
     @NotNull(message = "El campo estado es requerido")
     private String estado;
 
     @NotNull(message = "El campo predicción asistencia es requerido")
-    private BigDecimal prediccionAsistencia;  // 0-100%
+    private BigDecimal prediccionAsistencia; // 0-100%
 
-    @NotNull(message = "El campo prioridad es requerido")
-    private Integer prioridad;  // 1-5
+    @NotNull(message = "El campo codigoTicket es requerido")
+    private String codigoTicket;  // 1-5
 
     @NotNull(message = "El campo notas es requerido")
     private String notas;

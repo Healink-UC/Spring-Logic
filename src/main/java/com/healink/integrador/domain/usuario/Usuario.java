@@ -57,15 +57,17 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Column(name = "celular")
     private String celular;
 
-    @Column(name = "esta_activo")
-    private Boolean estaActivo = true;
+    @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Estado estado = Estado.ACTIVO;
 
     // Asegúrate de tener esta relación en lugar de rolId
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rol_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Rol rol;
-    // @Column(name = "rol_id", nullable = false)
-    // private Long rolId;
+
+    @Column(name = "rol_id", nullable = false)
+    private Long rolId;
 
     // Métodos de UserDetails
     @Override
@@ -100,7 +102,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.estaActivo;
+        return this.estado == Estado.ACTIVO;
     }
 
 }
