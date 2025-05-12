@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,8 @@ class TriajeYRiesgoControllerTest {
         triajeDTOMock.setId(1L);
         triajeDTOMock.setPacienteId(1L);
         triajeDTOMock.setEdad(45);
+        triajeDTOMock.setPeso(70.5f);
+        triajeDTOMock.setEstatura(1.75f);
         triajeDTOMock.setTabaquismo(true);
         triajeDTOMock.setAlcoholismo(false);
         triajeDTOMock.setDiabetes(false);
@@ -64,13 +67,17 @@ class TriajeYRiesgoControllerTest {
         triajeDTOMock.setSudoracion(false);
         triajeDTOMock.setNauseas(false);
         triajeDTOMock.setAntecedentesCardiacos(false);
-        triajeDTOMock.setResultadoRiesgoCardiovascular(25.5f);
+        triajeDTOMock.setHipertension(false);
+        triajeDTOMock.setDescripcion("Triaje de prueba");
+        triajeDTOMock.setFechaTriaje(LocalDate.now());
 
         // Configurar entidad mock
         triajeMock = new Triaje();
         triajeMock.setId(1L);
         triajeMock.setPacienteId(1L);
         triajeMock.setEdad(45);
+        triajeMock.setPeso(70.5f);
+        triajeMock.setEstatura(1.75f);
         triajeMock.setTabaquismo(true);
         triajeMock.setAlcoholismo(false);
         triajeMock.setDiabetes(false);
@@ -79,7 +86,9 @@ class TriajeYRiesgoControllerTest {
         triajeMock.setSudoracion(false);
         triajeMock.setNauseas(false);
         triajeMock.setAntecedentesCardiacos(false);
-        triajeMock.setResultadoRiesgoCardiovascular(25.5f);
+        triajeMock.setHipertension(false);
+        triajeMock.setDescripcion("Triaje de prueba");
+        triajeMock.setFechaTriaje(LocalDate.now());
     }
 
     // CP-TRIAJ-01: Triaje completo con todos los datos válidos
@@ -121,5 +130,4 @@ class TriajeYRiesgoControllerTest {
                 .content(objectMapper.writeValueAsString(triajeDTOMock)))
                 .andExpect(status().isCreated());
     }
-
 }

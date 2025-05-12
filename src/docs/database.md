@@ -12,6 +12,10 @@ erDiagram
         timestamp ultimo_acceso
         varchar estado "ACTIVO|INACTIVO|SUSPENDIDO|PENDIENTE"
         int rol_id FK
+        varchar actualizado_por
+        varchar creado_por
+        timestamp fecha_actualizacion
+        timestamp fecha_creacion
     }
 
     ROLES {
@@ -106,17 +110,24 @@ erDiagram
         int id PK
         int paciente_id FK
         int edad
+        boolean actividad_fisica
         boolean tabaquismo
         boolean alcoholismo
         boolean diabetes
         boolean dolor_pecho
         boolean dolor_irradiado
         boolean sudoracion
-        boolean nauseas
+        boolean nauseas_frecuentes
         boolean antecedentes_cardiacos
         boolean hipertension
-        decimal resultado_riesgo_cv "0-1"
         varchar descripcion
+        float peso
+        float estatura
+        date fecha_triaje
+        varchar actualizado_por
+        varchar creado_por
+        timestamp fecha_actualizacion
+        timestamp fecha_creacion
     }
 
     DATOS_CLINICOS {
@@ -128,10 +139,14 @@ erDiagram
         decimal frecuencia_cardiaca_max
         decimal saturacion_oxigeno
         decimal temperatura
-        decimal peso
-        decimal talla
-        decimal imc
+        decimal colesterol_total
+        decimal hdl
         text observaciones
+        date fecha_medicion
+        varchar actualizado_por
+        varchar creado_por
+        timestamp fecha_actualizacion
+        timestamp fecha_creacion
     }
 
     FACTORES_PACIENTE {
@@ -215,8 +230,15 @@ erDiagram
         varchar tipo "RIESGO_CV|ASISTENCIA|HOSPITALIZACION|REHOSPITALIZACION"
         decimal valor_prediccion "0-100%"
         decimal confianza "0-100%"
-        jsonb factores_influyentes
+        jsonb factores_influyentes "{ edad: float, presion_sistolica: float, ... }"
+        varchar nivel_riesgo "BAJO|MODERADO|ALTO|CRITICO"
+        jsonb recomendaciones "[string]"
+        timestamp fecha_prediccion
         varchar modelo_version
+        varchar actualizado_por
+        varchar creado_por
+        timestamp fecha_actualizacion
+        timestamp fecha_creacion
     }
 
     INTERACCIONES_CHATBOT {

@@ -25,10 +25,10 @@ public class DatosClinicos extends EntidadAuditable {
     @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 
-    @Column(name = "presion_sistolica")
+    @Column(name = "presion_sistolica", nullable = false)
     private Double presionSistolica;
 
-    @Column(name = "presion_diastolica")
+    @Column(name = "presion_diastolica", nullable = false)
     private Double presionDiastolica;
 
     @Column(name = "frecuencia_cardiaca_min")
@@ -43,15 +43,15 @@ public class DatosClinicos extends EntidadAuditable {
     @Column(name = "temperatura")
     private Double temperatura;
 
-    @Column(name = "peso")
-    private Double peso;
+    @Column(name = "colesterol_total", nullable = false)
+    private Double colesterolTotal;
 
-    @Column(name = "talla")
-    private Double talla;
-
-    @Column(name = "imc")
-    private Double imc;
+    @Column(name = "hdl", nullable = false)
+    private Double hdl;
 
     @Column(name = "observaciones", columnDefinition = "TEXT")
     private String observaciones;
+
+    @Column(name = "fecha_medicion", nullable = false)
+    private LocalDate fechaMedicion;
 }

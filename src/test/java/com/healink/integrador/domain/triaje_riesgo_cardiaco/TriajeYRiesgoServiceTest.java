@@ -42,6 +42,8 @@ class TriajeYRiesgoServiceTest {
         triajeMock.setId(1L);
         triajeMock.setPacienteId(1L);
         triajeMock.setEdad(45);
+        triajeMock.setPeso(70.5f);
+        triajeMock.setEstatura(1.75f);
         triajeMock.setTabaquismo(true);
         triajeMock.setAlcoholismo(false);
         triajeMock.setDiabetes(false);
@@ -50,7 +52,9 @@ class TriajeYRiesgoServiceTest {
         triajeMock.setSudoracion(false);
         triajeMock.setNauseas(false);
         triajeMock.setAntecedentesCardiacos(false);
-        triajeMock.setResultadoRiesgoCardiovascular(25.5f);
+        triajeMock.setHipertension(false);
+        triajeMock.setDescripcion("Triaje de prueba");
+        triajeMock.setFechaTriaje(LocalDate.now());
         triajeMock.setPaciente(pacienteMock);
     }
 
@@ -67,7 +71,7 @@ class TriajeYRiesgoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals(triajeMock.getId(), resultado.getId());
-        assertEquals(triajeMock.getResultadoRiesgoCardiovascular(), resultado.getResultadoRiesgoCardiovascular());
+        assertEquals(triajeMock.getDescripcion(), resultado.getDescripcion());
 
         // Verify
         verify(triajeRepository).save(triajeMock);

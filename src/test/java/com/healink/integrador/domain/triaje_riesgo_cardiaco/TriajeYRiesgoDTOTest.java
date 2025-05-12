@@ -3,6 +3,7 @@ package com.healink.integrador.domain.triaje_riesgo_cardiaco;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Set;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,8 @@ import com.healink.integrador.domain.triaje.TriajeDTO;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import jakarta.validation.Validator;
 
 class TriajeYRiesgoDTOTest {
 
@@ -30,6 +31,8 @@ class TriajeYRiesgoDTOTest {
         triajeDTO.setId(1L);
         triajeDTO.setPacienteId(1L);
         triajeDTO.setEdad(45);
+        triajeDTO.setPeso(70.5f);
+        triajeDTO.setEstatura(1.75f);
         triajeDTO.setTabaquismo(true);
         triajeDTO.setAlcoholismo(false);
         triajeDTO.setDiabetes(false);
@@ -38,7 +41,8 @@ class TriajeYRiesgoDTOTest {
         triajeDTO.setSudoracion(false);
         triajeDTO.setNauseas(false);
         triajeDTO.setAntecedentesCardiacos(false);
-        triajeDTO.setResultadoRiesgoCardiovascular(25.5f);
+        triajeDTO.setHipertension(false);
+        triajeDTO.setFechaTriaje(LocalDate.now());
     }
 
     // CP-TRIAJ-01: Triaje completo con todos los datos válidos
@@ -66,8 +70,7 @@ class TriajeYRiesgoDTOTest {
         assertTrue(violations.isEmpty(), "No debería haber violaciones para edad = 18");
     }
 
-    // CP-TRIAJ-10: Edad = 17 años (probablemente bajo el límite, pero no validado a
-    // nivel DTO)
+    // CP-TRIAJ-10: Edad = 17 años (probablemente bajo el límite, pero no validado a nivel DTO)
     @Test
     @DisplayName("CP-TRIAJ-10: Edad = 17 años (probablemente bajo el límite, pero no validado a nivel DTO)")
     void triaje_conEdad17_noDebeProducirViolaciones() {
@@ -78,8 +81,7 @@ class TriajeYRiesgoDTOTest {
         Set<ConstraintViolation<TriajeDTO>> violations = validator.validate(triajeDTO);
 
         // Assert
-        // Nota: A nivel de DTO, no hay validación específica para el valor mínimo de
-        // edad
+        // Nota: A nivel de DTO, no hay validación específica para el valor mínimo de edad
         // Esta validación debería hacerse a nivel de servicio
         assertTrue(violations.isEmpty(), "No hay validación específica para edad mínima a nivel DTO");
     }

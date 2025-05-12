@@ -17,6 +17,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "triajes")
 @Data
@@ -28,11 +30,20 @@ public class Triaje extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "paciente_id")
+    @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 
     @Column(name = "edad", nullable = false)
     private int edad;
+
+    @Column(name = "actividad_fisica", nullable = false)
+    private boolean actividadFisica;
+
+    @Column(name = "peso", nullable = false)
+    private float peso;
+
+    @Column(name = "estatura", nullable = false)
+    private float estatura;
 
     @Column(name = "tabaquismo", nullable = false)
     private boolean tabaquismo;
@@ -61,12 +72,24 @@ public class Triaje extends EntidadAuditable {
     @Column(name = "hipertension", nullable = false)
     private boolean hipertension;
 
-    @Column(name = "resultado_riesgo_cardiovascular", nullable = false)
-    private float resultadoRiesgoCardiovascular;
+    // @Column(name = "resultado_riesgo_cardiovascular", nullable = false)
+    // private float resultadoRiesgoCardiovascular;
+
+    // @Column(name = "resultado_riesgo_cv", nullable = false)
+    // private float resultadoRiesgoCv;
+
+    @Column(name = "fecha_triaje", nullable = false)
+    private LocalDate fechaTriaje;
+
+    // @Column(name = "nivel_prioridad", nullable = false)
+    // @Enumerated(EnumType.STRING)
+    // private NivelPrioridad nivelPrioridad;
+
+    @Column(name = "descripcion")
+    private String descripcion;
 
     // relaciones
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Paciente paciente;
-
 }

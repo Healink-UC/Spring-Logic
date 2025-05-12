@@ -22,13 +22,7 @@ public class DatosClinicosService extends ServicioGenerico<DatosClinicos> {
 
     @Override
     public DatosClinicos guardar(DatosClinicos datosClinicos) {
-        // Calcular IMC si peso y talla están disponibles
-        if (datosClinicos.getPeso() != null && datosClinicos.getTalla() != null && datosClinicos.getTalla() > 0) {
-            double centimetrosEnMetros = 100;
-            double tallaMts = datosClinicos.getTalla() / centimetrosEnMetros;
-            datosClinicos.setImc(datosClinicos.getPeso() / (tallaMts * tallaMts));
-        }
-
+        // Ya no se calcula IMC ni se usan peso/talla
         return super.guardar(datosClinicos);
     }
 

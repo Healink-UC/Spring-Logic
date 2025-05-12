@@ -3,7 +3,8 @@ package com.healink.integrador.domain.paciente;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,8 +18,11 @@ public class PacienteDTO implements DTOBase {
 
     private LocalDate fechaNacimiento;
 
-    @NotBlank(message = "El género es requerido")
-    private String genero;
+    @NotNull(message = "El género es requerido")
+    @Enumerated(EnumType.STRING)
+    private GeneroBiologico genero;
+
+    private String direccion;
 
     private String localizacion_id;
 
