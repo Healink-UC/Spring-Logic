@@ -110,13 +110,14 @@ erDiagram
         int id PK
         int paciente_id FK
         int edad
+        boolean actividad_fisica
         boolean tabaquismo
         boolean alcoholismo
         boolean diabetes
         boolean dolor_pecho
         boolean dolor_irradiado
         boolean sudoracion
-        boolean nauseas
+        boolean nauseas_frecuentes
         boolean antecedentes_cardiacos
         boolean hipertension
         varchar descripcion

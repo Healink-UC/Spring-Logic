@@ -5,8 +5,6 @@ import com.healink.integrador.domain.paciente.Paciente;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,32 +30,20 @@ public class Triaje extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "paciente_id")
+    @Column(name = "paciente_id", nullable = false)
     private Long pacienteId;
 
     @Column(name = "edad", nullable = false)
     private int edad;
 
-    // @Column(name = "presion_sistolica", nullable = false)
-    // private float presionSistolica;
-
-    // @Column(name = "presion_diastolica", nullable = false)
-    // private float presionDiastolica;
-
-    // @Column(name = "colesterol_total", nullable = false)
-    // private float colesterolTotal;
-
-    // @Column(name = "hdl", nullable = false)
-    // private float hdl;
+    @Column(name = "actividad_fisica", nullable = false)
+    private boolean actividadFisica;
 
     @Column(name = "peso", nullable = false)
     private float peso;
 
     @Column(name = "estatura", nullable = false)
     private float estatura;
-
-    // @Column(name = "imc", nullable = false)
-    // private float imc;
 
     @Column(name = "tabaquismo", nullable = false)
     private boolean tabaquismo;

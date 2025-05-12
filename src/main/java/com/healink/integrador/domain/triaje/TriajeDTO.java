@@ -25,6 +25,9 @@ public class TriajeDTO implements DTOBase {
     @Max(value = 120, message = "La edad no puede ser mayor a 120 años")
     private int edad;
 
+    @NotNull(message = "Debe registrar si el paciente realiza actividad física")
+    private boolean actividadFisica;
+
     @NotNull(message = "El peso es requerido")
     @Positive(message = "El peso debe ser un valor positivo")
     @Max(value = 500, message = "El peso no puede ser mayor a 500 kg")
