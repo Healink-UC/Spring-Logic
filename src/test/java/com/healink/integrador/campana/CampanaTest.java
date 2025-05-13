@@ -373,6 +373,59 @@ class CampanaTest {
     }
 
     @Test
+    void campañaFechaInicioPosteriorFechaFinTest() {
+        campana = new CampanaDTO();
+        campana.setNombre("campaña prueba");
+        campana.setDescripcion("descripcion de prueba");
+        campana.setEntidadId(nuevaEntidad.getId());
+        campana.setFechaInicio(FECHA_INICIO.plusDays(8));
+        campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
+        campana.setFechaLimite(FECHA_FIN.plusDays(5));
+        campana.setMinParticipantes(10);
+        campana.setMaxParticipantes(50);
+        campana.setLocalizacionId(nuevaLocalizacion.getId());
+        campana.setEstado(EstadoCampana.POSTULADA);
+        // guardar hash clave
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+        try {
+            // Crear un objeto de solicitud de acceso con los datos proporcionados
+            SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, PASSWORD);
+            ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
+            String token = "";
+            if (res.getStatusCode().value() == 200) {
+                // Obtener el body como objeto genérico
+                Object body = res.getBody();
+                // Convertirlo a JSON
+                JsonNode json = mapper.convertValue(body, JsonNode.class);
+
+                // Acceder al atributo "token"
+                token = json.get("token").asText();
+
+                MvcResult result = mockMvc.perform(post("/api/campana")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(campana)))
+                        .andExpect(status().isBadRequest())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
+                        .andExpect(jsonPath("$.validationErrors.fechaInicio")// Verifica el mensaje de error
+                                .value("La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña."))
+                        .andReturn();
+
+                // Para imprimir el contenido de la respuesta:
+                String responseContent = result.getResponse().getContentAsString();
+                System.out.println("Respuesta JSON: " + responseContent);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+            System.out.println(e);
+        }
+    }
+
+    @Test
     void campañaFechaLimitePosteriorFechaInicioTest() {
         campana = new CampanaDTO();
         campana.setNombre("campaña prueba");
