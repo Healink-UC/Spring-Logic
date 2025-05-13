@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -409,8 +408,7 @@ class CampanaTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.fechaInicio")// Verifica el mensaje de error
-                                .value("La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña."))
-                        .andReturn();
+                                .value("La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña."));
             }
 
         } catch (Exception e) {
@@ -449,7 +447,7 @@ class CampanaTest {
                 // Acceder al atributo "token"
                 token = json.get("token").asText();
 
-                MvcResult result = mockMvc.perform(post("/api/campana")
+                mockMvc.perform(post("/api/campana")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(campana)))
@@ -457,12 +455,7 @@ class CampanaTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.fechaLimite")// Verifica el mensaje de error
-                                .value("La fecha de finalizacion debe ser posterior a la fecha de inicio de la campaña."))
-                        .andReturn();
-
-                // Para imprimir el contenido de la respuesta:
-                String responseContent = result.getResponse().getContentAsString();
-                System.out.println("\nRespuesta JSON: " + responseContent);
+                                .value("La fecha de finalizacion debe ser posterior a la fecha de inicio de la campaña."));
             }
 
         } catch (Exception e) {
