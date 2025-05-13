@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import com.healink.integrador.core.dto.DTOBase;
 import com.healink.integrador.core.validator.FechasValidator;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -27,16 +26,15 @@ public class CampanaDTO implements DTOBase {
     private Long localizacionId;
 
     @NotNull(message = "La campaña debe tener una fecha límite")
-    @FutureOrPresent(message = "La fecha límite de inscripcion debe ser hoy o una fecha posterior")
     @FechasValidator(compareWith = "fechaInicio", message = "La fecha límite de inscripción debe ser anterior a la fecha de inicio de la campaña.")
     private LocalDate fechaLimiteInscripcion;
 
     @NotNull(message = "La campaña debe tener una fecha de inicio")
-    @FutureOrPresent(message = "La fecha de inicio debe ser hoy o una fecha posterior")
+    @FechasValidator(compareWith = "fechaLimite", message = "La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña.")
     private LocalDate fechaInicio;
 
     @NotNull(message = "La campaña debe tener una fecha de finalizacion")
-    @FutureOrPresent(message = "La fecha de finalizacion debe ser hoy o una fecha posterior")
+    @FechasValidator(compareWith = "fechaInicio", message = "La fecha de finalizacion debe ser posterior a la fecha de inicio de la campaña.")
     private LocalDate fechaLimite;
 
     @NotNull(message = "La campaña debe tener un número mínimo de participantes")

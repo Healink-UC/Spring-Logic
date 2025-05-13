@@ -26,6 +26,14 @@ public class CompararFechasValidator implements ConstraintValidator<FechasValida
         }
 
         try {
+            // Replicar la validación de @FutureOrPresent
+            if (value.isBefore(LocalDate.now())) {
+                context.disableDefaultConstraintViolation(); // Desactiva el mensaje por defecto
+                context.buildConstraintViolationWithTemplate("La fecha de inicio debe ser hoy o una fecha posterior")
+                        .addConstraintViolation(); // Agrega el nuevo mensaje
+                return false;
+            }
+
             Object object = context.unwrap(HibernateConstraintValidatorContext.class);
             Field compareField = object.getClass().getDeclaredField(compareWith);
             compareField.setAccessible(true);
