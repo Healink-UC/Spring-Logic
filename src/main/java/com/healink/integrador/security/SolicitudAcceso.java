@@ -5,9 +5,13 @@ import com.healink.integrador.domain.usuario.TipoIdentificacion;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SolicitudAcceso {
 
     @NotBlank
