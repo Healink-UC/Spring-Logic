@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 public interface MapeadorGenerico<E extends EntidadBase, D extends DTOBase> {
-
     D aDTO(E entity);
 
     E aEntidad(D dto);

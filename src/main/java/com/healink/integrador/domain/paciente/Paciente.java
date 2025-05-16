@@ -29,8 +29,15 @@ public class Paciente extends EntidadAuditable {
     @Enumerated(EnumType.STRING)
     private GeneroBiologico genero;
 
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "tipo_sangre", length = 20)
+    @Enumerated(EnumType.STRING)
+    private TipoSangre tipoSangre;
+
     @Column(name = "localizacion_id")
-    private String localidad;
+    private Long localizacionId;
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;

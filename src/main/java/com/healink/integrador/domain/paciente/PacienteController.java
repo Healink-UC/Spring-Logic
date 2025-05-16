@@ -23,9 +23,9 @@ public class PacienteController extends ControladorGenerico<Paciente, PacienteDT
         this.pacienteService = pacienteService;
     }
 
-    @GetMapping("/localidad/{localidad}")
-    public ResponseEntity<List<PacienteDTO>> getByLocalidad(@PathVariable String localidad) {
-        List<Paciente> pacientes = pacienteService.findByLocalidad(localidad);
+    @GetMapping("/localizacion/{localizacionId}")
+    public ResponseEntity<List<PacienteDTO>> getByLocalizacionId(@PathVariable Long localizacionId) {
+        List<Paciente> pacientes = pacienteService.findByLocalizacionId(localizacionId);
         return ResponseEntity.ok(mapeador.aListaDTO(pacientes));
     }
 

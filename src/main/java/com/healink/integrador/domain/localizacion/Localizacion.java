@@ -6,17 +6,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 import com.healink.integrador.core.entity.EntidadAuditable;
 
 @Entity
-@Table(name = "LOCALIZACIONES")
+@Table(name = "LOCALIZACION")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Localizacion extends EntidadAuditable{
-    
+public class Localizacion extends EntidadAuditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
