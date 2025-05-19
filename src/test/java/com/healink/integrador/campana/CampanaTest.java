@@ -129,8 +129,8 @@ class CampanaTest {
                 1L,
                 usuario);
         localizacion = new Localizacion(
-                null, "Caldas", "Manizales",
-                "una vereda", "una localidad", 0.0, 0.0);
+                null, "Antioquia", "Medellin",
+                "San Antonio", "Centro", 0.0, 0.0);
 
         nuevoRol = rolRepository.save(rol);
         usuario.setRolId(nuevoRol.getId());
@@ -155,8 +155,8 @@ class CampanaTest {
         campana.setFechaInicio(FECHA_INICIO.plusDays(2));
         campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
         campana.setFechaLimite(FECHA_FIN.plusDays(7));
-        campana.setMinParticipantes(10);
-        campana.setMaxParticipantes(50);
+        campana.setMinParticipantes(50);
+        campana.setMaxParticipantes(100);
         campana.setLocalizacionId(nuevaLocalizacion.getId());
         campana.setEstado(EstadoCampana.POSTULADA);
 
