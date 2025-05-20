@@ -22,9 +22,15 @@ public class PacienteDTO implements DTOBase {
     @Enumerated(EnumType.STRING)
     private GeneroBiologico genero;
 
+    @Schema(description = "Dirección física del paciente")
     private String direccion;
 
-    private String localizacion_id;
+    @Schema(description = "Tipo de sangre del paciente")
+    @Enumerated(EnumType.STRING)
+    private TipoSangre tipoSangre;
+
+    @NotNull(message = "El ID de localización es requerido")
+    private Long localizacionId;
 
     @NotNull(message = "El ID de usuario es requerido")
     private Long usuarioId;

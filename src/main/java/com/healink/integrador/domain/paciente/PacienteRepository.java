@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PacienteRepository extends RepositorioGenerico<Paciente> {
 
-    List<Paciente> findByLocalidad(String localidad);
+    List<Paciente> findByLocalizacionId(Long localizacionId);
 
     Optional<Paciente> findByUsuarioId(Long usuarioId);
 }

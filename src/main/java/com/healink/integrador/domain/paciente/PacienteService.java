@@ -20,8 +20,8 @@ public class PacienteService extends ServicioGenerico<Paciente> {
     }
 
     @Transactional(readOnly = true)
-    public List<Paciente> findByLocalidad(String localidad) {
-        return pacienteRepository.findByLocalidad(localidad);
+    public List<Paciente> findByLocalizacionId(Long localizacionId) {
+        return pacienteRepository.findByLocalizacionId(localizacionId);
     }
 
     @Transactional(readOnly = true)

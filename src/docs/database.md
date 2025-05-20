@@ -34,7 +34,7 @@ erDiagram
     EMBAJADORES {
         int id PK
         int usuario_id FK
-        int localizacion_id FK
+        bigint localizacion_id FK
     }
 
     EMBAJADORES_ENTIDADES {
@@ -54,12 +54,14 @@ erDiagram
         int id PK
         date fecha_nacimiento
         enum genero "MASCULINO|FEMENINO"
-        id localizacion_id FK
+        varchar direccion
+        enum tipo_sangre "A_POSITIVO|A_NEGATIVO|B_POSITIVO|B_NEGATIVO|AB_POSITIVO|AB_NEGATIVO|O_POSITIVO|O_NEGATIVO"
+        bigint localizacion_id FK
         int usuario_id FK
     }
 
     LOCALIZACION {
-        int id PK
+        bigint id PK
         varchar departamento
         varchar municipio
         varchar vereda
@@ -72,13 +74,26 @@ erDiagram
         int id PK
         varchar nombre
         text descripcion
-        int localizacion_id FK
+        bigint localizacion_id FK
         date fecha_inicio
         date fecha_limite_inscripcion
         int min_participantes
         int max_participantes
         int entidad_id FK
         varchar estado "POSTULADA|EJECUCION|FINALIZADA|CANCELADA"
+    }
+
+    INSCRIPCIONES_CAMPANA {
+        int id PK
+        int paciente_id FK
+        int campana_id FK
+        timestamp fecha_inscripcion
+        varchar estado "INSCRITO|RETIRADO"
+        text motivo_retiro
+        varchar actualizado_por
+        varchar creado_por
+        timestamp fecha_actualizacion
+        timestamp fecha_creacion
     }
 
     SERVICIOS_MEDICOS {
@@ -271,6 +286,8 @@ erDiagram
     ENTIDADES_SALUD ||--o{ PERSONAL_MEDICO : emplea
 
     LOCALIZACION ||--o{ CAMPANAS : ubicada_en
+    LOCALIZACION ||--o{ PACIENTES : reside_en
+    LOCALIZACION ||--o{ EMBAJADORES : asignada
 
     CAMPANAS ||--o{ SERVICIOS_CAMPANA : incluye
     SERVICIOS_MEDICOS ||--o{ SERVICIOS_CAMPANA : incluido_en
@@ -307,4 +324,7 @@ erDiagram
     PACIENTES ||--o{ PREDICCIONES : tiene
     CAMPANAS ||--o{ PREDICCIONES : genera
     PACIENTES ||--o{ INTERACCIONES_CHATBOT : interactua
+
+    PACIENTES ||--o{ INSCRIPCIONES_CAMPANA : participa_en
+    CAMPANAS ||--o{ INSCRIPCIONES_CAMPANA : tiene_inscritos
 ```
