@@ -1,5 +1,5 @@
 package com.healink.integrador.domain.citaciones_medicas;
 
-public enum Estado {
+public enum EstadoCitacion {
     AGENDADA, ATENDIDA, CANCELADA
 }

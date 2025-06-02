@@ -3,12 +3,18 @@ package com.healink.integrador.domain.atenciones_medicas;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaRepository;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
+import com.healink.integrador.domain.citaciones_medicas.EstadoCitacion;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -17,10 +23,35 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AtencionMedicaController extends ControladorGenerico<AtencionMedica, AtencionMedicaDTO> {
 
     private final AtencionMedicaService atencionMedicaService;
+    private final CitacionMedicaService citacionMedicaService;
 
-    public AtencionMedicaController(AtencionMedicaService atencionMedicaService, AtencionMedicaMapper atencionMedicaMapper) {
+    public AtencionMedicaController(AtencionMedicaService atencionMedicaService, AtencionMedicaMapper atencionMedicaMapper, CitacionMedicaService citacionMedicaService) {
         super(atencionMedicaService, atencionMedicaMapper);
         this.atencionMedicaService = atencionMedicaService;
+        this.citacionMedicaService = citacionMedicaService;
+    }
+
+    @Override
+    @PostMapping("/crear")
+    @Operation(summary = "Crear una nueva atención médica", description = "Crea una nueva atención médica con los datos proporcionados")
+    public ResponseEntity<AtencionMedicaDTO> crear(@RequestBody AtencionMedicaDTO atencionMedicaDTO) {
+        
+        CitacionMedica citacionMedica = citacionMedicaService.obtenerPorId(atencionMedicaDTO.getCitacionId());
+        if (citacionMedica == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (citacionMedica.getEstado() != EstadoCitacion.AGENDADA) {
+            throw new RuntimeException("La citación no está agendada o ya se ha atendido");
+        }
+
+        AtencionMedica atencionMedica = mapeador.aEntidad(atencionMedicaDTO);
+        AtencionMedica atencionGuardada = atencionMedicaService.guardar(atencionMedica);
+
+        citacionMedica.setEstado(EstadoCitacion.ATENDIDA);
+        citacionMedicaService.guardar(citacionMedica);
+
+        return ResponseEntity.ok(mapeador.aDTO(atencionGuardada));
     }
 
     @GetMapping("/citacion/{citacion_id}")

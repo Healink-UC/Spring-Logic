@@ -18,12 +18,7 @@ public class AtencionMedicaService extends ServicioGenerico<AtencionMedica> {
     public AtencionMedicaService(AtencionMedicaRepository atencionMedicaRepository) {
         super(atencionMedicaRepository);
         this.atencionMedicaRepository = atencionMedicaRepository;
-    }
-
-    @Override
-    public AtencionMedica guardar(AtencionMedica atencionMedica) {
-        return super.guardar(atencionMedica);
-    }
+    }    
 
     @Override
     public AtencionMedica obtenerPorId(Long id) {

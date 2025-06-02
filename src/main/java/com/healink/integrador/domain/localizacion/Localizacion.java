@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import com.healink.integrador.core.entity.EntidadAuditable;
 
 @Entity
-@Table(name = "LOCALIZACION")
+@Table(name = "LOCALIZACIONES")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
