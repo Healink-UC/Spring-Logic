@@ -7,7 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Optional;
+
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 
 @Entity
 @Table(name = "ATENCIONES_MEDICAS")
@@ -36,4 +39,13 @@ public class AtencionMedica extends EntidadAuditable {
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     private EstadoAtencionMedica estado;
+
+    public Optional<AtencionMedica> map(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'map'");
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "citacion_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private CitacionMedica citacionMedica;
 }
