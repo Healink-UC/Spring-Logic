@@ -16,4 +16,13 @@ public class EntidadSaludDTO implements DTOBase {
 
     @NotNull(message = "El ID de usuario es requerido")
     private Long usuarioId;
+
+    @NotNull(message = "La dirección es requerida")
+    private String direccion;
+
+    @NotNull(message = "El teléfono es requerido")
+    private String telefono;
+
+    @NotNull(message = "El correo es requerido")
+    private String correo;
 }

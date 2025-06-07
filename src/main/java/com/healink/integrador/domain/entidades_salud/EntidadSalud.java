@@ -24,6 +24,15 @@ public class EntidadSalud extends EntidadAuditable {
     @Column(name = "razon_social")
     private String razonSocial;
 
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "telefono")
+    private String telefono;
+
+    @Column(name = "correo")
+    private String correo;
+
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
 

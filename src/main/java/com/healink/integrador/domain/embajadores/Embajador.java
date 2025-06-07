@@ -27,6 +27,15 @@ public class Embajador extends EntidadAuditable {
     @Column(name = "usuario_id")
     private Long usuarioId;
 
+    @Column(name = "nombre_completo")
+    private String nombreCompleto;
+
+    @Column(name = "localidad")
+    private String localidad;
+
+    @Column(name = "telefono")
+    private String telefono;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
     private EntidadSalud entidadSalud;
