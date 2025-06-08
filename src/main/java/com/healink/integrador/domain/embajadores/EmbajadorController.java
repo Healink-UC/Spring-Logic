@@ -35,25 +35,22 @@ public class EmbajadorController extends ControladorGenerico<Embajador, Embajado
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/entidad/{entidadId}")
-    @Operation(summary = "Buscar embajadores por entidad", description = "Obtiene todos los embajadores de una entidad específica")
-    public ResponseEntity<List<EmbajadorDTO>> getByEntidad(@PathVariable Long entidadId) {
-        return embajadorService.findByEntidad(entidadId)
-                .map(embajadores -> ResponseEntity.ok(
-                        embajadores.stream()
-                                .map(embajador -> {
-                                    EmbajadorDTO dto = mapeador.aDTO(embajador);
-                                    try {
-                                        Usuario usuario = usuarioService.obtenerPorId(embajador.getUsuarioId());
-                                        dto.setIdentificacion(usuario.getIdentificacion());
-                                        dto.setCorreo(usuario.getCorreo());
-                                    } catch (Exception e) {
-                                        // Si no se encuentra el usuario, continuamos sin esa información
-                                    }
-                                    return dto;
-                                })
-                                .collect(Collectors.toList())))
-                .orElse(ResponseEntity.notFound().build());
-    }
+    //@GetMapping("/entidad/{entidadId}")
+    //@Operation(summary = "Buscar embajadores por entidad", description = "Obtiene todos los embajadores de una entidad específica")
+    //public ResponseEntity<List<EmbajadorDTO>> getByEntidad(@PathVariable Long entidadId) {
+    //    return embajadorService.findByEntidad(entidadId)
+    //                .map(embajadores -> ResponseEntity.ok(
+    //                        embajadores.stream()
+    //                                .map(embajador -> {
+    //                                    EmbajadorDTO dto = mapeador.aDTO(embajador);
+    //                                if (embajador.getUsuario() != null) {
+    //                                        dto.setIdentificacion(embajador.getUsuario().getIdentificacion());
+    //                                        dto.setCorreo(embajador.getUsuario().getCorreo());
+    //                                    }
+    //                                    return dto;
+    //                                })
+    //                                .collect(Collectors.toList())))
+    //                .orElse(ResponseEntity.notFound().build());
+    //    }
 
 }

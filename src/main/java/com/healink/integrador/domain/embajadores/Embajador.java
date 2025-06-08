@@ -21,8 +21,8 @@ public class Embajador extends EntidadAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "entidad_id")
-    private Long entidadId;
+    //@Column(name = "entidad_id")
+    //private Long entidadId;
 
     @Column(name = "usuario_id")
     private Long usuarioId;
@@ -36,9 +36,9 @@ public class Embajador extends EntidadAuditable {
     @Column(name = "telefono")
     private String telefono;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private EntidadSalud entidadSalud;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "entidad_id", referencedColumnName = "id", insertable = false, updatable = false)
+    //private EntidadSalud entidadSalud;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)
