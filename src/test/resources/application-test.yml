@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://ep-tight-recipe-a8yi5lvd-pooler.eastus2.azure.neon.tech/healinkdb?sslmode=require
-    username: healinkdb_owner
-    password: npg_A0Iozd7TytNP
