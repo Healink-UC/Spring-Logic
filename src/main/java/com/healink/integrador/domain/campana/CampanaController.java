@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +34,12 @@ public class CampanaController extends ControladorGenerico<Campana, CampanaDTO> 
     @GetMapping("/fecha-inicio")
     public ResponseEntity<List<CampanaDTO>> getByFechaInicio() {
         List<Campana> campanas = this.campanaService.getByFechaInicio();
+        return ResponseEntity.ok(mapeador.aListaDTO(campanas));
+    }
+
+    @GetMapping("entidad/{entidadId}")
+    public ResponseEntity<List<CampanaDTO>> getByEntidadId(@PathVariable Long entidadId) {
+        List<Campana> campanas = this.campanaService.getByEntidadId(entidadId);
         return ResponseEntity.ok(mapeador.aListaDTO(campanas));
     }
 

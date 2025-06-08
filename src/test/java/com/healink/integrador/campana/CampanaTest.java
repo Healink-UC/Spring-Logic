@@ -126,6 +126,7 @@ class CampanaTest {
                 Estado.ACTIVO, rol, 1L);
         entidad = new EntidadSalud(
                 null, "una razon social",
+                "una direccion", "un telefono", "un correo",
                 1L,
                 usuario);
         localizacion = new Localizacion(

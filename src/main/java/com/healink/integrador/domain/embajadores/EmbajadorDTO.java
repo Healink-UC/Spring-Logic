@@ -22,6 +22,10 @@ public class EmbajadorDTO implements DTOBase {
     @NotNull(message = "El ID del usuario es requerido")
     private Long usuarioId;
 
+    private String identificacion = "";
+
+    private String correo = "";
+
     @NotNull(message = "La localidad es requerida")
     private String localidad;
 
