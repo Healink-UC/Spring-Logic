@@ -33,6 +33,7 @@ import com.healink.integrador.domain.rol.Rol;
 public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "tipo_identificacion", nullable = false, length = 3)
