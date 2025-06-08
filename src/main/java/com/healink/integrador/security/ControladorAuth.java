@@ -24,6 +24,7 @@ import com.healink.integrador.domain.usuario.UsuarioDTO;
 import com.healink.integrador.domain.usuario.UsuarioMapper;
 import com.healink.integrador.domain.usuario.UsuarioService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -62,6 +63,7 @@ public class ControladorAuth {
     }
 
     @PostMapping("/acceso")
+    @Transactional
     public ResponseEntity<?> login(@RequestBody SolicitudAcceso solicitud) {
         try {
             // Autenticar
@@ -73,8 +75,14 @@ public class ControladorAuth {
                             credencial,
                             solicitud.getClave()));
 
-            // Obtener usuario autenticado
-            Usuario usuario = (Usuario) auth.getPrincipal();
+            // Obtener usuario autenticado básico
+            Usuario usuarioAuth = (Usuario) auth.getPrincipal();
+            
+            // Obtener usuario completo con entidad de salud desde la base de datos
+            Usuario usuario = usuarioService.findByTipoIdentificacionAndIdentificacion(
+                    usuarioAuth.getTipoIdentificacion(),
+                    usuarioAuth.getIdentificacion())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Generar token
             String token = proveedorTokenJWT.createToken(usuario);
@@ -82,7 +90,7 @@ public class ControladorAuth {
             // Respuesta
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
-            response.put("usuario", usuarioMapper.aDTO(usuario));
+            response.put("usuario", usuarioMapper.aDTOConEntidadSalud(usuario));
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
