@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ENTIDADES_SALUD")
@@ -24,10 +26,6 @@ public class EntidadSalud extends EntidadAuditable {
     @Column(name = "razon_social")
     private String razonSocial;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuarioId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Usuario usuario;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "entidadSalud")
+    private List<Usuario> usuarios = new ArrayList<>();
 }
