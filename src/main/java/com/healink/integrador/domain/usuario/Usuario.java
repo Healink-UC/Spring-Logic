@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import com.healink.integrador.domain.rol.Rol;
 
 @Entity
@@ -32,7 +33,6 @@ import com.healink.integrador.domain.rol.Rol;
 public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "tipo_identificacion", nullable = false, length = 3)
@@ -68,6 +68,13 @@ public class Usuario extends EntidadAuditable implements UserDetails {
 
     @Column(name = "rol_id", nullable = false)
     private Long rolId;
+
+    @Column(name = "entidad_salud_id")
+    private Long entidadSaludId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entidad_salud_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EntidadSalud entidadSalud;
 
     // Métodos de UserDetails
     @Override
