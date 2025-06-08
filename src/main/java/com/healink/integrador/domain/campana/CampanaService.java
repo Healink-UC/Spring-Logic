@@ -30,4 +30,9 @@ public class CampanaService extends ServicioGenerico<Campana> {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<Campana> getByEntidadId(Long entidadId) {
+        return this.campanaRepository.findByEntidadId(entidadId);
+    }
+
 }
