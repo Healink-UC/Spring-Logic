@@ -26,6 +26,15 @@ public class EntidadSalud extends EntidadAuditable {
     @Column(name = "razon_social")
     private String razonSocial;
 
+    @Column(name = "direccion")
+    private String direccion;
+
+    @Column(name = "telefono")
+    private String telefono;
+
+    @Column(name = "correo")
+    private String correo;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "entidadSalud")
     private List<Usuario> usuarios = new ArrayList<>();
 }

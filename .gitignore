@@ -48,3 +48,7 @@ build/
 .fake
 d-CasosPruebas.pdf
 db.pdf
+
+# Archivos de configuración con información sensible
+src/test/resources/application-test.yml
+

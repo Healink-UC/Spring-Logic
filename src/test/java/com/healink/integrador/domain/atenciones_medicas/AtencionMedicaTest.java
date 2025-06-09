@@ -139,7 +139,7 @@ public class AtencionMedicaTest {
     void crearEntidadSaludTest() throws JsonProcessingException {
         crearUsuarioTest(); // dependencia
 
-        entidad = new EntidadSalud(null, "una razon social", null);
+        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com", null);
         nuevaEntidad = entidadRepository.save(entidad);
         assertNotNull(nuevaEntidad.getId());
     }

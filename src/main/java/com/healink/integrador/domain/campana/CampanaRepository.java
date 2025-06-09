@@ -10,4 +10,6 @@ public interface CampanaRepository extends RepositorioGenerico<Campana> {
 
     List<Campana> findAllByOrderByFechaLimiteInscripcionAsc();
 
+    List<Campana> findByEntidadId(Long entidadId);
+
 }
