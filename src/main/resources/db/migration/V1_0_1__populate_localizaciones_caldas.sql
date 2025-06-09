@@ -22,4 +22,4 @@ VALUES
     ('Caldas', 'Palestina', 'El Higuerón', 'Sector Cafetero', 5.0823, -75.6189),
     ('Caldas', 'Palestina', 'La Plata', 'Área Principal', 5.0867, -75.6278);
 
-COMMENT ON TABLE LOCALIZACION IS 'Datos iniciales de localizaciones rurales en municipios principales de Caldas'; 
+COMMENT ON TABLE LOCALIZACIONES IS 'Datos iniciales de localizaciones rurales en municipios principales de Caldas';
