@@ -123,12 +123,10 @@ class CampanaTest {
                 null, TipoIdentificacion.CC, USUARIO,
                 "pepito", "perez", "correo@me.com", PASSWORD,
                 "12123123",
-                Estado.ACTIVO, rol, 1L);
-        entidad = new EntidadSalud(
-                null, "una razon social",
-                "una direccion", "un telefono", "un correo",
-                1L,
-                usuario);
+                Estado.ACTIVO, rol, 1L, null, null);
+
+        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
+
         localizacion = new Localizacion(
                 null, "Antioquia", "Medellin",
                 "San Antonio", "Centro", 0.0, 0.0);
@@ -138,7 +136,6 @@ class CampanaTest {
         usuario.setRol(nuevoRol);
 
         nuevoUsuario = usuarioRepository.save(usuario);
-        entidad.setUsuarioId(nuevoUsuario.getId());
 
         nuevaEntidad = entidadRepository.save(entidad);
         nuevaLocalizacion = localizacionRepository.save(localizacion);

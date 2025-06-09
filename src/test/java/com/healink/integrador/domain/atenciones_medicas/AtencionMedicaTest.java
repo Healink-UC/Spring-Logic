@@ -129,7 +129,7 @@ public class AtencionMedicaTest {
 
         usuario = new Usuario(null, TipoIdentificacion.CC, USUARIO,
                 "pepito", "perez", "correo@me.com", PASSWORD,
-                "12123123", Estado.ACTIVO, nuevoRol, nuevoRol.getId());
+                "12123123", Estado.ACTIVO, nuevoRol, nuevoRol.getId(), null, null);
 
         nuevoUsuario = usuarioRepository.save(usuario);
         assertNotNull(nuevoUsuario.getId());
@@ -139,7 +139,7 @@ public class AtencionMedicaTest {
     void crearEntidadSaludTest() throws JsonProcessingException {
         crearUsuarioTest(); // dependencia
 
-        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com", nuevoUsuario.getId(), nuevoUsuario);
+        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
         nuevaEntidad = entidadRepository.save(entidad);
         assertNotNull(nuevaEntidad.getId());
     }
@@ -154,11 +154,11 @@ public class AtencionMedicaTest {
     @Test
     void crearPersonalMedicoTest() throws JsonProcessingException {
         crearRolesTest();
-        //crearEntidadSaludTest();
+        // crearEntidadSaludTest();
 
         usuarioMedico = new Usuario(null, TipoIdentificacion.CC, "CarlosHerrera",
                 "Carlos", "Herrera", "carlosH@gmail.com", PASSWORD,
-                "4454444644", Estado.ACTIVO, nuevoRolMedico, nuevoRolMedico.getId());
+                "4454444644", Estado.ACTIVO, nuevoRolMedico, nuevoRolMedico.getId(), null, null);
 
         nuevoUsuarioMedico = usuarioRepository.save(usuarioMedico);
 
@@ -178,7 +178,7 @@ public class AtencionMedicaTest {
 
         usuarioPaciente = new Usuario(null, TipoIdentificacion.CC, "JuanPerez",
                 "Juan", "Perez", "juanP@gmail.com", PASSWORD,
-                "4454444644", Estado.ACTIVO, nuevoRolPaciente, nuevoRolPaciente.getId());
+                "4454444644", Estado.ACTIVO, nuevoRolPaciente, nuevoRolPaciente.getId(), null, null);
 
         nuevoUsuarioPaciente = usuarioRepository.save(usuarioPaciente);
 
@@ -260,7 +260,7 @@ public class AtencionMedicaTest {
         crearCitacionMedicaTest();
 
         atencionMedicaDTO = new AtencionMedicaDTO();
-        atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());        
+        atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());
         atencionMedicaDTO.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(5)));
         atencionMedicaDTO.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now()));
         atencionMedicaDTO.setDuracionReal(5);
@@ -283,7 +283,7 @@ public class AtencionMedicaTest {
         crearCitacionMedicaTestEstadoIncorrecto();
 
         atencionMedicaDTO = new AtencionMedicaDTO();
-        atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());        
+        atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());
         atencionMedicaDTO.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(5)));
         atencionMedicaDTO.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now()));
         atencionMedicaDTO.setDuracionReal(5);
@@ -301,21 +301,21 @@ public class AtencionMedicaTest {
     @DisplayName("CP-MED-05: 1-6-7-10 Atención con fecha-hora de inicio mayor a fecha-hora de fin")
     void guardarNuevaAtencionMedicaFechaHoraInicioMayorAlLimiteSuperiorTest() throws JsonProcessingException {
         crearCitacionMedicaTest();
-        try{
+        try {
 
             atencionMedicaDTO = new AtencionMedicaDTO();
-            atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());        
+            atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());
             atencionMedicaDTO.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().plusDays(15)));
             atencionMedicaDTO.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
             atencionMedicaDTO.setDuracionReal(5);
             atencionMedicaDTO.setEstado(EstadoAtencionMedica.EN_PROCESO.name());
-        
+
             ObjectMapper mapper = new ObjectMapper();
-            
+
             SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, "12345");
             ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
             String token = "";
-            
+
             if (res.getStatusCode().value() == 200) {
                 // Obtener el body como objeto genérico
                 Object body = res.getBody();
@@ -335,7 +335,7 @@ public class AtencionMedicaTest {
                         .andExpect(jsonPath("$.validationErrors.fechaHoraInicio")// Verifica el mensaje de error en
                                 .value("La fecha de inicio debe ser anterior a la fecha de finalizacion de la atencion medica."));
 
-            }else{
+            } else {
                 fail("No se pudo obtener el token" + res.getStatusCode().value());
             }
         } catch (Exception e) {
@@ -349,20 +349,20 @@ public class AtencionMedicaTest {
     @DisplayName("CP-MED-09: 1-4-7-12 Atención con duración demasiado larga")
     void guardarNuevaAtencionMedicaFechaHoraFinMenorAlLimiteInferiorTest() throws JsonProcessingException {
         crearCitacionMedicaTest();
-        try{        
+        try {
             atencionMedicaDTO = new AtencionMedicaDTO();
-            atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());        
+            atencionMedicaDTO.setCitacionId(nuevaCitacionMedica.getId());
             atencionMedicaDTO.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(5)));
             atencionMedicaDTO.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
             atencionMedicaDTO.setDuracionReal(61);
             atencionMedicaDTO.setEstado(EstadoAtencionMedica.EN_PROCESO.name());
-            
+
             ObjectMapper mapper = new ObjectMapper();
-            
+
             SolicitudAcceso solicitudAcceso = new SolicitudAcceso(TipoIdentificacion.CC, USUARIO, "12345");
             ResponseEntity<?> res = controlAuth.login(solicitudAcceso);
             String token = "";
-            
+
             if (res.getStatusCode().value() == 200) {
                 // Obtener el body como objeto genérico
                 Object body = res.getBody();
@@ -382,7 +382,7 @@ public class AtencionMedicaTest {
                         .andExpect(jsonPath("$.validationErrors.duracionReal")// Verifica el mensaje de error en
                                 .value("La duración real debe ser menor o igual a 60 minutos"));
 
-            }else{
+            } else {
                 fail("No se pudo obtener el token" + res.getStatusCode().value());
             }
         } catch (Exception e) {
@@ -391,6 +391,5 @@ public class AtencionMedicaTest {
             System.out.println(e);
         }
     }
-    
 
 }

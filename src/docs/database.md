@@ -12,6 +12,7 @@ erDiagram
         timestamp ultimo_acceso
         varchar estado "ACTIVO|INACTIVO|SUSPENDIDO|PENDIENTE"
         int rol_id FK
+        int entidad_salud_id FK
         varchar actualizado_por
         varchar creado_por
         timestamp fecha_actualizacion
@@ -28,7 +29,6 @@ erDiagram
     ENTIDADES_SALUD {
         int id PK
         varchar razon_social
-        int usuario_id FK
     }
 
     EMBAJADORES {
@@ -274,7 +274,7 @@ erDiagram
         varchar tipo "MEDICAMENTO|ESTILO_VIDA|PREVENCION"
     }
 
-    USUARIOS ||--o{ ENTIDADES_SALUD : tiene
+    ENTIDADES_SALUD ||--|| USUARIOS : pertenece_a
     USUARIOS ||--o{ EMBAJADORES : tiene
     USUARIOS ||--o{ PERSONAL_MEDICO : tiene
     USUARIOS ||--o{ PACIENTES : tiene
