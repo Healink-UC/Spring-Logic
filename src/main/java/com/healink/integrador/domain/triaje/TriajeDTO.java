@@ -35,7 +35,7 @@ public class TriajeDTO implements DTOBase {
 
     @NotNull(message = "La estatura es requerida")
     @Positive(message = "La estatura debe ser un valor positivo")
-    @Max(value = 300, message = "La estatura no puede ser mayor a 300 cm (3 metros)")
+    @Max(value = 400, message = "La estatura no puede ser mayor a 400 cm (4 metros)")
     private float estatura;
 
     @NotNull(message = "Debe registrar si el paciente fuma")
