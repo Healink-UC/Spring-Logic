@@ -1,5 +1,5 @@
--- Poblar tabla LOCALIZACION con datos de veredas rurales de Caldas
-INSERT INTO LOCALIZACION (departamento, municipio, vereda, localidad, latitud, longitud)
+-- Poblar tabla LOCALIZACIONES con datos de veredas rurales de Caldas
+INSERT INTO LOCALIZACIONES (departamento, municipio, vereda, localidad, latitud, longitud)
 VALUES 
     ('Caldas', 'Manizales', 'Eucalipto', 'Sector Sur', 5.0534, -75.4894),
     ('Caldas', 'Manizales', 'La Linda', 'Sector Alto', 5.0679, -75.5174),

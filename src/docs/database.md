@@ -2,7 +2,7 @@
 erDiagram
     USUARIOS {
         int id PK
-        varchar tipo_identificacion "cc|ti|nit|rcn"
+        varchar tipo_identificacion "CC|TI|NIT|RCN"
         varchar identificacion
         varchar nombres
         varchar apellidos
@@ -85,7 +85,7 @@ erDiagram
 
     INSCRIPCIONES_CAMPANA {
         int id PK
-        int paciente_id FK
+        int usuario_id FK
         int campana_id FK
         timestamp fecha_inscripcion
         varchar estado "INSCRITO|RETIRADO"
@@ -325,6 +325,7 @@ erDiagram
     CAMPANAS ||--o{ PREDICCIONES : genera
     PACIENTES ||--o{ INTERACCIONES_CHATBOT : interactua
 
-    PACIENTES ||--o{ INSCRIPCIONES_CAMPANA : participa_en
+    USUARIOS ||--o{ INSCRIPCIONES_CAMPANA : participa_en
     CAMPANAS ||--o{ INSCRIPCIONES_CAMPANA : tiene_inscritos
+
 ```
