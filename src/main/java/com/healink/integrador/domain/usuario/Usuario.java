@@ -73,7 +73,7 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Column(name = "entidad_salud_id")
     private Long entidadSaludId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entidad_salud_id", referencedColumnName = "id", insertable = false, updatable = false)
     private EntidadSalud entidadSalud;
 
