@@ -48,14 +48,22 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
             throw new IllegalStateException("El correo ya está registrado");
         }
 
-        // Cargar el Rol completo si solo viene el ID
-        if (usuario.getRol() != null && usuario.getRol().getId() != null) {
-            usuario.setRol(rolRepository.findById(usuario.getRol().getId())
+        // Cargar el Rol completo si tenemos rolId
+        if (usuario.getRolId() != null) {
+            usuario.setRol(rolRepository.findById(usuario.getRolId())
                     .orElseThrow(() -> new EntityNotFoundException(
-                            "Rol no encontrado con ID: " + usuario.getRol().getId())));
+                            "Rol no encontrado con ID: " + usuario.getRolId())));
         }
 
-        return super.guardar(usuario);
+        Usuario usuarioGuardado = super.guardar(usuario);
+
+        // Asegurar que el rol esté disponible en el objeto devuelto
+        if (usuarioGuardado.getRol() == null && usuarioGuardado.getRolId() != null) {
+            usuarioGuardado.setRol(rolRepository.findById(usuarioGuardado.getRolId())
+                    .orElse(null));
+        }
+
+        return usuarioGuardado;
     }
 
     @Override

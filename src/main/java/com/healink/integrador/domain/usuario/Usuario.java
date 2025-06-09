@@ -80,7 +80,15 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.getNombre().toUpperCase()));
+        if (rol != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + rol.getNombre().toUpperCase()));
+        }
+        // Si el rol no está cargado, usar un rol por defecto basado en rolId
+        if (rolId != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER_" + rolId));
+        }
+        // Último recurso: rol genérico
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
