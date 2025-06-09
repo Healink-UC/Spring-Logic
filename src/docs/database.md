@@ -274,7 +274,7 @@ erDiagram
         varchar tipo "MEDICAMENTO|ESTILO_VIDA|PREVENCION"
     }
 
-    ENTIDADES_SALUD ||--o{ USUARIOS : pertenece_a
+    ENTIDADES_SALUD ||--|| USUARIOS : pertenece_a
     USUARIOS ||--o{ EMBAJADORES : tiene
     USUARIOS ||--o{ PERSONAL_MEDICO : tiene
     USUARIOS ||--o{ PACIENTES : tiene
