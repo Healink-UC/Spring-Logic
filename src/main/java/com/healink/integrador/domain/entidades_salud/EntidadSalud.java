@@ -1,15 +1,11 @@
 package com.healink.integrador.domain.entidades_salud;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "ENTIDADES_SALUD")
@@ -34,7 +30,4 @@ public class EntidadSalud extends EntidadAuditable {
 
     @Column(name = "correo")
     private String correo;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "entidadSalud")
-    private List<Usuario> usuarios = new ArrayList<>();
 }
