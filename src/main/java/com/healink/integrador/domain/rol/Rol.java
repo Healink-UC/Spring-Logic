@@ -6,12 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import org.hibernate.annotations.Type;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.healink.integrador.core.entity.EntidadAuditable;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 
 @Entity
 @Table(name = "ROLES")
@@ -32,6 +29,5 @@ public class Rol extends EntidadAuditable {
     private String descripcion;
 
     @Column(name = "permisos", columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
-    private transient JsonNode permisos;
+    private JsonNode permisos;
 }
