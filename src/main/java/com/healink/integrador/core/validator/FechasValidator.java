@@ -9,7 +9,7 @@ import com.healink.integrador.domain.campana.validators.CompararFechasValidator;
 
 @Documented
 @Constraint(validatedBy = CompararFechasValidator.class)
-@Target({ ElementType.FIELD })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FechasValidator {
 
