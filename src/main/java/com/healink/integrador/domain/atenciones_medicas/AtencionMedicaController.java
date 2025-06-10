@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healink.integrador.core.controller.ControladorGenerico;
+import com.healink.integrador.core.integrations.N8nIntegrationService;
 import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaRepository;
 import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
@@ -24,11 +25,16 @@ public class AtencionMedicaController extends ControladorGenerico<AtencionMedica
 
     private final AtencionMedicaService atencionMedicaService;
     private final CitacionMedicaService citacionMedicaService;
+    private final N8nIntegrationService n8nIntegrationService;
 
-    public AtencionMedicaController(AtencionMedicaService atencionMedicaService, AtencionMedicaMapper atencionMedicaMapper, CitacionMedicaService citacionMedicaService) {
+    public AtencionMedicaController(AtencionMedicaService atencionMedicaService, 
+                                  AtencionMedicaMapper atencionMedicaMapper, 
+                                  CitacionMedicaService citacionMedicaService,
+                                  N8nIntegrationService n8nIntegrationService) {
         super(atencionMedicaService, atencionMedicaMapper);
         this.atencionMedicaService = atencionMedicaService;
         this.citacionMedicaService = citacionMedicaService;
+        this.n8nIntegrationService = n8nIntegrationService;
     }
 
     @Override
@@ -50,6 +56,14 @@ public class AtencionMedicaController extends ControladorGenerico<AtencionMedica
 
         citacionMedica.setEstado(EstadoCitacion.ATENDIDA);
         citacionMedicaService.guardar(citacionMedica);
+
+        // *** INTEGRACIÓN N8N: Iniciar seguimientos automáticos ***
+        try {
+            n8nIntegrationService.iniciarSeguimientosPaciente(atencionGuardada);
+        } catch (Exception e) {
+            // Log del error pero no falla la atención médica
+            System.err.println("Error iniciando seguimientos n8n: " + e.getMessage());
+        }
 
         return ResponseEntity.ok(mapeador.aDTO(atencionGuardada));
     }
