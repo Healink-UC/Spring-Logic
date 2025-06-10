@@ -6,6 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.healink.integrador.core.entity.EntidadAuditable;
+
+
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
