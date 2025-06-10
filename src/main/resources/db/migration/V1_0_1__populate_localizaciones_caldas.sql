@@ -1,5 +1,5 @@
--- Poblar tabla LOCALIZACION con datos de veredas rurales de Caldas
-INSERT INTO LOCALIZACION (departamento, municipio, vereda, localidad, latitud, longitud)
+-- Poblar tabla LOCALIZACIONES con datos de veredas rurales de Caldas
+INSERT INTO LOCALIZACIONES (departamento, municipio, vereda, localidad, latitud, longitud)
 VALUES 
     ('Caldas', 'Manizales', 'Eucalipto', 'Sector Sur', 5.0534, -75.4894),
     ('Caldas', 'Manizales', 'La Linda', 'Sector Alto', 5.0679, -75.5174),
@@ -22,4 +22,4 @@ VALUES
     ('Caldas', 'Palestina', 'El Higuerón', 'Sector Cafetero', 5.0823, -75.6189),
     ('Caldas', 'Palestina', 'La Plata', 'Área Principal', 5.0867, -75.6278);
 
-COMMENT ON TABLE LOCALIZACION IS 'Datos iniciales de localizaciones rurales en municipios principales de Caldas'; 
+COMMENT ON TABLE LOCALIZACIONES IS 'Datos iniciales de localizaciones rurales en municipios principales de Caldas';

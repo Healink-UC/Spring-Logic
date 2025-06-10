@@ -12,7 +12,6 @@ public class PrediccionService extends ServicioGenerico<Prediccion> {
 
     public PrediccionService(PrediccionRepository prediccionesRepository) {
         super(prediccionesRepository);
-
     }
 
 }

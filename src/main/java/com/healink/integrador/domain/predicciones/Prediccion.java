@@ -7,8 +7,6 @@ import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.paciente.Paciente;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
-import org.hibernate.annotations.Type;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
