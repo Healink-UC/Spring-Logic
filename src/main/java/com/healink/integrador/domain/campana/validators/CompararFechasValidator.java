@@ -36,8 +36,8 @@ public class CompararFechasValidator implements ConstraintValidator<FechasValida
             boolean allValid = true;
             context.disableDefaultConstraintViolation();
 
-            // Validar fechaInicio anterior a hoy
-            if (!hoy.isBefore(fechaInicio)) {
+            // Validar fechaInicio que sea hoy o después
+            if (fechaInicio.isBefore(hoy)) {
                 context.buildConstraintViolationWithTemplate(
                         "La fecha de inicio debe ser hoy o una fecha posterior.")
                         .addPropertyNode("fechaInicio")
