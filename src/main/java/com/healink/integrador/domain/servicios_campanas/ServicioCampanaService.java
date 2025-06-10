@@ -22,8 +22,14 @@ public class ServicioCampanaService extends ServicioGenerico<ServicioCampana> {
     public Optional<List<ServicioCampana>> findByCampanaId(Long campanaId) {
         return servicioCampanaRepository.findByCampanaId(campanaId);
     }
+
     @Transactional(readOnly = true)
     public Optional<List<ServicioCampana>> findByServicioId(Long servicioId) {
         return servicioCampanaRepository.findByServicioId(servicioId);
+    }
+
+    @Transactional
+    public List<ServicioCampana> agregarServiciosCampana(Long campanaId, List<Long> serviciosIds) {
+        return servicioCampanaRepository.saveAllServiciosCampana(campanaId, serviciosIds);
     }
 }
