@@ -45,4 +45,6 @@ public class UsuarioDTO implements DTOBase {
     // Campo opcional - solo se incluye si no es null
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private EntidadSaludDTO entidadSalud;
+
+    private Long entidadSaludId;
 }
