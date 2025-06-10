@@ -26,6 +26,7 @@ public class CompararFechasValidator implements ConstraintValidator<FechasValida
             LocalDate fechaLimiteInscripcion = getFieldValue(object, "fechaLimiteInscripcion");
             LocalDate fechaInicio = getFieldValue(object, "fechaInicio");
             LocalDate fechaLimite = getFieldValue(object, "fechaLimite");
+            LocalDate hoy = LocalDate.now();
 
             // Si alguna fecha es null, no validamos (dejar que @NotNull lo maneje)
             if (fechaLimiteInscripcion == null || fechaInicio == null || fechaLimite == null) {
@@ -35,10 +36,19 @@ public class CompararFechasValidator implements ConstraintValidator<FechasValida
             boolean allValid = true;
             context.disableDefaultConstraintViolation();
 
+            // Validar fechaInicio anterior a hoy
+            if (!hoy.isBefore(fechaInicio)) {
+                context.buildConstraintViolationWithTemplate(
+                        "La fecha de inicio debe ser hoy o una fecha posterior.")
+                        .addPropertyNode("fechaInicio")
+                        .addConstraintViolation();
+                allValid = false;
+            }
+
             // Validar fechaLimiteInscripcion > fechaInicio
             if (!fechaLimiteInscripcion.isAfter(fechaInicio)) {
                 context.buildConstraintViolationWithTemplate(
-                        "La fecha limite de inscripcion debe ser anterior a la fecha de inicio de la campana.")
+                        "La fecha límite de inscripción debe ser posterior a la fecha de inicio de la campaña.")
                         .addPropertyNode("fechaLimiteInscripcion")
                         .addConstraintViolation();
                 allValid = false;
@@ -47,7 +57,7 @@ public class CompararFechasValidator implements ConstraintValidator<FechasValida
             // Validar fechaInicio < fechaLimite
             if (!fechaInicio.isBefore(fechaLimite)) {
                 context.buildConstraintViolationWithTemplate(
-                        "La fecha de inicio debe ser anterior a la fecha de finalizacion de la campana.")
+                        "La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña.")
                         .addPropertyNode("fechaInicio")
                         .addConstraintViolation();
                 allValid = false;
