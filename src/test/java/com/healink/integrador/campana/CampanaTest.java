@@ -327,7 +327,7 @@ class CampanaTest {
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
         campana.setEntidadId(nuevaEntidad.getId());
-        campana.setFechaInicio(FECHA_INICIO.minusDays(1));
+        campana.setFechaInicio(FECHA_INICIO.minusDays(2));
         campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(1));
         campana.setFechaLimite(FECHA_FIN.plusDays(7));
         campana.setMinParticipantes(10);
@@ -358,7 +358,7 @@ class CampanaTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.fechaInicio")// Verifica el mensaje de error en
-                                .value("La fecha de inicio debe ser hoy o una fecha posterior"));
+                                .value("La fecha de inicio debe ser hoy o una fecha posterior."));
 
             }
 
@@ -452,8 +452,9 @@ class CampanaTest {
                         .andExpect(status().isBadRequest())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
-                        .andExpect(jsonPath("$.validationErrors.fechaLimite")// Verifica el mensaje de error
-                                .value("La fecha de finalizacion debe ser posterior a la fecha de inicio de la campaña."));
+                        .andExpect(jsonPath("$.validationErrors.fechaInicio")// Verifica el mensaje de error
+                                .value("La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña."));
+
             }
 
         } catch (Exception e) {
@@ -464,13 +465,13 @@ class CampanaTest {
     }
 
     @Test
-    void campañaFechaLimitePosteriorFechaInicioTest() {
+    void campañaFechaLimiteAnteriorFechaInicioTest() {
         campana = new CampanaDTO();
         campana.setNombre("campaña prueba");
         campana.setDescripcion("descripcion de prueba");
         campana.setEntidadId(nuevaEntidad.getId());
         campana.setFechaInicio(FECHA_INICIO.plusDays(1));
-        campana.setFechaLimiteInscripcion(FECHA_LIMITE.plusDays(3));
+        campana.setFechaLimiteInscripcion(FECHA_LIMITE.minusDays(3));
         campana.setFechaLimite(FECHA_FIN.plusDays(7));
         campana.setMinParticipantes(10);
         campana.setMaxParticipantes(50);
@@ -500,7 +501,7 @@ class CampanaTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()) // Verifica código de estado es 400 (Bad Request)
                         .andExpect(jsonPath("$.validationErrors.fechaLimiteInscripcion")// Verifica el mensaje de error
-                                .value("La fecha límite de inscripción debe ser anterior a la fecha de inicio de la campaña."));
+                                .value("La fecha límite de inscripción debe ser posterior a la fecha de inicio de la campaña."));
 
             }
 
