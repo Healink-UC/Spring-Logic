@@ -1,5 +1,6 @@
 package com.healink.integrador.domain.usuario;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,12 +13,14 @@ import com.healink.integrador.domain.rol.RolRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class UsuarioService extends ServicioGenerico<Usuario> implements UserDetailsService {
 
+    @Autowired
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final RolRepository rolRepository; // Añade esta dependencia
@@ -45,17 +48,26 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
             throw new IllegalStateException("El correo ya está registrado");
         }
 
-        // Cargar el Rol completo si solo viene el ID
-        if (usuario.getRol() != null && usuario.getRol().getId() != null) {
-            usuario.setRol(rolRepository.findById(usuario.getRol().getId())
+        // Cargar el Rol completo si tenemos rolId
+        if (usuario.getRolId() != null) {
+            usuario.setRol(rolRepository.findById(usuario.getRolId())
                     .orElseThrow(() -> new EntityNotFoundException(
-                            "Rol no encontrado con ID: " + usuario.getRol().getId())));
+                            "Rol no encontrado con ID: " + usuario.getRolId())));
         }
 
-        return super.guardar(usuario);
+        Usuario usuarioGuardado = super.guardar(usuario);
+
+        // Asegurar que el rol esté disponible en el objeto devuelto
+        if (usuarioGuardado.getRol() == null && usuarioGuardado.getRolId() != null) {
+            usuarioGuardado.setRol(rolRepository.findById(usuarioGuardado.getRolId())
+                    .orElse(null));
+        }
+
+        return usuarioGuardado;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Usuario obtenerPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
@@ -74,7 +86,6 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
                 identificacion);
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String[] parts = username.split(":");
@@ -91,5 +102,15 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
         } catch (IllegalArgumentException e) {
             throw new UsernameNotFoundException("Tipo de identificación inválido", e);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Usuario> findByIdWithEntidadSalud(Long id) {
+        return usuarioRepository.findByIdWithEntidadSalud(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> findAllWithEntidades() {
+        return usuarioRepository.findAllWithEntidadSalud();
     }
 }

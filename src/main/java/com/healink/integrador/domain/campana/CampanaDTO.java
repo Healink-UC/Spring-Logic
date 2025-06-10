@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@FechasValidator(compareWith = "fechaInicio", message = "Validación de fechas")
 public class CampanaDTO implements DTOBase {
 
     private Long id;
@@ -26,15 +27,12 @@ public class CampanaDTO implements DTOBase {
     private Long localizacionId;
 
     @NotNull(message = "La campaña debe tener una fecha límite")
-    @FechasValidator(compareWith = "fechaInicio", message = "La fecha límite de inscripción debe ser anterior a la fecha de inicio de la campaña.")
     private LocalDate fechaLimiteInscripcion;
 
     @NotNull(message = "La campaña debe tener una fecha de inicio")
-    @FechasValidator(compareWith = "fechaLimite", message = "La fecha de inicio debe ser anterior a la fecha de finalizacion de la campaña.")
     private LocalDate fechaInicio;
 
     @NotNull(message = "La campaña debe tener una fecha de finalizacion")
-    @FechasValidator(compareWith = "fechaInicio", message = "La fecha de finalizacion debe ser posterior a la fecha de inicio de la campaña.")
     private LocalDate fechaLimite;
 
     @NotNull(message = "La campaña debe tener un número mínimo de participantes")

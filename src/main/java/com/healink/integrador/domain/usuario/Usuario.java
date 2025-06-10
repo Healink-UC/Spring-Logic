@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import com.healink.integrador.domain.rol.Rol;
 
 @Entity
@@ -69,10 +70,25 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Column(name = "rol_id", nullable = false)
     private Long rolId;
 
+    @Column(name = "entidad_salud_id")
+    private Long entidadSaludId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entidad_salud_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EntidadSalud entidadSalud;
+
     // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.getNombre().toUpperCase()));
+        if (rol != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + rol.getNombre().toUpperCase()));
+        }
+        // Si el rol no está cargado, usar un rol por defecto basado en rolId
+        if (rolId != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER_" + rolId));
+        }
+        // Último recurso: rol genérico
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override

@@ -53,6 +53,9 @@ public class Campana extends EntidadAuditable {
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
 
+    @Column(name = "fecha_limite", nullable = false)
+    private LocalDate fechaLimite;
+
     @Column(name = "min_participantes", nullable = false)
     private int minParticipantes;
 
