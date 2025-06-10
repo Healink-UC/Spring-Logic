@@ -6,12 +6,13 @@ import com.healink.integrador.core.controller.ControladorGenerico;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/inscripciones-campana")
-@Tag(name = "Inscripciones a Campañas", description = "API para gestionar inscripciones de pacientes a campañas")
+@Tag(name = "Inscripciones a Campañas", description = "API para gestionar inscripciones de usuarios a campañas")
 public class InscripcionCampanaController extends ControladorGenerico<InscripcionCampana, InscripcionCampanaDTO> {
 
     private final InscripcionCampanaService inscripcionCampanaService;
@@ -24,17 +25,26 @@ public class InscripcionCampanaController extends ControladorGenerico<Inscripcio
         this.inscripcionCampanaMapper = inscripcionCampanaMapper;
     }
 
-    @GetMapping("/paciente/{pacienteId}")
-    @Operation(summary = "Obtener inscripciones por ID de paciente", description = "Retorna todas las inscripciones de un paciente específico")
-    public ResponseEntity<List<InscripcionCampanaDTO>> obtenerPorPacienteId(@PathVariable Long pacienteId) {
-        List<InscripcionCampana> inscripciones = inscripcionCampanaService.buscarPorPacienteId(pacienteId);
+    @Override
+    @PostMapping
+    @Operation(summary = "Crear inscripción a campaña", description = "Crea una nueva inscripción de usuario a campaña")
+    public ResponseEntity<InscripcionCampanaDTO> crear(@Valid @RequestBody InscripcionCampanaDTO dto) {
+        InscripcionCampana entidad = inscripcionCampanaMapper.aEntidad(dto);
+        InscripcionCampana inscripcionCreada = inscripcionCampanaService.crearInscripcion(entidad);
+        return ResponseEntity.ok(inscripcionCampanaMapper.aDTO(inscripcionCreada));
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    @Operation(summary = "Obtener inscripciones por ID de usuario", description = "Retorna todas las inscripciones de un usuario específico")
+    public ResponseEntity<List<InscripcionCampanaDTO>> obtenerPorUsuarioId(@PathVariable Long usuarioId) {
+        List<InscripcionCampana> inscripciones = inscripcionCampanaService.buscarPorUsuarioId(usuarioId);
         return ResponseEntity.ok(inscripcionCampanaMapper.aListaDTO(inscripciones));
     }
 
-    @GetMapping("/paciente/{pacienteId}/activas")
-    @Operation(summary = "Obtener inscripciones activas por ID de paciente", description = "Retorna las inscripciones activas de un paciente específico")
-    public ResponseEntity<List<InscripcionCampanaDTO>> obtenerInscripcionesActivas(@PathVariable Long pacienteId) {
-        List<InscripcionCampana> inscripciones = inscripcionCampanaService.buscarInscripcionesActivas(pacienteId);
+    @GetMapping("/usuario/{usuarioId}/activas")
+    @Operation(summary = "Obtener inscripciones activas por ID de usuario", description = "Retorna las inscripciones activas de un usuario específico")
+    public ResponseEntity<List<InscripcionCampanaDTO>> obtenerInscripcionesActivas(@PathVariable Long usuarioId) {
+        List<InscripcionCampana> inscripciones = inscripcionCampanaService.buscarInscripcionesActivas(usuarioId);
         return ResponseEntity.ok(inscripcionCampanaMapper.aListaDTO(inscripciones));
     }
 
