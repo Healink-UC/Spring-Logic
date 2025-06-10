@@ -10,9 +10,11 @@ import com.healink.integrador.core.mapper.MapeadorGenerico;
 @Mapper(componentModel = "spring", uses = { JsonMapper.class })
 public interface RolMapper extends MapeadorGenerico<Rol, RolDTO> {
     @Override
+    @Mapping(target = "permisos", source = "permisos")
     RolDTO aDTO(Rol entity);
 
     @Override
+    @Mapping(target = "permisos", source = "permisos")
     Rol aEntidad(RolDTO dto);
 
     // No actualizar el ID
