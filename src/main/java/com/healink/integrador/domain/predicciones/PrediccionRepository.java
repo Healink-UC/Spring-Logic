@@ -15,6 +15,6 @@ public interface PrediccionRepository extends RepositorioGenerico<Prediccion> {
     
     @Query("SELECT p FROM Prediccion p WHERE p.pacienteId = :pacienteId ORDER BY p.fechaPrediccion DESC")
     List<Prediccion> findByPacienteIdOrderByFechaDesc(@Param("pacienteId") Long pacienteId);
-
+    
     Optional<List<Prediccion>> findByPacienteId(Long pacienteId);
 }
