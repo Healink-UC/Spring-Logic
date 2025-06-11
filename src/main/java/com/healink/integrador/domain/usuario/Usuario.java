@@ -70,13 +70,6 @@ public class Usuario extends EntidadAuditable implements UserDetails {
     @Column(name = "rol_id", nullable = false)
     private Long rolId;
 
-    @Column(name = "entidad_salud_id")
-    private Long entidadSaludId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entidad_salud_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private EntidadSalud entidadSalud;
-
     // Métodos de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
