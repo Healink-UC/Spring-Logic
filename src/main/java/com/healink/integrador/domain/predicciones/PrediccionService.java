@@ -23,4 +23,5 @@ public class PrediccionService extends ServicioGenerico<Prediccion> {
     public Optional<List<Prediccion>> buscarPorPacienteId(Long pacienteId) {
         return prediccionesRepository.findByPacienteId(pacienteId);
     }
+  
 }
