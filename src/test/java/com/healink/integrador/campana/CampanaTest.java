@@ -125,7 +125,7 @@ class CampanaTest {
                 "12123123",
                 Estado.ACTIVO, rol, 1L, null, null);
 
-        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
+        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com", null, null);
 
         localizacion = new Localizacion(
                 null, "Antioquia", "Medellin",
