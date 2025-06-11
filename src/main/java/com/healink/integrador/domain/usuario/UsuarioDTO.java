@@ -1,9 +1,7 @@
 package com.healink.integrador.domain.usuario;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.healink.integrador.core.dto.DTOBase;
-import com.healink.integrador.domain.entidades_salud.EntidadSaludDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -39,12 +37,10 @@ public class UsuarioDTO implements DTOBase {
     private String celular;
     private Estado estado = Estado.ACTIVO;
 
-    // @NotNull(message = "El rol es requerido")
+    @NotNull(message = "El rol es requerido")
     private Long rolId;
 
-    // Campo opcional - solo se incluye si no es null
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private EntidadSaludDTO entidadSalud;
+    @Schema(readOnly = true, description = "ID del usuario que creó este registro")
+    private Long creadoPorId;
 
-    private Long entidadSaludId;
 }

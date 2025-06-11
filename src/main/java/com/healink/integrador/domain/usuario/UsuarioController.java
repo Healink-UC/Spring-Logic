@@ -40,20 +40,4 @@ public class UsuarioController extends ControladorGenerico<Usuario, UsuarioDTO> 
                 .map(usuario -> ResponseEntity.ok(mapeador.aDTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    @GetMapping("/with-entidades")
-    public ResponseEntity<List<UsuarioDTO>> findAllEntidades() {
-        List<UsuarioDTO> usuarios = usuarioService.findAllWithEntidades().stream()
-                .map(usuario -> ((UsuarioMapper) mapeador).aDTOConEntidadSalud(usuario))
-                .toList();
-        return ResponseEntity.ok(usuarios);
-    }
-
-    @GetMapping("/with-entidad/{id}")
-    public ResponseEntity<UsuarioDTO> getUserWithEntidad(@PathVariable("id") Long id) {
-        return usuarioService.findByIdWithEntidadSalud(id)
-                .map(usuario -> ResponseEntity.ok(((UsuarioMapper) mapeador).aDTOConEntidadSalud(usuario)))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
 }
