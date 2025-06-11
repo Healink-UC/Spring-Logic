@@ -19,7 +19,5 @@ public class EmbajadorEntidadDTO implements DTOBase {
 
     private EmbajadorDTO embajador = null;
     private EntidadSaludDTO entidadSalud = null;
-    // Campos adicionales para mostrar información relacionada
-    private String nombreEmbajador;
     private String nombreEntidad;
 } 
