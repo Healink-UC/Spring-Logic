@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
+import com.healink.integrador.domain.usuario.Usuario;
 
 @Entity
 @Table(name = "PACIENTES")
@@ -38,6 +39,10 @@ public class Paciente extends EntidadAuditable {
 
     @Column(name = "localizacion_id")
     private Long localizacionId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Usuario usuario;
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
