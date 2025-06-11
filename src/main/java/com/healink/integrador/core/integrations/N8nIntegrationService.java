@@ -528,4 +528,95 @@ public class N8nIntegrationService {
         datos.put("raw_data", "Implementar extracción de recomendaciones");
         return datos;
     }
+
+    /**
+     * NUEVO: Llamar al workflow del compañero para generar cuestionario personalizado
+     */
+    public Map<String, Object> generarCuestionarioConWorkflowCompanero(Map<String, Object> datosWorkflow) {
+        try {
+            logger.info("🤖 Llamando al workflow del compañero para generar cuestionario...");
+            
+            // Log de datos que se envían
+            logger.debug("📋 Datos enviados al workflow del compañero: {}", 
+                        datosWorkflow.keySet());
+            
+            // Llamar al webhook del workflow del compañero
+            String webhookPath = "/agente1-cardiovascular"; // Path del webhook del compañero
+            String response = llamarWebhookN8n(webhookPath, datosWorkflow);
+            
+            logger.info("✅ Respuesta del workflow del compañero recibida");
+            
+            // Parsear respuesta JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> respuestaParseada = objectMapper.readValue(response, Map.class);
+            
+            return respuestaParseada;
+            
+        } catch (Exception e) {
+            logger.error("❌ Error llamando al workflow del compañero: {}", e.getMessage(), e);
+            
+            // Retornar cuestionario de fallback en caso de error
+            return Map.of(
+                "success", false,
+                "error", e.getMessage(),
+                "cuestionario", generarCuestionarioFallback(),
+                "es_fallback", true
+            );
+        }
+    }
+
+    /**
+     * Generar cuestionario de fallback cuando n8n no está disponible
+     */
+    private Map<String, Object> generarCuestionarioFallback() {
+        List<Map<String, Object>> preguntasDefault = List.of(
+            Map.of(
+                "id", "adherencia_medicamentos",
+                "pregunta", "¿Ha tomado sus medicamentos según las indicaciones?",
+                "tipo", "opcion_multiple",
+                "opciones", List.of(
+                    "Sí, todos los días",
+                    "Casi siempre",
+                    "A veces olvido",
+                    "Frecuentemente olvido"
+                ),
+                "requerida", true
+            ),
+            Map.of(
+                "id", "sintomas_generales",
+                "pregunta", "¿Ha experimentado síntomas cardiovasculares?",
+                "tipo", "multiple_seleccion",
+                "opciones", List.of(
+                    "Ningún síntoma",
+                    "Dolor en el pecho",
+                    "Dificultad para respirar",
+                    "Palpitaciones",
+                    "Fatiga inusual"
+                ),
+                "requerida", true
+            ),
+            Map.of(
+                "id", "calidad_vida",
+                "pregunta", "¿Cómo se siente en general?",
+                "tipo", "opcion_multiple",
+                "opciones", List.of(
+                    "Muy bien",
+                    "Bien, con algunas preocupaciones",
+                    "Regular",
+                    "Mal, me preocupa mi salud"
+                ),
+                "requerida", true
+            )
+        );
+        
+        return Map.of(
+            "titulo", "Seguimiento Cardiovascular - Cuestionario de Respaldo",
+            "instrucciones", "Por favor responda las siguientes preguntas sobre su estado de salud",
+            "preguntas", preguntasDefault,
+            "metadata", Map.of(
+                "es_fallback", true,
+                "generado_en", LocalDateTime.now().toString()
+            )
+        );
+    }
 } 
