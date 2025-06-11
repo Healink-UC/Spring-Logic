@@ -203,7 +203,7 @@ erDiagram
         timestamp fecha_hora_inicio
         timestamp fecha_hora_fin
         int duracion_real "minutos"
-        varchar estado "EN_PROCESO|COMPLETADA|CANCELADA"
+        varchar estado "EN_PROCESO|COMPLETADA"
     }
 
     DIAGNOSTICOS {
