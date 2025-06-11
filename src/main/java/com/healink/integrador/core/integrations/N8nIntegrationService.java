@@ -253,11 +253,12 @@ public class N8nIntegrationService {
                 // Datos del triaje más reciente
                 Triaje triaje = historiaActual.getUltimoTriaje();
                 if (triaje != null) {
-                    // CORREGIDO: Manejo seguro de tipos primitivos float
-                    datosCardiovasculares.put("peso", triaje.getPeso() > 0 ? 
-                        Math.round(triaje.getPeso()) : 70);
-                    datosCardiovasculares.put("estatura", triaje.getEstatura() > 0 ? 
-                        Math.round(triaje.getEstatura()) : 170);
+                    // CORREGIDO: Usar Float wrapper para permitir null checks
+                    Float peso = triaje.getPeso();
+                    Float estatura = triaje.getEstatura();
+                    
+                    datosCardiovasculares.put("peso", peso != null ? peso.intValue() : 70);
+                    datosCardiovasculares.put("estatura", estatura != null ? estatura.intValue() : 170);
                     datosCardiovasculares.put("tabaquismo", triaje.isTabaquismo());
                     datosCardiovasculares.put("antecedentesCardiacos", triaje.isAntecedentesCardiacos());
                     
@@ -413,9 +414,19 @@ public class N8nIntegrationService {
             logger.info("=== LLAMADA A N8N DEBUGGING ===");
             logger.info("URL completa: {}", url);
             logger.info("Headers: {}", headers);
-            logger.info("Payload JSON length: {} chars", jsonPayload.length());
-            logger.info("Payload preview: {}", jsonPayload.length() > 200 ? 
-                       jsonPayload.substring(0, 200) + "..." : jsonPayload);
+            logger.info("Payload JSON completo:\n{}", jsonPayload);
+            
+            // NUEVO: Log de estructura específica
+            if (payload.containsKey("historial_clinico")) {
+                Map<String, Object> historial = (Map<String, Object>) payload.get("historial_clinico");
+                logger.info("📊 Estructura historial_clinico: {}", historial.keySet());
+                
+                if (historial.containsKey("datos_cardiovasculares")) {
+                    Map<String, Object> datosCV = (Map<String, Object>) historial.get("datos_cardiovasculares");
+                    logger.info("❤️ Datos cardiovasculares: pacienteId={}, edad={}, sexo={}, presionSistolica={}", 
+                               datosCV.get("pacienteId"), datosCV.get("edad"), datosCV.get("sexo"), datosCV.get("presionSistolica"));
+                }
+            }
             
             ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.POST, request, String.class);

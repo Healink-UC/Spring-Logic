@@ -92,9 +92,9 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
                 return Map.of("status", "warning", "mensaje", "No hay seguimientos para crear");
             }
 
-            // Extraer análisis de IA desde n8n
+            // NUEVO: Extraer análisis de IA para incluir en notas
             Map<String, Object> analisisIA = (Map<String, Object>) datosN8n.get("analisisIA");
-            
+
             // Crear seguimientos en la base de datos
             List<Long> seguimientosCreados = crearSeguimientosEnBD(seguimientos, atencion, pacienteId, analisisIA);
 
@@ -149,7 +149,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
                 }
                 
                 // No establecer fecha_realizada (null hasta que se complete)
-                seguimiento.setFecha_realizada(null);
+                // seguimiento.setFecha_realizada(null); // Ya es null por defecto
                 
                 // Tipo de seguimiento (chatbot por defecto desde n8n)
                 String tipoStr = (String) segN8n.get("tipo");
@@ -168,46 +168,57 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
                     seguimiento.setResultado("Seguimiento programado por sistema automático");
                 }
                 
-                // ✨ NUEVO: Notas enriquecidas con análisis de IA
-                String notasBase = String.format(
-                    "Seguimiento #%d creado automáticamente por n8n.\nPaciente: %d\nPrioridad: %s",
+                // MEJORADO: Notas desde n8n con análisis de IA incluido
+                StringBuilder notasBuilder = new StringBuilder();
+                notasBuilder.append(String.format(
+                    "Seguimiento #%d creado automáticamente por n8n.\n" +
+                    "Paciente: %d | Prioridad: %s\n",
                     extractInteger(segN8n, "numeroSeguimiento"),
                     pacienteId,
                     (String) segN8n.get("prioridad")
-                );
+                ));
                 
-                // Agregar análisis de IA si está disponible
-                StringBuilder notasCompletas = new StringBuilder(notasBase);
+                // Agregar mensaje del seguimiento
+                if (mensaje != null) {
+                    notasBuilder.append("Mensaje: ").append(mensaje).append("\n");
+                }
+                
+                // NUEVO: Agregar análisis de IA a las notas
                 if (analisisIA != null && !analisisIA.isEmpty()) {
-                    notasCompletas.append("\n\n🤖 ANÁLISIS DE IA:");
+                    notasBuilder.append("\n--- ANÁLISIS DE IA ---\n");
                     
+                    // Nivel de riesgo
                     String nivelRiesgo = (String) analisisIA.get("nivelRiesgo");
                     if (nivelRiesgo != null) {
-                        notasCompletas.append("\n• Nivel de Riesgo: ").append(nivelRiesgo);
+                        notasBuilder.append("Nivel de Riesgo: ").append(nivelRiesgo).append("\n");
                     }
                     
+                    // Factores de riesgo
                     List<String> factoresRiesgo = (List<String>) analisisIA.get("factoresRiesgo");
                     if (factoresRiesgo != null && !factoresRiesgo.isEmpty()) {
-                        notasCompletas.append("\n• Factores de Riesgo: ").append(String.join(", ", factoresRiesgo));
+                        notasBuilder.append("Factores de Riesgo: ").append(String.join(", ", factoresRiesgo)).append("\n");
                     }
                     
+                    // Recomendaciones
                     List<String> recomendaciones = (List<String>) analisisIA.get("recomendaciones");
                     if (recomendaciones != null && !recomendaciones.isEmpty()) {
-                        notasCompletas.append("\n• Recomendaciones: ").append(String.join(", ", recomendaciones));
+                        notasBuilder.append("Recomendaciones IA: ").append(String.join(", ", recomendaciones)).append("\n");
                     }
                     
-                    String cluster = (String) analisisIA.get("cluster");
-                    if (cluster != null) {
-                        notasCompletas.append("\n• Cluster K-means: ").append(cluster);
+                    // Cluster asignado
+                    String clusterAsignado = (String) analisisIA.get("clusterAsignado");
+                    if (clusterAsignado != null) {
+                        notasBuilder.append("Cluster Asignado: ").append(clusterAsignado).append("\n");
                     }
                     
-                    Double probabilidadRiesgo = extractDouble(analisisIA, "probabilidadRiesgo");
+                    // Probabilidad de riesgo
+                    Object probabilidadRiesgo = analisisIA.get("probabilidadRiesgo");
                     if (probabilidadRiesgo != null) {
-                        notasCompletas.append("\n• Probabilidad de Riesgo: ").append(String.format("%.1f%%", probabilidadRiesgo * 100));
+                        notasBuilder.append("Probabilidad de Riesgo: ").append(probabilidadRiesgo).append("\n");
                     }
                 }
                 
-                seguimiento.setNotas(notasCompletas.toString());
+                seguimiento.setNotas(notasBuilder.toString());
                 
                 // Estado programado
                 seguimiento.setEstado(EstadoSeguimiento.PROGRAMADO);
@@ -221,7 +232,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
                 Seguimiento seguimientoGuardado = this.guardar(seguimiento);
                 idsCreados.add(seguimientoGuardado.getId());
                 
-                logger.debug("✅ Seguimiento {} creado para fecha {} con análisis IA", 
+                logger.debug("✅ Seguimiento {} creado para fecha {}", 
                            seguimientoGuardado.getId(), seguimiento.getFecha_programada());
                 
             } catch (Exception e) {
@@ -278,21 +289,6 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
         if (value instanceof String) {
             try {
                 return Integer.parseInt((String) value);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-        return null;
-    }
-    
-    private Double extractDouble(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue();
-        }
-        if (value instanceof String) {
-            try {
-                return Double.parseDouble((String) value);
             } catch (NumberFormatException e) {
                 return null;
             }

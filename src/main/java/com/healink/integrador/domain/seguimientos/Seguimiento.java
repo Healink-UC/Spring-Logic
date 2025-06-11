@@ -30,7 +30,7 @@ public class Seguimiento extends EntidadAuditable {
     @Column(name = "fecha_programada", nullable = false)
     private LocalDate fecha_programada;
 
-    @Column(name = "fecha_realizada", nullable = false)
+    @Column(name = "fecha_realizada", nullable = true)
     private LocalDate fecha_realizada;
     
     @Column(name = "tipo", nullable = false)
