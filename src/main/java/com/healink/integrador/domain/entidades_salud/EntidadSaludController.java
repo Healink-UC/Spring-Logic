@@ -34,4 +34,12 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/entidad/{usuario_id}")
+    public ResponseEntity<EntidadSaludDTO> getByUsuarioId
+    (@PathVariable Long usuario_id) {
+        return entidadSaludService.findByUsuarioId(usuario_id)
+                .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
