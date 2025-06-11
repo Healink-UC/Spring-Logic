@@ -21,12 +21,12 @@ public interface UsuarioRepository extends RepositorioGenerico<Usuario> {
 
     boolean existsByCorreo(String correo);
 
-    // Obtener todos los usuarios con su entidad de salud (relación uno a uno)
-    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.entidadSalud")
-    List<Usuario> findAllWithEntidadSalud();
+    // // Obtener todos los usuarios con su entidad de salud (relación uno a uno)
+    // @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.entidadSalud")
+    // List<Usuario> findAllWithEntidadSalud();
 
-    // Obtener usuario por ID con entidad de salud cargada (relación uno a uno)
-    @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.entidadSalud WHERE u.id = :id")
-    Optional<Usuario> findByIdWithEntidadSalud(@Param("id") Long id);
+    // // Obtener usuario por ID con entidad de salud cargada (relación uno a uno)
+    // @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.entidadSalud WHERE u.id = :id")
+    // Optional<Usuario> findByIdWithEntidadSalud(@Param("id") Long id);
 
 }

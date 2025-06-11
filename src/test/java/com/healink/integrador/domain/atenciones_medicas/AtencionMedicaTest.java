@@ -135,14 +135,14 @@ public class AtencionMedicaTest {
         assertNotNull(nuevoUsuario.getId());
     }
 
-    @Test
-    void crearEntidadSaludTest() throws JsonProcessingException {
-        crearUsuarioTest(); // dependencia
+    // @Test
+    // void crearEntidadSaludTest() throws JsonProcessingException {
+    //     crearUsuarioTest(); // dependencia
 
-        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
-        nuevaEntidad = entidadRepository.save(entidad);
-        assertNotNull(nuevaEntidad.getId());
-    }
+    //     entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
+    //     nuevaEntidad = entidadRepository.save(entidad);
+    //     assertNotNull(nuevaEntidad.getId());
+    // }
 
     @Test
     void crearLocalizacionTest() {
@@ -196,7 +196,7 @@ public class AtencionMedicaTest {
 
     @Test
     void crearCampanaTest() throws JsonProcessingException {
-        crearEntidadSaludTest();
+        // crearEntidadSaludTest();
         crearLocalizacionTest();
 
         campana = new Campana();

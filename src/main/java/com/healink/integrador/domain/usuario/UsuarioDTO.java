@@ -39,12 +39,10 @@ public class UsuarioDTO implements DTOBase {
     private String celular;
     private Estado estado = Estado.ACTIVO;
 
-    // @NotNull(message = "El rol es requerido")
+    @NotNull(message = "El rol es requerido")
     private Long rolId;
 
-    // Campo opcional - solo se incluye si no es null
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private EntidadSaludDTO entidadSalud;
+    @Schema(readOnly = true, description = "ID del usuario que creó este registro")
+    private Long creadoPorId;
 
-    private Long entidadSaludId;
 }
