@@ -34,4 +34,5 @@ public class PacienteDTO implements DTOBase {
 
     @NotNull(message = "El ID de usuario es requerido")
     private Long usuarioId;
+
 }

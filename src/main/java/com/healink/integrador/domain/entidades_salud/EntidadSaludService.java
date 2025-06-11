@@ -22,4 +22,9 @@ public class EntidadSaludService extends ServicioGenerico<EntidadSalud> {
         return entidadSaludRepository.findByRazonSocial(razon);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<EntidadSalud> findByUsuarioId(Long usuarioId) {
+        return entidadSaludRepository.findByUsuarioId(usuarioId);
+    }
+
 }

@@ -22,4 +22,7 @@ public class EntidadSaludDTO implements DTOBase {
 
     @NotNull(message = "El correo es requerido")
     private String correo;
+
+    @NotNull(message = "El usuario es requerido")
+    private Long usuarioId;
 }
