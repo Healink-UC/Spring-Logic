@@ -104,13 +104,4 @@ public class UsuarioService extends ServicioGenerico<Usuario> implements UserDet
         }
     }
 
-    // @Transactional(readOnly = true)
-    // public Optional<Usuario> findByIdWithEntidadSalud(Long id) {
-    //     return usuarioRepository.findByIdWithEntidadSalud(id);
-    // }
-
-    // @Transactional(readOnly = true)
-    // public List<Usuario> findAllWithEntidades() {
-    //     return usuarioRepository.findAllWithEntidadSalud();
-    // }
 }

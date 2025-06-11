@@ -20,6 +20,13 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
         this.entidadSaludService = entidadSaludService;
     }
 
+    @GetMapping("/entidad/{usuario_id}")
+    public ResponseEntity<EntidadSaludDTO> getByUsuarioId(@PathVariable Long usuario_id) {
+        return entidadSaludService.findByUsuarioId(usuario_id)
+                .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/entidad/{razon_social}")
     public ResponseEntity<EntidadSaludDTO> getByRazonSocial(@PathVariable String razon_social) {
         return entidadSaludService.findByRazonSocial(razon_social)
@@ -27,11 +34,4 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/entidad/{usuario_id}")
-    public ResponseEntity<EntidadSaludDTO> getByUsuarioId
-    (@PathVariable Long usuario_id) {
-        return entidadSaludService.findByUsuarioId(usuario_id)
-                .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
-                .orElse(ResponseEntity.notFound().build());
-    }
 }

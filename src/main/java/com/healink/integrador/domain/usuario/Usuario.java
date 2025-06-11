@@ -15,7 +15,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.entidades_salud.EntidadSalud;
 import com.healink.integrador.domain.rol.Rol;
 
 @Entity

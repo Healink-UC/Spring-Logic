@@ -77,7 +77,7 @@ public class ControladorAuth {
 
             // Obtener usuario autenticado básico
             Usuario usuarioAuth = (Usuario) auth.getPrincipal();
-            
+
             // Obtener usuario completo con entidad de salud desde la base de datos
             Usuario usuario = usuarioService.findByTipoIdentificacionAndIdentificacion(
                     usuarioAuth.getTipoIdentificacion(),
@@ -90,7 +90,7 @@ public class ControladorAuth {
             // Respuesta
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
-            response.put("usuario", usuarioMapper.aDTOConEntidadSalud(usuario));
+            response.put("usuario", usuarioMapper.aDTO(usuario));
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

@@ -7,9 +7,8 @@ import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.healink.integrador.core.mapper.MapeadorGenerico;
-import com.healink.integrador.domain.entidades_salud.EntidadSaludMapper;
 
-@Mapper(componentModel = "spring", uses = { EntidadSaludMapper.class })
+@Mapper(componentModel = "spring")
 public abstract class UsuarioMapper implements MapeadorGenerico<Usuario, UsuarioDTO> {
 
     @Autowired
@@ -31,13 +30,6 @@ public abstract class UsuarioMapper implements MapeadorGenerico<Usuario, Usuario
     @Mapping(target = "rol", ignore = true)
     @Mapping(target = "creadoPor", ignore = true)
     public abstract void actualizarEntidadDesdeDTO(UsuarioDTO dto, @MappingTarget Usuario entity);
-
-    // Método específico para cuando la entidad de salud está cargada
-    @Named("conEntidadSalud")
-    @Mapping(target = "clave", ignore = true)
-    @Mapping(target = "rolId", source = "rolId")
-    @Mapping(target = "creadoPorId", source = "creadoPor", qualifiedByName = "convertirCreadoPorAId")
-    public abstract UsuarioDTO aDTOConEntidadSalud(Usuario entity);
 
     @Named("convertirCreadoPorAId")
     protected Long convertirCreadoPorAId(String creadoPor) {

@@ -127,9 +127,9 @@ public class AtencionMedicaTest {
     void crearUsuarioTest() throws JsonProcessingException {
         crearRolesTest(); // dependencia
 
-        usuario = new Usuario(null, TipoIdentificacion.CC, USUARIO,
-                "pepito", "perez", "correo@me.com", PASSWORD,
-                "12123123", Estado.ACTIVO, nuevoRol, nuevoRol.getId(), null, null);
+        // usuario = new Usuario(null, TipoIdentificacion.CC, USUARIO,
+        //         "pepito", "perez", "correo@me.com", PASSWORD,
+        //         "12123123", Estado.ACTIVO, nuevoRol, nuevoRol.getId(), null, null);
 
         nuevoUsuario = usuarioRepository.save(usuario);
         assertNotNull(nuevoUsuario.getId());
@@ -156,9 +156,9 @@ public class AtencionMedicaTest {
         crearRolesTest();
         // crearEntidadSaludTest();
 
-        usuarioMedico = new Usuario(null, TipoIdentificacion.CC, "CarlosHerrera",
-                "Carlos", "Herrera", "carlosH@gmail.com", PASSWORD,
-                "4454444644", Estado.ACTIVO, nuevoRolMedico, nuevoRolMedico.getId(), null, null);
+        // usuarioMedico = new Usuario(null, TipoIdentificacion.CC, "CarlosHerrera",
+        //         "Carlos", "Herrera", "carlosH@gmail.com", PASSWORD,
+        //         "4454444644", Estado.ACTIVO, nuevoRolMedico, nuevoRolMedico.getId(), null, null);
 
         nuevoUsuarioMedico = usuarioRepository.save(usuarioMedico);
 
@@ -176,9 +176,9 @@ public class AtencionMedicaTest {
         crearRolesTest();
         crearLocalizacionTest();
 
-        usuarioPaciente = new Usuario(null, TipoIdentificacion.CC, "JuanPerez",
-                "Juan", "Perez", "juanP@gmail.com", PASSWORD,
-                "4454444644", Estado.ACTIVO, nuevoRolPaciente, nuevoRolPaciente.getId(), null, null);
+        // usuarioPaciente = new Usuario(null, TipoIdentificacion.CC, "JuanPerez",
+        //         "Juan", "Perez", "juanP@gmail.com", PASSWORD,
+        //         "4454444644", Estado.ACTIVO, nuevoRolPaciente, nuevoRolPaciente.getId(), null, null);
 
         nuevoUsuarioPaciente = usuarioRepository.save(usuarioPaciente);
 
