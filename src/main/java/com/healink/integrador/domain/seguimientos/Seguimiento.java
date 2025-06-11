@@ -37,10 +37,10 @@ public class Seguimiento extends EntidadAuditable {
     @Enumerated(EnumType.STRING)
     private TipoSeguimiento tipo;
     
-    @Column(name = "resultado", nullable = false)
+    @Column(name = "resultado", nullable = false, length = 1000)
     private String resultado;
 
-    @Column(name = "notas", nullable = false)
+    @Column(name = "notas", nullable = false, length = 2000)
     private String notas;
 
     @Column(name = "estado", nullable = false)

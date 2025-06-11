@@ -133,4 +133,76 @@ public class N8nWebhookController {
             ));
         }
     }
+
+    /**
+     * NUEVO: Endpoint de diagnóstico para depurar JSON enviado a n8n
+     */
+    @PostMapping("/debug-json/{pacienteId}")
+    public ResponseEntity<Map<String, Object>> debugJsonEnviado(@PathVariable Long pacienteId) {
+        try {
+            logger.info("🔍 DIAGNÓSTICO: Revisando JSON que se envía a n8n para paciente {}", pacienteId);
+            
+            // Obtener el historial completo (igual que en la integración real)
+            Map<String, Object> historialCompleto = n8nIntegrationService.obtenerHistorialCompletoParaPrueba(
+                pacienteId, null);
+            
+            // Preparar payload de diagnóstico (versión simplificada)
+            Map<String, Object> payloadDiagnostico = Map.of(
+                "evento", "debug_test",
+                "paciente_id", pacienteId,
+                "timestamp", System.currentTimeMillis(),
+                "modo", "debug"
+            );
+            
+            return ResponseEntity.ok(Map.of(
+                "status", "debug_success",
+                "historial_size", historialCompleto.size(),
+                "historial_keys", historialCompleto.keySet(),
+                "payload_debug", payloadDiagnostico,
+                "n8n_url", n8nIntegrationService.obtenerUrlActual()
+            ));
+            
+        } catch (Exception e) {
+            logger.error("❌ Error en diagnóstico JSON: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of(
+                "status", "debug_error",
+                "mensaje", "Error en diagnóstico: " + e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * NUEVO: Endpoint para test directo de webhook n8n con JSON simple
+     */
+    @PostMapping("/test-simple-webhook")
+    public ResponseEntity<Map<String, Object>> testSimpleWebhook() {
+        try {
+            logger.info("🧪 PRUEBA SIMPLE: Enviando JSON básico a n8n");
+            
+            // JSON muy simple para verificar conectividad
+            Map<String, Object> payloadSimple = Map.of(
+                "test", true,
+                "paciente_id", 1,
+                "mensaje", "Prueba de conectividad desde Spring Boot",
+                "timestamp", System.currentTimeMillis()
+            );
+            
+            // Llamar directamente al webhook
+            String response = n8nIntegrationService.llamarWebhookN8nDirecto("/orquestador-seguimientos", payloadSimple);
+            
+            return ResponseEntity.ok(Map.of(
+                "status", "simple_test_success",
+                "payload_enviado", payloadSimple,
+                "n8n_response", response,
+                "mensaje", "✅ Conectividad básica funcionando"
+            ));
+            
+        } catch (Exception e) {
+            logger.error("❌ Error en prueba simple: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of(
+                "status", "simple_test_error",
+                "mensaje", "Error en prueba simple: " + e.getMessage()
+            ));
+        }
+    }
 } 
