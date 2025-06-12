@@ -44,26 +44,26 @@ import org.slf4j.LoggerFactory;
  */
 @Service
 public class N8nIntegrationService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(N8nIntegrationService.class);
-    
+
     // @Value("${n8n.webhook.base-url:https://n8n-inte.onrender.com/webhook}")
     @Value("${n8n.webhook.base-url:http://localhost:5678/webhook}")
     private String n8nBaseUrl;
-    
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final HistoriaClinicaService historiaClinicaService;
     private final PacienteService pacienteService;
     private final CitacionMedicaService citacionMedicaService;
     private final PrediccionService prediccionService;
-    
-    public N8nIntegrationService(RestTemplate restTemplate, 
-                                ObjectMapper objectMapper,
-                                HistoriaClinicaService historiaClinicaService,
-                                PacienteService pacienteService,
-                                CitacionMedicaService citacionMedicaService,
-                                PrediccionService prediccionService) {
+
+    public N8nIntegrationService(RestTemplate restTemplate,
+            ObjectMapper objectMapper,
+            HistoriaClinicaService historiaClinicaService,
+            PacienteService pacienteService,
+            CitacionMedicaService citacionMedicaService,
+            PrediccionService prediccionService) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.historiaClinicaService = historiaClinicaService;
@@ -71,36 +71,37 @@ public class N8nIntegrationService {
         this.citacionMedicaService = citacionMedicaService;
         this.prediccionService = prediccionService;
     }
-    
+
     /**
-     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una citación médica
+     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una
+     * citación médica
      */
     public void iniciarSeguimientosPaciente(CitacionMedica citacionMedica) {
         try {
             Long pacienteId = citacionMedica.getPacienteId();
             Long campanaId = citacionMedica.getCampanaId();
-            
+
             logger.info("=== INICIANDO SEGUIMIENTOS AUTOMÁTICOS ===");
-            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}", 
-                       pacienteId, citacionMedica.getId(), campanaId);
-            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}", 
-                       pacienteId, citacionMedica.getId(), campanaId);
-            
+            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}",
+                    pacienteId, citacionMedica.getId(), campanaId);
+            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}",
+                    pacienteId, citacionMedica.getId(), campanaId);
+
             if (pacienteId == null) {
                 logger.warn("No se puede obtener paciente ID de citación {}", citacionMedica.getId());
                 logger.info("Para pruebas con datos reales, usa el endpoint /api/test/n8n/test-paciente/{pacienteId}");
                 return;
             }
-            
+
             // Obtener historial clínico completo
             Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, citacionMedica);
-            
+
             // Verificar que hay datos médicos mínimos
             if (historialCompleto.isEmpty()) {
                 logger.warn("No se puede iniciar seguimientos: Sin historial clínico para paciente {}", pacienteId);
                 return;
             }
-            
+
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
             payload.put("evento", "citacion_completada");
@@ -111,43 +112,44 @@ public class N8nIntegrationService {
             payload.put("historial_clinico", historialCompleto);
             payload.put("timestamp", System.currentTimeMillis());
             payload.put("modo", "produccion");
-            
+
             // Llamar al webhook del agente orquestador
             String response = llamarWebhookN8n("/orquestador-seguimientos", payload);
-            
+
             logger.info("✅ Seguimientos iniciados para paciente {}: {}", pacienteId, response);
-            
+
         } catch (Exception e) {
-            logger.error("❌ Error iniciando seguimientos para citación {}: {}", 
-                        citacionMedica.getId(), e.getMessage(), e);
+            logger.error("❌ Error iniciando seguimientos para citación {}: {}",
+                    citacionMedica.getId(), e.getMessage(), e);
             // No relanzar excepción para no afectar el guardado de la citación médica
         }
     }
-    
+
     /**
-     * NUEVO: Método para iniciar seguimientos directamente con paciente ID (útil para pruebas)
+     * NUEVO: Método para iniciar seguimientos directamente con paciente ID (útil
+     * para pruebas)
      */
     public void iniciarSeguimientosPacientePorId(Long pacienteId, Long campanaId) {
         try {
             logger.info("=== INICIANDO SEGUIMIENTOS POR PACIENTE ID ===");
             logger.info("Paciente ID: {}, Campaña ID: {}", pacienteId, campanaId);
-            
+
             // Crear citación médica temporal para mantener la estructura
             CitacionMedica citacionTemporal = new CitacionMedica();
             citacionTemporal.setId(null); // Sin ID hardcodeado
             citacionTemporal.setPacienteId(pacienteId);
             citacionTemporal.setCampanaId(campanaId);
             citacionTemporal.setFechaCreacion(LocalDateTime.now());
-            
+
             // Obtener historial clínico completo directamente por paciente ID
             Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, citacionTemporal);
-            
+
             // Verificar que hay datos médicos mínimos
             if (historialCompleto.isEmpty()) {
                 logger.warn("No se puede iniciar seguimientos: Sin historial clínico para paciente {}", pacienteId);
                 return;
             }
-            
+
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
             payload.put("evento", "citacion_completada");
@@ -158,50 +160,49 @@ public class N8nIntegrationService {
             payload.put("historial_clinico", historialCompleto);
             payload.put("timestamp", System.currentTimeMillis());
             payload.put("modo", "test_paciente_real");
-            
+
             // Llamar al webhook del agente orquestador
             String response = llamarWebhookN8n("/orquestador-seguimientos", payload);
-            
+
             logger.info("✅ Seguimientos iniciados por paciente ID {}: {}", pacienteId, response);
-            
+
         } catch (Exception e) {
-            logger.error("❌ Error iniciando seguimientos para paciente {}: {}", 
-                        pacienteId, e.getMessage(), e);
+            logger.error("❌ Error iniciando seguimientos para paciente {}: {}",
+                    pacienteId, e.getMessage(), e);
             throw new RuntimeException("Error iniciando seguimientos para paciente " + pacienteId, e);
         }
     }
-    
-    // MÉTODO ELIMINADO: enviarNotificacionSeguimiento() 
+
+    // MÉTODO ELIMINADO: enviarNotificacionSeguimiento()
     // RAZÓN: Las notificaciones las genera y envía n8n directamente
-    
+
     // ====== MÉTODOS PRIVADOS - SOLO EXTRACCIÓN DE DATOS ======
-    
+
     /**
      * Obtener historial clínico completo - DATOS CARDIOVASCULARES REALES
      */
     private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, CitacionMedica citacionMedica) {
-    private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, CitacionMedica citacionMedica) {
         Map<String, Object> historial = new HashMap<>();
-        
+
         try {
             logger.info("🔍 Extrayendo historial completo para paciente: {}", pacienteId);
-            
+
             // Datos básicos del paciente
             Paciente paciente = pacienteService.obtenerPorId(pacienteId);
             if (paciente == null) {
                 logger.warn("Paciente {} no encontrado", pacienteId);
                 return historial; // Retornar vacío si no hay paciente
             }
-            
+
             historial.put("pacienteId", pacienteId);
             Map<String, Object> datosBasicos = extraerDatosBasicos(paciente);
-            
+
             // Datos cardiovasculares reales desde FastAPI si disponible
             Map<String, Object> datosCardiovasculares = new HashMap<>();
             datosCardiovasculares.put("pacienteId", pacienteId);
             datosCardiovasculares.put("edad", calcularEdad(paciente));
             datosCardiovasculares.put("sexo", mapearSexoPaciente(paciente));
-            
+
             // Datos clínicos por defecto (mejorar con datos reales)
             datosCardiovasculares.put("presionSistolica", 120);
             datosCardiovasculares.put("presionDiastolica", 80);
@@ -212,92 +213,94 @@ public class N8nIntegrationService {
             datosCardiovasculares.put("colesterolLDL", 130);
             datosCardiovasculares.put("trigliceridos", 150);
             datosCardiovasculares.put("glucosa", 90);
-            
+
             // Factores de riesgo booleanos
             datosCardiovasculares.put("diabetes", false);
             datosCardiovasculares.put("hipertension", false);
             datosCardiovasculares.put("tabaquismo", false);
             datosCardiovasculares.put("antecedentesCardiovasculares", false);
-            
+
             logger.info("💓 Datos cardiovasculares extraídos para paciente {}", pacienteId);
-            
+
             // Integrar datos en historial
             historial.put("datos_basicos", datosBasicos);
             historial.put("datos_cardiovasculares", datosCardiovasculares);
-            
+
             // Obtener historial clínico si está disponible
             try {
-                // TODO: Comentado temporalmente hasta implementar método en HistoriaClinicaService
-                // HistoriaClinica historiaClinica = historiaClinicaService.obtenerPorPacienteId(pacienteId);
-                
+                // TODO: Comentado temporalmente hasta implementar método en
+                // HistoriaClinicaService
+                // HistoriaClinica historiaClinica =
+                // historiaClinicaService.obtenerPorPacienteId(pacienteId);
+
                 // Usar datos básicos por ahora
                 Map<String, Object> datosHistoriaClinica = new HashMap<>();
                 datosHistoriaClinica.put("datos_clinicos", Map.of(
-                    "peso", 70.0,
-                    "estatura", 170.0,
-                    "imc", 24.2
-                ));
-                
+                        "peso", 70.0,
+                        "estatura", 170.0,
+                        "imc", 24.2));
+
                 datosHistoriaClinica.put("triaje", Map.of(
-                    "presion_sistolica", 120,
-                    "presion_diastolica", 80,
-                    "frecuencia_cardiaca", 72,
-                    "temperatura", 36.5,
-                    "saturacion_oxigeno", 98
-                ));
-                
+                        "presion_sistolica", 120,
+                        "presion_diastolica", 80,
+                        "frecuencia_cardiaca", 72,
+                        "temperatura", 36.5,
+                        "saturacion_oxigeno", 98));
+
                 // Actualizar datos cardiovasculares con valores del triaje simulado
                 datosCardiovasculares.put("presionSistolica", 120);
                 datosCardiovasculares.put("presionDiastolica", 80);
                 datosCardiovasculares.put("frecuenciaCardiaca", 72);
-                
+
                 datosHistoriaClinica.put("diagnosticos", List.of());
                 datosHistoriaClinica.put("medicamentos", List.of());
                 datosHistoriaClinica.put("recomendaciones", List.of());
-                
+
                 historial.put("historia_clinica", datosHistoriaClinica);
                 logger.info("📋 Historia clínica básica extraída para paciente {}", pacienteId);
-                
+
             } catch (Exception e) {
                 logger.warn("⚠️ No se pudo obtener historia clínica para paciente {}: {}", pacienteId, e.getMessage());
             }
-            
+
             // Predicciones de FastAPI si están disponibles
             try {
                 // TODO: Comentado temporalmente hasta implementar métodos en PrediccionService
-                
+
                 // Datos simulados de predicción FastAPI por ahora
                 Map<String, Object> prediccionMap = new HashMap<>();
                 prediccionMap.put("riesgo_cardiovascular", "MODERADO");
-                prediccionMap.put("prediccion_detalle", "Riesgo cardiovascular moderado basado en edad y presión arterial");
+                prediccionMap.put("prediccion_detalle",
+                        "Riesgo cardiovascular moderado basado en edad y presión arterial");
                 prediccionMap.put("fecha_prediccion", LocalDateTime.now().toString());
-                
+
                 historial.put("prediccion_fastapi", prediccionMap);
                 logger.info("🤖 Predicción FastAPI simulada incluida para paciente {}", pacienteId);
-                
+
             } catch (Exception e) {
-                logger.warn("⚠️ No se pudo obtener predicción FastAPI para paciente {}: {}", pacienteId, e.getMessage());
+                logger.warn("⚠️ No se pudo obtener predicción FastAPI para paciente {}: {}", pacienteId,
+                        e.getMessage());
             }
-            
+
             // Actualizar datos cardiovasculares en el historial
             historial.put("datos_cardiovasculares", datosCardiovasculares);
             // Información de la campaña (si está disponible)
             if (citacionMedica != null && citacionMedica.getCampanaId() != null) {
                 historial.put("campana_id", citacionMedica.getCampanaId());
             }
-            
-            logger.info("✅ Historial completo extraído para paciente {} - {} secciones", 
-                       pacienteId, historial.keySet().size());
-            
+
+            logger.info("✅ Historial completo extraído para paciente {} - {} secciones",
+                    pacienteId, historial.keySet().size());
+
         } catch (Exception e) {
             logger.error("❌ Error extrayendo historial para paciente {}: {}", pacienteId, e.getMessage(), e);
         }
-        
+
         return historial;
     }
-    
+
     // ====== MÉTODOS AUXILIARES PRIVADOS ======
-    
+
     /**
      * Extraer datos básicos del paciente para n8n
      */
@@ -307,51 +310,52 @@ public class N8nIntegrationService {
         datos.put("genero", paciente.getGenero() != null ? paciente.getGenero().toString() : "NO_ESPECIFICADO");
         return datos;
     }
-    
+
     private Integer calcularEdad(Paciente paciente) {
         if (paciente.getFechaNacimiento() != null) {
             return Period.between(paciente.getFechaNacimiento(), LocalDate.now()).getYears();
         }
         return null;
     }
-    
+
     // ====== MÉTODOS AUXILIARES ======
-    
+
     private String llamarWebhookN8n(String endpoint, Map<String, Object> payload) {
         try {
             String url = n8nBaseUrl + endpoint;
             logger.info("🌐 Llamando webhook n8n: {}", url);
             logger.debug("📤 Payload keys: {}", payload.keySet());
-            
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            
+
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-            
+
             // Log datos enviados para debugging
             if (payload.containsKey("historial_clinico")) {
                 Map<String, Object> historial = (Map<String, Object>) payload.get("historial_clinico");
                 logger.info("📊 Enviando historial con {} secciones", historial.keySet().size());
-                
+
                 if (historial.containsKey("datos_cardiovasculares")) {
                     Map<String, Object> datosCV = (Map<String, Object>) historial.get("datos_cardiovasculares");
-                    logger.info("❤️ Datos cardiovasculares: pacienteId={}, edad={}, sexo={}, presionSistolica={}", 
-                               datosCV.get("pacienteId"), datosCV.get("edad"), datosCV.get("sexo"), datosCV.get("presionSistolica"));
+                    logger.info("❤️ Datos cardiovasculares: pacienteId={}, edad={}, sexo={}, presionSistolica={}",
+                            datosCV.get("pacienteId"), datosCV.get("edad"), datosCV.get("sexo"),
+                            datosCV.get("presionSistolica"));
                 }
             }
-            
+
             ResponseEntity<String> response = restTemplate.exchange(
-                url, HttpMethod.POST, request, String.class);
-            
+                    url, HttpMethod.POST, request, String.class);
+
             logger.info("Response Status: {}", response.getStatusCode());
             logger.info("Response Body: {}", response.getBody());
-            
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             } else {
                 throw new RuntimeException("Error en llamada a n8n: " + response.getStatusCode());
             }
-            
+
         } catch (RestClientException e) {
             logger.error("Error de conectividad con n8n: {}", e.getMessage());
             throw new RuntimeException("No se pudo conectar con n8n", e);
@@ -360,26 +364,26 @@ public class N8nIntegrationService {
             throw new RuntimeException("Error en integración con n8n", e);
         }
     }
-    
+
     // NUEVO: Método para debugging - obtener URL actual
     public String obtenerUrlActual() {
         return n8nBaseUrl;
     }
-    
+
     // NUEVO: Método público para pruebas con datos reales
     public Map<String, Object> obtenerHistorialCompletoParaPrueba(Long pacienteId, CitacionMedica citacionMedica) {
         logger.info("Obteniendo historial completo para prueba - Paciente ID: {}", pacienteId);
         return obtenerHistorialCompleto(pacienteId, citacionMedica);
     }
-    
+
     // NUEVO: Método público para llamadas directas a webhooks
     public String llamarWebhookN8nDirecto(String endpoint, Map<String, Object> payload) {
         logger.info("Llamada directa a webhook: {}", endpoint);
         return llamarWebhookN8n(endpoint, payload);
     }
-    
+
     // ====== MÉTODOS AUXILIARES PARA DATOS CARDIOVASCULARES ======
-    
+
     /**
      * Calcular edad del paciente
      */
@@ -389,7 +393,7 @@ public class N8nIntegrationService {
         }
         return 45; // Edad por defecto si no está disponible
     }
-    
+
     /**
      * Mapear sexo del paciente para n8n (M/F)
      */
@@ -404,35 +408,34 @@ public class N8nIntegrationService {
         }
         return "M"; // Por defecto masculino
     }
-    
+
     /**
      * Extraer medicamentos de prescripciones
      */
     private List<String> extraerMedicamentos(Prescripcion prescripcion) {
         List<String> medicamentos = new ArrayList<>();
-        
+
         if (prescripcion != null) {
             // Extraer medicamento principal de la descripción
             if (prescripcion.getDescripcion() != null) {
                 medicamentos.add(prescripcion.getDescripcion());
             }
         }
-        
+
         return medicamentos;
     }
-    
+
     private Map<String, Object> extraerDiagnosticos(Diagnostico diagnostico) {
         Map<String, Object> datos = new HashMap<>();
         datos.put("codigo_cie10", diagnostico.getCodigoCie10());
         datos.put("descripcion", diagnostico.getDescripcion());
-        datos.put("severidad", diagnostico.getSeveridad() != null ? 
-                 diagnostico.getSeveridad().toString() : null);
+        datos.put("severidad", diagnostico.getSeveridad() != null ? diagnostico.getSeveridad().toString() : null);
         datos.put("es_principal", diagnostico.isEs_principal());
-        datos.put("fecha_diagnostico", diagnostico.getFecha_diagnostico() != null ? 
-                 diagnostico.getFecha_diagnostico().toString() : null);
+        datos.put("fecha_diagnostico",
+                diagnostico.getFecha_diagnostico() != null ? diagnostico.getFecha_diagnostico().toString() : null);
         return datos;
     }
-    
+
     private Map<String, Object> extraerRecomendaciones(Recomendacion recomendacion) {
         Map<String, Object> datos = new HashMap<>();
         // TODO: Implementar según estructura real de Recomendacion
@@ -442,38 +445,38 @@ public class N8nIntegrationService {
     }
 
     /**
-     * NUEVO: Llamar al workflow del compañero para generar cuestionario personalizado
+     * NUEVO: Llamar al workflow del compañero para generar cuestionario
+     * personalizado
      */
     public Map<String, Object> generarCuestionarioConWorkflowCompanero(Map<String, Object> datosWorkflow) {
         try {
             logger.info("🤖 Llamando al workflow del compañero para generar cuestionario...");
-            
+
             // Log de datos que se envían
-            logger.debug("📋 Datos enviados al workflow del compañero: {}", 
-                        datosWorkflow.keySet());
-            
+            logger.debug("📋 Datos enviados al workflow del compañero: {}",
+                    datosWorkflow.keySet());
+
             // Llamar al webhook del workflow del compañero
             String webhookPath = "/agente1-cardiovascular"; // Path del webhook del compañero
             String response = llamarWebhookN8n(webhookPath, datosWorkflow);
-            
+
             logger.info("✅ Respuesta del workflow del compañero recibida");
-            
+
             // Parsear respuesta JSON
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> respuestaParseada = objectMapper.readValue(response, Map.class);
-            
+
             return respuestaParseada;
-            
+
         } catch (Exception e) {
             logger.error("❌ Error llamando al workflow del compañero: {}", e.getMessage(), e);
-            
+
             // Retornar cuestionario de fallback en caso de error
             return Map.of(
-                "success", false,
-                "error", e.getMessage(),
-                "cuestionario", generarCuestionarioFallback(),
-                "es_fallback", true
-            );
+                    "success", false,
+                    "error", e.getMessage(),
+                    "cuestionario", generarCuestionarioFallback(),
+                    "es_fallback", true);
         }
     }
 
@@ -482,54 +485,45 @@ public class N8nIntegrationService {
      */
     private Map<String, Object> generarCuestionarioFallback() {
         List<Map<String, Object>> preguntasDefault = List.of(
-            Map.of(
-                "id", "adherencia_medicamentos",
-                "pregunta", "¿Ha tomado sus medicamentos según las indicaciones?",
-                "tipo", "opcion_multiple",
-                "opciones", List.of(
-                    "Sí, todos los días",
-                    "Casi siempre",
-                    "A veces olvido",
-                    "Frecuentemente olvido"
-                ),
-                "requerida", true
-            ),
-            Map.of(
-                "id", "sintomas_generales",
-                "pregunta", "¿Ha experimentado síntomas cardiovasculares?",
-                "tipo", "multiple_seleccion",
-                "opciones", List.of(
-                    "Ningún síntoma",
-                    "Dolor en el pecho",
-                    "Dificultad para respirar",
-                    "Palpitaciones",
-                    "Fatiga inusual"
-                ),
-                "requerida", true
-            ),
-            Map.of(
-                "id", "calidad_vida",
-                "pregunta", "¿Cómo se siente en general?",
-                "tipo", "opcion_multiple",
-                "opciones", List.of(
-                    "Muy bien",
-                    "Bien, con algunas preocupaciones",
-                    "Regular",
-                    "Mal, me preocupa mi salud"
-                ),
-                "requerida", true
-            )
-        );
-        
+                Map.of(
+                        "id", "adherencia_medicamentos",
+                        "pregunta", "¿Ha tomado sus medicamentos según las indicaciones?",
+                        "tipo", "opcion_multiple",
+                        "opciones", List.of(
+                                "Sí, todos los días",
+                                "Casi siempre",
+                                "A veces olvido",
+                                "Frecuentemente olvido"),
+                        "requerida", true),
+                Map.of(
+                        "id", "sintomas_generales",
+                        "pregunta", "¿Ha experimentado síntomas cardiovasculares?",
+                        "tipo", "multiple_seleccion",
+                        "opciones", List.of(
+                                "Ningún síntoma",
+                                "Dolor en el pecho",
+                                "Dificultad para respirar",
+                                "Palpitaciones",
+                                "Fatiga inusual"),
+                        "requerida", true),
+                Map.of(
+                        "id", "calidad_vida",
+                        "pregunta", "¿Cómo se siente en general?",
+                        "tipo", "opcion_multiple",
+                        "opciones", List.of(
+                                "Muy bien",
+                                "Bien, con algunas preocupaciones",
+                                "Regular",
+                                "Mal, me preocupa mi salud"),
+                        "requerida", true));
+
         return Map.of(
-            "titulo", "Seguimiento Cardiovascular - Cuestionario de Respaldo",
-            "instrucciones", "Por favor responda las siguientes preguntas sobre su estado de salud",
-            "preguntas", preguntasDefault,
-            "metadata", Map.of(
-                "es_fallback", true,
-                "generado_en", LocalDateTime.now().toString()
-            )
-        );
+                "titulo", "Seguimiento Cardiovascular - Cuestionario de Respaldo",
+                "instrucciones", "Por favor responda las siguientes preguntas sobre su estado de salud",
+                "preguntas", preguntasDefault,
+                "metadata", Map.of(
+                        "es_fallback", true,
+                        "generado_en", LocalDateTime.now().toString()));
     }
 
     /**
@@ -537,25 +531,25 @@ public class N8nIntegrationService {
      * 
      * Llama al workflow mejorado que genera cuestionarios específicos basados en:
      * - Diagnósticos del paciente
-     * - Medicamentos actuales  
+     * - Medicamentos actuales
      * - Factores de riesgo cardiovascular
      * - Contexto del seguimiento
      */
     public String generarCuestionarioPersonalizado(Long pacienteId, Long seguimientoId) {
         try {
-            logger.info("🎯 Generando cuestionario personalizado para paciente {} - seguimiento {}", 
-                       pacienteId, seguimientoId);
-            
+            logger.info("🎯 Generando cuestionario personalizado para paciente {} - seguimiento {}",
+                    pacienteId, seguimientoId);
+
             // 1. Construir datos completos del paciente
             Map<String, Object> datosCompletos = construirDatosCompletosPaciente(pacienteId, seguimientoId);
-            
+
             // 2. Llamar al webhook de n8n para generación de cuestionarios
             String webhookPath = "/agente1-cardiovascular";
             String response = llamarWebhookN8n(webhookPath, datosCompletos);
-            
+
             logger.info("✅ Cuestionario personalizado generado exitosamente");
             return response;
-            
+
         } catch (Exception e) {
             logger.error("❌ Error generando cuestionario personalizado: {}", e.getMessage(), e);
             throw new RuntimeException("Error al generar cuestionario personalizado: " + e.getMessage());
@@ -572,23 +566,23 @@ public class N8nIntegrationService {
      * - Análisis de riesgo cardiovascular
      * - Evolución temporal del paciente
      */
-    public String analizarRespuestasCuestionario(Long pacienteId, Long seguimientoId, 
-                                                Map<String, Object> respuestas, Long campanaId) {
+    public String analizarRespuestasCuestionario(Long pacienteId, Long seguimientoId,
+            Map<String, Object> respuestas, Long campanaId) {
         try {
-            logger.info("🧠 Analizando respuestas de cuestionario - Paciente: {}, Seguimiento: {}", 
-                       pacienteId, seguimientoId);
-            
+            logger.info("🧠 Analizando respuestas de cuestionario - Paciente: {}, Seguimiento: {}",
+                    pacienteId, seguimientoId);
+
             // 1. Construir datos completos para análisis
             Map<String, Object> datosAnalisis = construirDatosAnalisisCompleto(
-                pacienteId, seguimientoId, respuestas, campanaId);
-            
+                    pacienteId, seguimientoId, respuestas, campanaId);
+
             // 2. Llamar al webhook de n8n para análisis de respuestas
             String webhookPath = "/analizar-respuestas-cuestionario";
             String response = llamarWebhookN8n(webhookPath, datosAnalisis);
-            
+
             logger.info("✅ Análisis de respuestas completado exitosamente");
             return response;
-            
+
         } catch (Exception e) {
             logger.error("❌ Error analizando respuestas: {}", e.getMessage(), e);
             throw new RuntimeException("Error al analizar respuestas del cuestionario: " + e.getMessage());
@@ -604,108 +598,99 @@ public class N8nIntegrationService {
         if (paciente == null) {
             throw new RuntimeException("Paciente no encontrado: " + pacienteId);
         }
-        
+
         // Reutilizar métodos existentes del servicio
         Map<String, Object> datosBasicos = extraerDatosBasicos(paciente);
-        
-        // Datos cardiovasculares básicos (usando valores por defecto si no están disponibles)
+
+        // Datos cardiovasculares básicos (usando valores por defecto si no están
+        // disponibles)
         Map<String, Object> datosCardiovasculares = Map.of(
-            "presionSistolica", 120, // Se podría obtener del triaje más reciente
-            "presionDiastolica", 80,
-            "colesterolTotal", 200,
-            "diabetes", false // Se podría obtener de diagnósticos
+                "presionSistolica", 120, // Se podría obtener del triaje más reciente
+                "presionDiastolica", 80,
+                "colesterolTotal", 200,
+                "diabetes", false // Se podría obtener de diagnósticos
         );
-        
+
         // Datos clínicos completos (simplificados para esta implementación)
         Map<String, Object> datosCompletos = Map.of(
-            "diagnosticos", List.of(), // TODO: Implementar obtención real
-            "prescripciones", List.of(), // TODO: Implementar obtención real
-            "triaje", Map.of("presion_sistolica", 120, "presion_diastolica", 80),
-            "factores_riesgo_cardiovascular", Map.of("hipertension", false, "diabetes", false)
-        );
-        
+                "diagnosticos", List.of(), // TODO: Implementar obtención real
+                "prescripciones", List.of(), // TODO: Implementar obtención real
+                "triaje", Map.of("presion_sistolica", 120, "presion_diastolica", 80),
+                "factores_riesgo_cardiovascular", Map.of("hipertension", false, "diabetes", false));
+
         // Contexto del seguimiento (simplificado)
         Map<String, Object> seguimientoContext = Map.of(
-            "seguimiento_id", seguimientoId,
-            "tipo", "CARDIOVASCULAR",
-            "prioridad", "MEDIA",
-            "dias_desde_programacion", 0,
-            "resultado_analisis_ia", "Seguimiento cardiovascular - Control de presión arterial",
-            "notas_seguimiento", "Seguimiento médico regular"
-        );
-        
+                "seguimiento_id", seguimientoId,
+                "tipo", "CARDIOVASCULAR",
+                "prioridad", "MEDIA",
+                "dias_desde_programacion", 0,
+                "resultado_analisis_ia", "Seguimiento cardiovascular - Control de presión arterial",
+                "notas_seguimiento", "Seguimiento médico regular");
+
         return Map.of(
-            "paciente_id", pacienteId,
-            "datos_basicos", datosBasicos,
-            "datos_cardiovasculares", datosCardiovasculares,
-            "datos_completos", datosCompletos,
-            "seguimiento_context", seguimientoContext,
-            "objetivo_cuestionario", "seguimiento_especifico",
-            "timestamp", LocalDateTime.now().toString()
-        );
+                "paciente_id", pacienteId,
+                "datos_basicos", datosBasicos,
+                "datos_cardiovasculares", datosCardiovasculares,
+                "datos_completos", datosCompletos,
+                "seguimiento_context", seguimientoContext,
+                "objetivo_cuestionario", "seguimiento_especifico",
+                "timestamp", LocalDateTime.now().toString());
     }
 
     /**
      * 🔍 CONSTRUIR DATOS COMPLETOS PARA ANÁLISIS DE RESPUESTAS
      */
-    private Map<String, Object> construirDatosAnalisisCompleto(Long pacienteId, Long seguimientoId, 
-                                                              Map<String, Object> respuestas, Long campanaId) {
-        
+    private Map<String, Object> construirDatosAnalisisCompleto(Long pacienteId, Long seguimientoId,
+            Map<String, Object> respuestas, Long campanaId) {
+
         // Datos actualizados del paciente (usando valores básicos)
         Map<String, Object> datosActualizados = Map.of(
-            "triaje", Map.of("presion_sistolica", 120, "presion_diastolica", 80),
-            "diagnosticos", List.of(),
-            "prescripciones", List.of(),
-            "recomendaciones", List.of()
-        );
-        
+                "triaje", Map.of("presion_sistolica", 120, "presion_diastolica", 80),
+                "diagnosticos", List.of(),
+                "prescripciones", List.of(),
+                "recomendaciones", List.of());
+
         // Información de la campaña (simplificada)
         Map<String, Object> campanaInfo = Map.of(
-            "nombre", "Campaña Cardiovascular",
-            "objetivo", "Seguimiento y control cardiovascular",
-            "fecha_inicio", "2024-01-01"
-        );
-        
+                "nombre", "Campaña Cardiovascular",
+                "objetivo", "Seguimiento y control cardiovascular",
+                "fecha_inicio", "2024-01-01");
+
         // Seguimientos anteriores (datos básicos)
         List<Map<String, Object>> seguimientosAnteriores = List.of(
-            Map.of(
-                "fecha_programada", "2024-01-10",
-                "tipo", "CUESTIONARIO",
-                "estado", "COMPLETADO",
-                "respuestas", Map.of("adherencia", "BUENA"),
-                "resultado_analisis", "Paciente muestra buena adherencia al tratamiento"
-            )
-        );
-        
-        // Datos de riesgo cardiovascular (simulados - en producción vendrían de FastAPI)
+                Map.of(
+                        "fecha_programada", "2024-01-10",
+                        "tipo", "CUESTIONARIO",
+                        "estado", "COMPLETADO",
+                        "respuestas", Map.of("adherencia", "BUENA"),
+                        "resultado_analisis", "Paciente muestra buena adherencia al tratamiento"));
+
+        // Datos de riesgo cardiovascular (simulados - en producción vendrían de
+        // FastAPI)
         Map<String, Object> riesgoCardiovascular = Map.of(
-            "nivel_riesgo", "MODERADO",
-            "probabilidad_riesgo", 0.3,
-            "factores_detectados", List.of("presion_arterial_normal")
-        );
-        
+                "nivel_riesgo", "MODERADO",
+                "probabilidad_riesgo", 0.3,
+                "factores_detectados", List.of("presion_arterial_normal"));
+
         Map<String, Object> factoresInfluyentes = Map.of(
-            "factores_riesgo", List.of(),
-            "factores_protectores", List.of("edad_joven")
-        );
-        
+                "factores_riesgo", List.of(),
+                "factores_protectores", List.of("edad_joven"));
+
         Map<String, Object> priorizacion = Map.of(
-            "cluster", "MODERADO_JOVEN",
-            "prioridad", "MEDIA",
-            "recomendaciones", List.of("Seguimiento médico regular")
-        );
-        
+                "cluster", "MODERADO_JOVEN",
+                "prioridad", "MEDIA",
+                "recomendaciones", List.of("Seguimiento médico regular"));
+
         return Map.of(
-            "paciente_id", pacienteId,
-            "seguimiento_id", seguimientoId,
-            "respuestas_cuestionario", respuestas,
-            "datos_actualizados", datosActualizados,
-            "campana_info", campanaInfo,
-            "seguimientos_anteriores", seguimientosAnteriores,
-            "riesgo_cardiovascular", riesgoCardiovascular,
-            "factores_influyentes", factoresInfluyentes,
-            "priorizacion", priorizacion,
-            "timestamp_analisis", LocalDateTime.now().toString()
-        );
+                "paciente_id", pacienteId,
+                "seguimiento_id", seguimientoId,
+                "respuestas_cuestionario", respuestas,
+                "datos_actualizados", datosActualizados,
+                "campana_info", campanaInfo,
+                "seguimientos_anteriores", seguimientosAnteriores,
+                "riesgo_cardiovascular", riesgoCardiovascular,
+                "factores_influyentes", factoresInfluyentes,
+                "priorizacion", priorizacion,
+                "timestamp_analisis", LocalDateTime.now().toString());
     }
-} 
+}

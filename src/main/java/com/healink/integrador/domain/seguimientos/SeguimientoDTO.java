@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -18,10 +19,10 @@ public class SeguimientoDTO implements DTOBase {
 
     @Schema(description = "Fecha programada para el seguimiento")
     private LocalDate fecha_programada;
-    
+
     @Schema(description = "Fecha en que se realizó el seguimiento")
     private LocalDate fecha_realizada;
-    
+
     @Schema(description = "Tipo de seguimiento")
     private String tipo;
 
