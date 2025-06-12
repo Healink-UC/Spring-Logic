@@ -119,13 +119,12 @@ class CampanaTest {
         }
 
         rol = new Rol(null, "administrador", "una descripcion", permisos);
-        usuario = new Usuario(
-                null, TipoIdentificacion.CC, USUARIO,
-                "pepito", "perez", "correo@me.com", PASSWORD,
-                "12123123",
-                Estado.ACTIVO, rol, 1L, null, null);
-
-        entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
+        // usuario = new Usuario(
+        //         null, TipoIdentificacion.CC, USUARIO,
+        //         "pepito", "perez", "correo@me.com", PASSWORD,
+        //         "12123123",
+        //         Estado.ACTIVO, rol, 1L, null, null);
+        // entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
 
         localizacion = new Localizacion(
                 null, "Antioquia", "Medellin",

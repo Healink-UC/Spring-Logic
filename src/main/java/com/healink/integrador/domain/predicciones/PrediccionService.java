@@ -34,5 +34,4 @@ public class PrediccionService extends ServicioGenerico<Prediccion> {
             return List.of();
         }
     }
-  
 }

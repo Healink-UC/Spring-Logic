@@ -13,10 +13,10 @@ erDiagram
         varchar estado "ACTIVO|INACTIVO|SUSPENDIDO|PENDIENTE"
         int rol_id FK
         int entidad_salud_id FK
-        varchar actualizado_por
-        varchar creado_por
-        timestamp fecha_actualizacion
-        timestamp fecha_creacion
+        varchar actualizado_por "AUDITABLE - Incluido en DTO"
+        varchar creado_por "AUDITABLE - Convertido a ID en DTO"
+        timestamp fecha_actualizacion "AUDITABLE - Incluido en DTO"
+        timestamp fecha_creacion "AUDITABLE - Incluido en DTO"
     }
 
     ROLES {
@@ -329,3 +329,27 @@ erDiagram
     CAMPANAS ||--o{ INSCRIPCIONES_CAMPANA : tiene_inscritos
 
 ```
+
+## Notas de Actualización
+
+**Campos de Auditoría en Usuario (Actualización reciente)**:
+- Los campos de auditoría (`creadoPor`, `actualizadoPor`, `fechaCreacion`, `fechaActualizacion`) ahora están disponibles en las respuestas GET de usuarios
+- Se agregaron al `UsuarioDTO` como campos de solo lectura (`@Schema(readOnly = true)`)
+- Se actualizó el `UsuarioMapper` para incluir estos campos en el mapeo de entidad a DTO
+- Se crearon clases base opcionales (`DTOAuditable` y `MapeadorAuditable`) para facilitar la implementación en otras entidades
+
+**Conversión de creadoPor a ID (Actualización más reciente)**:
+- El campo `creadoPor` ahora se devuelve como `creadoPorId` (Long) en lugar del string "CC:1002643012"
+- Se implementó lógica de conversión automática que:
+  - Separa el string "TIPO:IDENTIFICACION" (ej: "CC:1002643012")
+  - Busca el usuario correspondiente en la base de datos
+  - Devuelve su ID como Long
+- Se creó `UsuarioMapperHelper` para manejar esta conversión
+- Si no se encuentra el usuario, devuelve null
+
+**Archivos modificados**:
+- `UsuarioDTO.java`: Campo `creadoPor` cambiado a `creadoPorId` (Long)
+- `UsuarioMapper.java`: Actualizado para usar conversión automática con helper
+- `UsuarioMapperHelper.java`: Nueva clase para conversión de string a ID (NUEVO)
+- `DTOAuditable.java`: Nueva clase base (opcional) - ELIMINADA
+- `MapeadorAuditable.java`: Nuevo mapper base (opcional) - ELIMINADA
