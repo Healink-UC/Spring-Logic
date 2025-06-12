@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class InteraccionChatbotService extends ServicioGenerico<InteraccionChatbot> {
 
     private static final Logger logger = LoggerFactory.getLogger(InteraccionChatbotService.class);
-    
+
     private final InteraccionChatbotRepository interaccionChatbotRepository;
     private final SeguimientoService seguimientoService;
     private final PacienteService pacienteService;

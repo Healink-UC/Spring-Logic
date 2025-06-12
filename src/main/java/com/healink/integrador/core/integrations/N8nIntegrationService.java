@@ -450,7 +450,7 @@ public class N8nIntegrationService {
         datos.put("raw_data", "Implementar extracción de recomendaciones");
         return datos;
     }
-
+    
     /**
      * NUEVO: Llamar al workflow del compañero para generar cuestionario personalizado
      */
