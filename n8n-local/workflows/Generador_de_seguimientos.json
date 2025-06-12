@@ -1,0 +1,249 @@
+{
+  "name": "Generador de seguimientos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "orquestador-seguimientos",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0f23aa9d-2bf8-4af3-94b5-9ad53a1a306a",
+      "name": "Webhook Entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        360
+      ],
+      "webhookId": "364fdb51-f610-4e86-9f66-960fe3579167"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.all();\n\nconst webhookData = inputData[0].json.body;\nconst historialClinico = webhookData.historial_clinico || {};\nconst datosCV = historialClinico.datos_cardiovasculares || {};\nconst prediccionRiesgo = historialClinico.prediccion_riesgo || {};\n\nconsole.log(\"🔍 Webhook completo:\", JSON.stringify(webhookData, null, 2));\nconsole.log(\"❤️ Datos cardiovasculares:\", JSON.stringify(datosCV, null, 2));\nconsole.log(\"📊 Predicción riesgo:\", JSON.stringify(prediccionRiesgo, null, 2));\n\nconst pacienteData = {\n  pacienteId: webhookData.paciente_id || datosCV.pacienteId || 1,\n  \n  edad: datosCV.edad || 0,\n  sexo: datosCV.sexo || 'M',\n\n  presionSistolica: datosCV.presionSistolica || 0,\n  presionDiastolica: datosCV.presionDiastolica || 0,\n  colesterolTotal: datosCV.colesterolTotal || 0,\n  hdl: datosCV.hdl || 0,\n  ldl: datosCV.ldl || 0,\n  trigliceridos: datosCV.trigliceridos || 0,\n  glucosa: datosCV.glucosa || 0,\n  \n\n  peso: datosCV.peso || 0,\n  estatura: datosCV.estatura || 0,\n  \n\n  tabaquismo: datosCV.tabaquismo || false,\n  actividadFisica: datosCV.actividadFisica || 'sedentario',\n  antecedentesCardiacos: datosCV.antecedentesCardiacos || false,\n  medicamentos: datosCV.medicamentos || [],\n  \n\n  nivelRiesgoPrediccion: prediccionRiesgo.nivel_riesgo || null,\n  probabilidadRiesgoSistema: prediccionRiesgo.probabilidad_riesgo || null\n};\n\n\nif (pacienteData.peso > 0 && pacienteData.estatura > 0) {\n  pacienteData.imc = pacienteData.peso / Math.pow(pacienteData.estatura / 100, 2);\n} else {\n  pacienteData.imc = 0;\n}\n\n\nconst promptCompleto = `Eres un especialista en medicina cardiovascular. Analiza los siguientes datos REALES del paciente:\n\nPaciente ID: ${pacienteData.pacienteId}\nEdad: ${pacienteData.edad} años\nSexo: ${pacienteData.sexo}\nPresión Arterial: ${pacienteData.presionSistolica}/${pacienteData.presionDiastolica} mmHg\nColesterol Total: ${pacienteData.colesterolTotal} mg/dL\nHDL: ${pacienteData.hdl} mg/dL\nLDL: ${pacienteData.ldl} mg/dL\nTriglicéridos: ${pacienteData.trigliceridos} mg/dL\nGlucosa: ${pacienteData.glucosa} mg/dL\nPeso: ${pacienteData.peso} kg\nEstatura: ${pacienteData.estatura} cm\nIMC: ${pacienteData.imc > 0 ? pacienteData.imc.toFixed(1) : 'No calculable'}\nTabaquismo: ${pacienteData.tabaquismo ? 'Sí' : 'No'}\nActividad Física: ${pacienteData.actividadFisica}\nAntecedentes Cardíacos: ${pacienteData.antecedentesCardiacos ? 'Sí' : 'No'}\nPredicción Sistema: ${pacienteData.nivelRiesgoPrediccion || 'N/A'} (${pacienteData.probabilidadRiesgoSistema || 'N/A'}%)\n\nProporciona un análisis en formato JSON estricto con estas claves:\n{\n  \"estadoGeneral\": \"descripción del estado cardiovascular basado en datos reales\",\n  \"factoresRiesgo\": [\"lista de factores de riesgo identificados\"],\n  \"recomendaciones\": [\"lista de recomendaciones médicas específicas\"],\n  \"nivelRiesgo\": \"BAJO|MODERADO|ALTO|CRITICO\",\n  \"probabilidadRiesgo\": 0.XX,\n  \"justificacion\": \"explicación breve del nivel de riesgo asignado\"\n}`;\n\nconsole.log(\"✅ Datos preparados (VALORES REALES):\", JSON.stringify(pacienteData, null, 2));\nconsole.log(\"📝 Prompt generado con datos reales\");\n\nreturn {\n  json: {\n    chatInput: promptCompleto,\n    pacienteData: pacienteData,\n    originalInput: datosCV,\n    metadatos: {\n      pacienteId: pacienteData.pacienteId,\n      edad: pacienteData.edad,\n      sexo: pacienteData.sexo,\n      timestamp: webhookData.timestamp\n    }\n  }\n};"
+      },
+      "id": "ce7d68e9-fd3c-46c5-863d-485e2e90698b",
+      "name": "Preparar para Groq",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar respuesta de IA y preparar para K-means (SIN Output Parser)\nconst inputData = $input.all();\n\n// Obtener respuesta directa del LLM Chain (sin Output Parser)\nconst llmResponse = inputData[0].json;\n\n// Obtener los datos del paciente del nodo \"Preparar para Groq\"\nconst datosPreparados = $('Preparar para Groq').first().json;\nconst pacienteData = datosPreparados.pacienteData;\n\n// Validar que tenemos datos del paciente\nif (!pacienteData) {\n  throw new Error('No se encontraron datos del paciente');\n}\n\n// Procesar respuesta de IA de manera más robusta\nlet analisisIA;\ntry {\n  let responseText = '';\n  \n  // Verificar diferentes posibles ubicaciones de la respuesta\n  if (llmResponse.output) {\n    responseText = typeof llmResponse.output === 'string' ? \n                   llmResponse.output : \n                   JSON.stringify(llmResponse.output);\n  } else if (llmResponse.text) {\n    responseText = llmResponse.text;\n  } else if (llmResponse.response) {\n    responseText = llmResponse.response;\n  } else if (typeof llmResponse === 'string') {\n    responseText = llmResponse;\n  } else {\n    responseText = JSON.stringify(llmResponse);\n  }\n  \n  console.log('Respuesta IA raw:', responseText);\n  \n  // Si ya es un objeto JSON válido, usarlo directamente\n  if (typeof llmResponse.output === 'object' && llmResponse.output !== null && !Array.isArray(llmResponse.output)) {\n    analisisIA = llmResponse.output;\n  } else {\n    // Buscar JSON en la respuesta de texto (más tolerante)\n    const jsonMatch = responseText.match(/\\{[\\s\\S]*?\\}(?=\\s*$|\\s*```|\\s*\\n\\n)/);\n    if (jsonMatch) {\n      analisisIA = JSON.parse(jsonMatch[0]);\n    } else {\n      // Crear estructura basada en texto libre\n      analisisIA = {\n        estadoGeneral: responseText.substring(0, 300) + \"...\",\n        factoresRiesgo: [\"Análisis textual procesado\"],\n        recomendaciones: [\"Ver análisis completo\"],\n        nivelRiesgo: responseText.toLowerCase().includes('alto') ? 'ALTO' : \n                     responseText.toLowerCase().includes('bajo') ? 'BAJO' : 'MODERADO'\n      };\n    }\n  }\n  \n  // Asegurar estructura mínima\n  analisisIA.estadoGeneral = analisisIA.estadoGeneral || \"Análisis cardiovascular completado\";\n  analisisIA.factoresRiesgo = analisisIA.factoresRiesgo || [\"Factores por determinar\"];\n  analisisIA.recomendaciones = analisisIA.recomendaciones || [\"Seguimiento médico\"];\n  analisisIA.nivelRiesgo = analisisIA.nivelRiesgo || \"MODERADO\";\n  \n} catch (error) {\n  console.log('Error procesando respuesta IA:', error.message);\n  console.log('Respuesta completa:', JSON.stringify(llmResponse, null, 2));\n  \n  // Respuesta de fallback más inteligente\n  analisisIA = {\n    estadoGeneral: `Paciente de ${pacienteData.edad} años con perfil cardiovascular evaluado`,\n    factoresRiesgo: [\n      pacienteData.presionSistolica > 140 ? \"Hipertensión arterial\" : null,\n      pacienteData.colesterolTotal > 240 ? \"Colesterol elevado\" : null,\n      pacienteData.tabaquismo ? \"Tabaquismo activo\" : null,\n      pacienteData.antecedentesCardiacos ? \"Antecedentes cardiovasculares\" : null\n    ].filter(Boolean),\n    recomendaciones: [\"Consultar con especialista cardiovascular\", \"Seguimiento periódico\"],\n    nivelRiesgo: \"MODERADO\"\n  };\n}\n\n// Calcular features normalizadas para K-means (más preciso)\nconst features = [\n  pacienteData.edad / 100,                          // 0-1\n  pacienteData.presionSistolica / 200,              // 0-1\n  pacienteData.presionDiastolica / 120,             // 0-1\n  pacienteData.colesterolTotal / 300,               // 0-1\n  pacienteData.trigliceridos / 400,                 // 0-1\n  pacienteData.glucosa / 200,                       // 0-1\n  pacienteData.tabaquismo ? 1 : 0,                  // 0-1\n  pacienteData.antecedentesCardiacos ? 1 : 0        // 0-1\n];\n\n// Calcular score de riesgo ponderado\nconst scoreRiesgo = Math.round(\n  (features[0] * 0.2 +      // edad 20%\n   features[1] * 0.25 +     // presión sistólica 25%\n   features[2] * 0.15 +     // presión diastólica 15%\n   features[3] * 0.15 +     // colesterol 15%\n   features[4] * 0.1 +      // triglicéridos 10%\n   features[5] * 0.1 +      // glucosa 10%\n   features[6] * 0.3 +      // tabaquismo 30%\n   features[7] * 0.4) * 100 // antecedentes 40%\n);\n\n// Datos compatibles con K-means existente\nconst datosKmeans = [\n  pacienteData.edad || 50,\n  pacienteData.presionSistolica || 120,\n  pacienteData.presionDiastolica || 80,\n  pacienteData.colesterolTotal || 200,\n  pacienteData.peso && pacienteData.estatura ? \n    (pacienteData.peso / Math.pow(pacienteData.estatura/100, 2)) : 25, // IMC\n  pacienteData.tabaquismo ? 1 : 0,\n  pacienteData.antecedentesCardiacos ? 1 : 0\n];\n\nreturn {\n  pacienteData: pacienteData,\n  analisisIA: analisisIA,\n  datosKmeans: datosKmeans,\n  features: features,\n  scoreRiesgo: scoreRiesgo,\n  timestamp: new Date().toISOString(),\n  debugInfo: {\n    responseSource: llmResponse.output ? 'output' : \n                   llmResponse.text ? 'text' : \n                   llmResponse.response ? 'response' : 'unknown',\n    analisisCompleto: !!analisisIA.estadoGeneral,\n    featuresCalculadas: features.length === 8,\n    scoreCalculado: scoreRiesgo\n  }\n};"
+      },
+      "id": "4e5e0d14-4fae-4d89-b32f-0e6dea329e28",
+      "name": "Procesar Respuesta IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Algoritmo K-means para clasificación cardiovascular\nconst inputData = $input.all();\nconst data = inputData[0].json;\n\n// Centroides de los 5 clusters cardiovasculares\nconst centroides = {\n  0: [75, 160, 100, 280, 32, 1, 1], // CRITICO_AGUDO\n  1: [65, 150, 95, 250, 28, 1, 1],  // ALTO_RIESGO_ESTABLE  \n  2: [60, 140, 88, 220, 27, 0, 1],  // MODERADO_MULTIMORBIDO\n  3: [35, 125, 80, 190, 24, 0, 0],  // MODERADO_JOVEN\n  4: [45, 115, 75, 180, 22, 0, 0]   // BAJO_PREVENTIVO\n};\n\n// Función para calcular distancia euclidiana\nfunction calcularDistancia(punto1, punto2) {\n  let suma = 0;\n  for (let i = 0; i < punto1.length; i++) {\n    suma += Math.pow(punto1[i] - punto2[i], 2);\n  }\n  return Math.sqrt(suma);\n}\n\n// Clasificar paciente\nconst datosPaciente = data.datosKmeans;\nlet clusterAsignado = 0;\nlet menorDistancia = Infinity;\n\nfor (let cluster in centroides) {\n  const distancia = calcularDistancia(datosPaciente, centroides[cluster]);\n  if (distancia < menorDistancia) {\n    menorDistancia = distancia;\n    clusterAsignado = parseInt(cluster);\n  }\n}\n\n// Mapear cluster a categoría\nconst categorias = {\n  0: { nombre: 'CRITICO_AGUDO', diasSeguimiento: 1, prioridad: 'CRITICA' },\n  1: { nombre: 'ALTO_RIESGO_ESTABLE', diasSeguimiento: 3, prioridad: 'ALTA' },\n  2: { nombre: 'MODERADO_MULTIMORBIDO', diasSeguimiento: 7, prioridad: 'MEDIA' },\n  3: { nombre: 'MODERADO_JOVEN', diasSeguimiento: 10, prioridad: 'MEDIA' },\n  4: { nombre: 'BAJO_PREVENTIVO', diasSeguimiento: 30, prioridad: 'BAJA' }\n};\n\nconst categoria = categorias[clusterAsignado];\n\nreturn {\n  json: {\n    pacienteData: data.pacienteData,\n    analisisIA: data.analisisIA,\n    clasificacion: {\n      cluster: clusterAsignado,\n      categoria: categoria.nombre,\n      diasSeguimiento: categoria.diasSeguimiento,\n      prioridad: categoria.prioridad,\n      distancia: menorDistancia\n    },\n    datosOriginales: data\n  }\n};"
+      },
+      "id": "5e9bb016-7ade-4eef-a846-dcec2e86e694",
+      "name": "K-means Clasificación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generar plan de seguimientos\nconst inputData = $input.all();\nconst data = inputData[0].json;\n\n// Función para agregar días a una fecha\nfunction agregarDias(fecha, dias) {\n  const resultado = new Date(fecha);\n  resultado.setDate(resultado.getDate() + dias);\n  return resultado;\n}\n\n// Generar seguimientos basado en clasificación\nconst clasificacion = data.clasificacion;\nconst fechaInicio = new Date();\nconst seguimientos = [];\n\n// Definir patrones de seguimiento por categoría\nconst patronesSeguimiento = {\n  'CRITICO_AGUDO': [1, 3], // Día 1 y 3\n  'ALTO_RIESGO_ESTABLE': [3, 7], // Día 3 y 7\n  'MODERADO_MULTIMORBIDO': [7, 20], // Día 7 y 20\n  'MODERADO_JOVEN': [10, 30], // Día 10 y 30\n  'BAJO_PREVENTIVO': [30] // Solo día 30\n};\n\nconst patron = patronesSeguimiento[clasificacion.categoria] || [7];\n\n// Crear seguimientos (máximo 3, límite 45 días)\npatron.forEach((dias, index) => {\n  if (index < 3 && dias <= 45) { // Máximo 3 seguimientos, 45 días límite\n    const fechaSeguimiento = agregarDias(fechaInicio, dias);\n    seguimientos.push({\n      numeroSeguimiento: index + 1,\n      fechaProgramada: fechaSeguimiento.toISOString(),\n      diasDespues: dias,\n      tipo: 'chatbot_cuestionario',\n      prioridad: clasificacion.prioridad,\n      estado: 'programado',\n      mensaje: `Seguimiento ${index + 1} para paciente ${data.pacienteData.pacienteId} - Categoría: ${clasificacion.categoria}`\n    });\n  }\n});\n\n// Preparar respuesta final\nconst respuestaFinal = {\n  pacienteId: data.pacienteData.pacienteId,\n  timestamp: new Date().toISOString(),\n  analisisIA: data.analisisIA,\n  clasificacion: {\n    categoria: clasificacion.categoria,\n    cluster: clasificacion.cluster,\n    prioridad: clasificacion.prioridad\n  },\n  planSeguimiento: {\n    totalSeguimientos: seguimientos.length,\n    seguimientos: seguimientos\n  },\n  estado: 'procesado_exitosamente'\n};\n\nreturn {\n  json: respuestaFinal\n};"
+      },
+      "id": "e43f3afa-a137-408c-b8a5-b89a19740529",
+      "name": "Generar Seguimientos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2260,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1500,
+        360
+      ],
+      "id": "d257b106-3416-43a1-89fa-3ee3003376ea",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        560
+      ],
+      "id": "3aae494c-90d6-41c7-a1bc-ebd5f2688f8f",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "1NXDtVxeoBbj44Ce",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        2700,
+        360
+      ],
+      "id": "856265ac-f13c-441e-9d68-2c98664b15f8",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8090/api/webhooks/n8n/cuestionario-generado",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pacienteId\": {{ $('Webhook Entrada').first().json.body.paciente_id }},\n  \"atencion_id\": {{ $('Webhook Entrada').first().json.body.atencion_id }},\n  \"campana_id\": {{ $('Webhook Entrada').first().json.body.campana_id }},\n  \"planSeguimiento\": {\n    \"seguimientos\": [\n      {\n        \"numeroSeguimiento\": 1,\n        \"diasDespues\": 7,\n        \"tipo\": \"chatbot_cuestionario\",\n        \"mensaje\": \"Seguimiento cardiovascular - Control de presión arterial\",\n        \"prioridad\": \"MEDIA\"\n      },\n      {\n        \"numeroSeguimiento\": 2,\n        \"diasDespues\": 30,\n        \"tipo\": \"chatbot_cuestionario\",\n        \"mensaje\": \"Control cardiovascular mensual\",\n        \"prioridad\": \"MEDIA\"\n      }\n    ]\n  },\n  \"analisisIA\": {\n    \"nivelRiesgo\": \"{{ $json.nivelRiesgo }}\",\n    \"factoresRiesgo\": {{ JSON.stringify($json.factoresRiesgo || ['Evaluación pendiente']) }},\n    \"recomendaciones\": {{ JSON.stringify($json.recomendaciones || ['Seguimiento médico regular']) }},\n    \"clusterAsignado\": \"MODERADO_JOVEN\",\n    \"probabilidadRiesgo\": {{ $json.probabilidadRiesgo || 0.3 }},\n    \"estadoGeneral\": \"{{ $json.estadoGeneral }}\",\n    \"justificacion\": \"{{ $json.justificacion }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2480,
+        360
+      ],
+      "id": "63f95c02-ce28-456b-9540-4a12582fb32d",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Entrada": {
+      "main": [
+        [
+          {
+            "node": "Preparar para Groq",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Respuesta IA": {
+      "main": [
+        [
+          {
+            "node": "K-means Clasificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "K-means Clasificación": {
+      "main": [
+        [
+          {
+            "node": "Generar Seguimientos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Seguimientos": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar para Groq": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Procesar Respuesta IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "87480085-1fca-41b8-98a6-9aaab01a6575",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dce2af84f5a7a2d78bec61c80e97cb57a63e291c09c6ed523d0bc3655e26ea7e"
+  },
+  "id": "D1oyIiFk3LDQER13",
+  "tags": []
+}

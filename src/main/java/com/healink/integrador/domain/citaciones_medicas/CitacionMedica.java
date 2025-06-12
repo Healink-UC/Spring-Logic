@@ -3,7 +3,6 @@ package com.healink.integrador.domain.citaciones_medicas;
 import com.healink.integrador.core.entity.EntidadAuditable;
 import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.paciente.Paciente;
-import com.healink.integrador.domain.personal_medico.PersonalMedico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,7 +36,7 @@ public class CitacionMedica extends EntidadAuditable {
     @Column(name = "hora_programada")
     private LocalDateTime horaProgramada;
 
-    @Column(name = "hora_atencion")
+    @Column(name = "hora_atencion", nullable = true)
     private LocalDateTime horaAtencion;
 
     @Column(name = "duracion_estimada")
@@ -63,8 +62,4 @@ public class CitacionMedica extends EntidadAuditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Paciente paciente;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medico_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private PersonalMedico personalMedico;
 }

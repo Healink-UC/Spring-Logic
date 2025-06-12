@@ -30,8 +30,18 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
         this.entidadSaludService = entidadSaludService;
         this.embajadorService = embajadorService;
         this.embajadorMapper = embajadorMapper;
+        this.embajadorService = embajadorService;
+        this.embajadorMapper = embajadorMapper;
     }
 
+    @GetMapping("/usuario/{usuario_id}")
+    public ResponseEntity<EntidadSaludDTO> getByUsuarioId(@PathVariable Long usuario_id) {
+        return entidadSaludService.findByUsuarioId(usuario_id)
+                .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/razon-social/{razon_social}")
     @GetMapping("/usuario/{usuario_id}")
     public ResponseEntity<EntidadSaludDTO> getByUsuarioId(@PathVariable Long usuario_id) {
         return entidadSaludService.findByUsuarioId(usuario_id)
@@ -47,7 +57,8 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
     }
 
     @GetMapping("/embajadores-nit/{nit}")
-    @Operation(summary = "Buscar embajadores por NIT creador", description = "Obtiene todos los embajadores que fueron creados por una entidad con el NIT especificado")
+    @Operation(summary = "Buscar embajadores por NIT creador", 
+               description = "Obtiene todos los embajadores que fueron creados por una entidad con el NIT especificado")
     public ResponseEntity<List<EmbajadorDTO>> getEmbajadoresByNitCreador(@PathVariable String nit) {
         List<Embajador> embajadores = embajadorService.findByNitCreador(nit);
         return ResponseEntity.ok(embajadorMapper.aListaDTO(embajadores));

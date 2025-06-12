@@ -1,0 +1,184 @@
+{
+  "name": "🎯 Sistema AI Simple + K-Means + Seguimientos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "orquestador-seguimientos-ai-simple",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-entrada",
+      "name": "🌐 Webhook Entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [140, 300],
+      "webhookId": "webhook-ai-simple-seguimientos"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === PREPARACIÓN DE DATOS PARA GROQ DIRECTO ===\nconst entrada = $input.first().json;\nconst historial = entrada.historial_clinico || {};\n\n// Extraer datos críticos\nconst pacienteId = entrada.paciente_id;\nconst datosBasicos = historial.datos_basicos || {};\nconst datosClinicos = historial.datos_clinicos || {};\nconst triaje = historial.triaje_inicial || {};\nconst diagnosticos = historial.diagnosticos || {};\nconst predicciones = historial.predicciones_fastapi || {};\n\nconsole.log('=== PREPARANDO PARA GROQ API ===');\nconsole.log('Paciente ID:', pacienteId);\nconsole.log('Edad:', datosBasicos.edad);\nconsole.log('Diagnóstico:', diagnosticos.codigo_cie10);\n\n// Construir contexto médico estructurado\nconst contextoMedico = {\n  paciente: {\n    id: pacienteId,\n    edad: datosBasicos.edad || null,\n    genero: datosBasicos.genero || null\n  },\n  vitales: {\n    presion_sistolica: datosClinicos.presion_arterial_sistolica || null,\n    presion_diastolica: datosClinicos.presion_arterial_diastolica || null,\n    colesterol_total: datosClinicos.colesterol_total || null,\n    hdl: datosClinicos.hdl || null,\n    frecuencia_cardiaca: datosClinicos.frecuencia_cardiaca_max || null\n  },\n  factores_riesgo: {\n    tabaquismo: triaje.factores_riesgo?.tabaquismo || false,\n    diabetes: triaje.factores_riesgo?.diabetes || false,\n    hipertension: triaje.factores_riesgo?.hipertension || false,\n    antecedentes_cardiacos: triaje.factores_riesgo?.antecedentes_cardiacos || false,\n    actividad_fisica: triaje.factores_riesgo?.actividad_fisica || false\n  },\n  sintomas_actuales: {\n    dolor_pecho: triaje.sintomas?.dolor_pecho || false,\n    dolor_irradiado: triaje.sintomas?.dolor_irradiado || false,\n    sudoracion: triaje.sintomas?.sudoracion || false,\n    nauseas: triaje.sintomas?.nauseas || false\n  },\n  diagnostico: {\n    codigo_cie10: diagnosticos.codigo_cie10 || null,\n    descripcion: diagnosticos.descripcion || null,\n    severidad: diagnosticos.severidad || null\n  },\n  prediccion_ia: {\n    riesgo_cv: predicciones.riesgo_cardiovascular?.valor_prediccion || null,\n    confianza: predicciones.riesgo_cardiovascular?.confianza || null\n  }\n};\n\n// Prompt específico para Groq\nconst promptGroq = `Como cardiólogo experto, analiza este caso clínico y proporciona:\n\n1. NIVEL DE RIESGO: CRÍTICO, ALTO, MODERADO, o BAJO\n2. SCORE NUMÉRICO: 0-100\n3. JUSTIFICACIÓN: Breve explicación médica\n\nCASO CLÍNICO:\n${JSON.stringify(contextoMedico, null, 2)}\n\nResponde SOLO en este formato:\nRIESGO: [NIVEL]\nSCORE: [NÚMERO]\nJUSTIFICACIÓN: [EXPLICACIÓN BREVE]`;\n\n// Formato para Groq API\nconst groqPayload = {\n  model: \"llama-3.1-8b-instant\",\n  messages: [\n    {\n      role: \"system\",\n      content: \"Eres un cardiólogo experto especializado en evaluación de riesgo cardiovascular. Analizas casos clínicos y proporcionas evaluaciones precisas de riesgo basadas en factores cardiovasculares, síntomas, y datos clínicos. Siempre respondes de manera estructurada y profesional.\"\n    },\n    {\n      role: \"user\",\n      content: promptGroq\n    }\n  ],\n  max_tokens: 500,\n  temperature: 0.1\n};\n\nreturn {\n  json: {\n    paciente_id: pacienteId,\n    atencion_id: entrada.atencion_id,\n    campana_id: entrada.campana_id,\n    groq_payload: groqPayload,\n    contexto_medico: contextoMedico,\n    datos_kmeans: {\n      basicos: datosBasicos,\n      clinicos: datosClinicos,\n      triaje: triaje,\n      diagnosticos: diagnosticos,\n      predicciones: predicciones\n    },\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "preparar-groq",
+      "name": "📋 Preparar para Groq",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [360, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonBody": "={{ JSON.stringify($json.groq_payload) }}",
+        "options": {}
+      },
+      "id": "groq-api-call",
+      "name": "🤖 Groq AI Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [580, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === PROCESAMIENTO DE RESPUESTA GROQ + K-MEANS ===\n\nconst datosPrevios = $('📋 Preparar para Groq').first().json;\nconst respuestaGroq = $input.first().json;\nconst datos = datosPrevios.datos_kmeans;\n\n// Extraer respuesta de Groq\nlet evaluacionIA = 'MODERADO';\nlet scoreIA = 50;\nlet justificacion = 'Sin análisis';\n\ntry {\n  const contenido = respuestaGroq.choices[0].message.content;\n  const lineas = contenido.split('\\n');\n  \n  for (const linea of lineas) {\n    if (linea.includes('RIESGO:')) {\n      evaluacionIA = linea.replace('RIESGO:', '').trim();\n    }\n    if (linea.includes('SCORE:')) {\n      scoreIA = parseInt(linea.replace('SCORE:', '').trim()) || 50;\n    }\n    if (linea.includes('JUSTIFICACIÓN:')) {\n      justificacion = linea.replace('JUSTIFICACIÓN:', '').trim();\n    }\n  }\n  \n  console.log('=== RESPUESTA GROQ PROCESADA ===');\n  console.log('Evaluación IA:', evaluacionIA);\n  console.log('Score:', scoreIA);\n  console.log('Justificación:', justificacion);\n  \n} catch (e) {\n  console.log('Error parsing Groq response:', e.message);\n}\n\n// === CONFIGURACIÓN DE SEGUIMIENTOS SIMPLIFICADA ===\n// SEGÚN TU ESPECIFICACIÓN: 1-3 seguimientos, máximo 45 días\nconst configuracionesSeguimiento = {\n  'CRITICO_AGUDO': {\n    seguimientos: [\n      { dias_despues: 3, prioridad: 'ALTA' },\n      { dias_despues: 7, prioridad: 'ALTA' },\n      { dias_despues: 15, prioridad: 'MEDIA' }\n    ],\n    descripcion: '🚨 Seguimiento crítico - 3 cuestionarios urgentes'\n  },\n  'ALTO_RIESGO_ESTABLE': {\n    seguimientos: [\n      { dias_despues: 7, prioridad: 'ALTA' },\n      { dias_despues: 20, prioridad: 'MEDIA' }\n    ],\n    descripcion: '🔴 Seguimiento alto riesgo - 2 cuestionarios'\n  },\n  'MODERADO_MULTIMORBIDO': {\n    seguimientos: [\n      { dias_despues: 7, prioridad: 'MEDIA' },\n      { dias_despues: 20, prioridad: 'BAJA' }\n    ],\n    descripcion: '🟡 Seguimiento moderado - 2 cuestionarios (como tu ejemplo)'\n  },\n  'MODERADO_JOVEN': {\n    seguimientos: [\n      { dias_despues: 14, prioridad: 'MEDIA' },\n      { dias_despues: 35, prioridad: 'BAJA' }\n    ],\n    descripcion: '🟠 Seguimiento preventivo joven - 2 cuestionarios'\n  },\n  'BAJO_PREVENTIVO': {\n    seguimientos: [\n      { dias_despues: 30, prioridad: 'BAJA' }\n    ],\n    descripcion: '🟢 Seguimiento preventivo - 1 cuestionario'\n  }\n};\n\n// Determinar cluster K-means simplificado basado en score IA\nlet clusterAsignado = 'MODERADO_JOVEN';\nif (scoreIA >= 80 || evaluacionIA.includes('CRITICO')) clusterAsignado = 'CRITICO_AGUDO';\nelse if (scoreIA >= 60 || evaluacionIA.includes('ALTO')) clusterAsignado = 'ALTO_RIESGO_ESTABLE';\nelse if (scoreIA >= 40 || evaluacionIA.includes('MODERADO')) clusterAsignado = 'MODERADO_MULTIMORBIDO';\nelse if (scoreIA >= 20) clusterAsignado = 'MODERADO_JOVEN';\nelse clusterAsignado = 'BAJO_PREVENTIVO';\n\nconst configuracion = configuracionesSeguimiento[clusterAsignado];\nconst fechaBase = new Date();\n\n// === GENERAR SEGUIMIENTOS (MÁXIMO 3, MÁXIMO 45 DÍAS) ===\nconst seguimientosGenerados = [];\n\nconfiguacion.seguimientos.forEach((config, index) => {\n  // Calcular fecha específica\n  const fechaSeguimiento = new Date(fechaBase);\n  fechaSeguimiento.setDate(fechaBase.getDate() + config.dias_despues);\n  \n  // Asegurar que no exceda 45 días\n  const diasDiferencia = Math.floor((fechaSeguimiento - fechaBase) / (1000 * 60 * 60 * 24));\n  if (diasDiferencia > 45) {\n    fechaSeguimiento.setDate(fechaBase.getDate() + 45);\n  }\n  \n  // Crear seguimiento\n  const seguimiento = {\n    seguimiento_numero: index + 1,\n    paciente_id: datosPrevios.paciente_id,\n    cluster_origen: clusterAsignado,\n    fecha_programada: fechaSeguimiento.toISOString(),\n    fecha_programada_display: fechaSeguimiento.toLocaleDateString('es-ES'),\n    dias_despues_atencion: config.dias_despues,\n    prioridad: config.prioridad,\n    estado: 'PROGRAMADO',\n    \n    // SOLO CUESTIONARIOS CON CHATBOT (según tu especificación)\n    tipo_interaccion: 'CUESTIONARIO_CHATBOT',\n    descripcion: `Cuestionario cardiovascular ${index + 1} - ${config.prioridad}`,\n    \n    // Para tu compañero (generación de cuestionarios)\n    contexto_cuestionario: {\n      cluster_riesgo: clusterAsignado,\n      score_riesgo: scoreIA,\n      numero_seguimiento: index + 1,\n      evaluacion_ai_groq: evaluacionIA,\n      justificacion_medica: justificacion\n    },\n    \n    // Metadatos del sistema\n    generado_por: 'groq_simple_sistema',\n    requiere_cuestionario_companero: true,\n    timestamp_creacion: new Date().toISOString()\n  };\n  \n  seguimientosGenerados.push(seguimiento);\n});\n\nconsole.log('=== SEGUIMIENTOS GENERADOS ===');\nconsole.log('Paciente:', datosPrevios.paciente_id);\nconsole.log('Cluster:', clusterAsignado);\nconsole.log('Groq Score:', scoreIA);\nconsole.log('Total seguimientos:', seguimientosGenerados.length);\nconsole.log('Primer seguimiento:', seguimientosGenerados[0]?.fecha_programada_display);\n\n// === RESULTADO FINAL ===\nreturn {\n  json: {\n    paciente_id: datosPrevios.paciente_id,\n    atencion_id: datosPrevios.atencion_id,\n    campana_id: datosPrevios.campana_id,\n    \n    // ANÁLISIS GROQ + K-MEANS\n    cluster_asignado: clusterAsignado,\n    score_riesgo: scoreIA,\n    evaluacion_groq: {\n      nivel: evaluacionIA,\n      score: scoreIA,\n      justificacion: justificacion,\n      respuesta_completa: respuestaGroq.choices[0].message.content\n    },\n    \n    // SEGUIMIENTOS GENERADOS (CORREGIDOS)\n    seguimientos_generados: seguimientosGenerados,\n    total_seguimientos: seguimientosGenerados.length,\n    \n    // INFORMACIÓN PARA TU COMPAÑERO\n    instrucciones_companero: {\n      tipo_interaccion: 'CUESTIONARIO_CHATBOT',\n      cluster_medico: clusterAsignado,\n      score_groq: scoreIA,\n      total_cuestionarios_crear: seguimientosGenerados.length,\n      enfoque: 'cardiovascular_personalizado',\n      contextos: seguimientosGenerados.map(s => s.contexto_cuestionario)\n    },\n    \n    // CONFIGURACIÓN APLICADA\n    configuracion_aplicada: {\n      cluster: clusterAsignado,\n      descripcion: configuracion.descripcion,\n      maximo_dias: 45,\n      solo_cuestionarios: true\n    },\n    \n    // FECHAS\n    primer_seguimiento: seguimientosGenerados[0]?.fecha_programada_display,\n    ultimo_seguimiento: seguimientosGenerados[seguimientosGenerados.length - 1]?.fecha_programada_display,\n    \n    timestamp_generacion: new Date().toISOString()\n  }\n};"
+      },
+      "id": "procesar-groq-seguimientos",
+      "name": "🎯 Groq + K-Means + Seguimientos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8090/api/webhooks/n8n/seguimientos-generados",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "paciente_id",
+              "value": "={{ $json.paciente_id }}"
+            },
+            {
+              "name": "cluster_asignado",
+              "value": "={{ $json.cluster_asignado }}"
+            },
+            {
+              "name": "score_riesgo",
+              "value": "={{ $json.score_riesgo }}"
+            },
+            {
+              "name": "seguimientos_generados",
+              "value": "={{ $json.seguimientos_generados }}"
+            },
+            {
+              "name": "instrucciones_companero",
+              "value": "={{ $json.instrucciones_companero }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "callback-spring-boot",
+      "name": "📞 Callback Spring Boot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1020, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"completado\",\n  \"mensaje\": \"Sistema Groq Simple + K-Means + Seguimientos completado\",\n  \"paciente_id\": {{ $json.paciente_id }},\n  \"cluster_asignado\": \"{{ $json.cluster_asignado }}\",\n  \"score_riesgo\": {{ $json.score_riesgo }},\n  \"groq_evaluacion\": \"{{ $json.evaluacion_groq.nivel }}\",\n  \"seguimientos\": {\n    \"total_generados\": {{ $json.total_seguimientos }},\n    \"primer_seguimiento\": \"{{ $json.primer_seguimiento }}\",\n    \"ultimo_seguimiento\": \"{{ $json.ultimo_seguimiento }}\",\n    \"solo_cuestionarios\": {{ $json.configuracion_aplicada.solo_cuestionarios }},\n    \"maximo_dias\": {{ $json.configuracion_aplicada.maximo_dias }}\n  },\n  \"para_companero\": {\n    \"tipo_interaccion\": \"{{ $json.instrucciones_companero.tipo_interaccion }}\",\n    \"total_cuestionarios_crear\": {{ $json.instrucciones_companero.total_cuestionarios_crear }},\n    \"cluster_medico\": \"{{ $json.instrucciones_companero.cluster_medico }}\",\n    \"enfoque\": \"{{ $json.instrucciones_companero.enfoque }}\"\n  },\n  \"timestamp\": \"{{ $json.timestamp_generacion }}\"\n}",
+        "options": {}
+      },
+      "id": "respuesta-final",
+      "name": "✅ Respuesta Final",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1020, 400]
+    }
+  ],
+  "connections": {
+    "🌐 Webhook Entrada": {
+      "main": [
+        [
+          {
+            "node": "📋 Preparar para Groq",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Preparar para Groq": {
+      "main": [
+        [
+          {
+            "node": "🤖 Groq AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 Groq AI Analysis": {
+      "main": [
+        [
+          {
+            "node": "🎯 Groq + K-Means + Seguimientos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Groq + K-Means + Seguimientos": {
+      "main": [
+        [
+          {
+            "node": "📞 Callback Spring Boot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "✅ Respuesta Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {},
+  "tags": ["groq-simple", "cardiovascular", "seguimientos-simples"],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-10T22:00:00.000Z",
+  "versionId": "workflow-groq-simple-v1"
+} 
