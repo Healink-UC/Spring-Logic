@@ -1,0 +1,193 @@
+{
+  "name": "Generar de cuestionarios",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente1-cardiovascular",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        -100
+      ],
+      "id": "a708e450-8a22-49bd-930a-1ff484071531",
+      "name": "Webhook",
+      "webhookId": "b49fd556-ec08-4eb3-88a3-707ecc06a702"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ PASO 3: Procesar datos de seguimiento con análisis previo\nconst webhookData = $input.all()[0].json;\nconsole.log('🔍 Datos completos:', JSON.stringify(webhookData, null, 2));\n\n// Extraer datos del webhook\nconst inputData = webhookData.body || webhookData;\n\n// ✅ VALIDACIÓN PASO 3: Estructura nueva con seguimiento_context\nif (!inputData.paciente_id) {\n  throw new Error('paciente_id es requerido');\n}\n\n// Extraer datos organizados\nconst datosCV = inputData.datos_cardiovasculares || {};\nconst seguimientoContext = inputData.seguimiento_context || {};\nconst datosBasicos = inputData.datos_basicos || {};\nconst datosCompletos = inputData.datos_completos || {};\n\n// ✅ NUEVO: Usar análisis previo del seguimiento\nconst analisisPrevio = seguimientoContext.resultado_analisis_ia || 'Seguimiento cardiovascular estándar';\nconst recomendacionesPrevias = seguimientoContext.notas_seguimiento || 'Seguimiento médico regular';\nconst prioridad = seguimientoContext.prioridad || 'MEDIA';\n\n// ✅ EXTRAER INFORMACIÓN CLÍNICA ADICIONAL\nconst diagnosticos = datosCompletos.diagnosticos || [];\nconst prescripciones = datosCompletos.prescripciones || [];\nconst triaje = datosCompletos.triaje || {};\nconst factoresRiesgo = datosCompletos.factores_riesgo_cardiovascular || {};\n\n// Datos del paciente estructurados\nconst paciente = {\n  id: inputData.paciente_id,\n  nombre: datosBasicos.nombre || `Paciente ${inputData.paciente_id}`,\n  edad: datosBasicos.edad || 45,\n  \n  // Datos cardiovasculares (estructura corregida)\n  presion_sistolica: datosCV.presionSistolica || 120,\n  presion_diastolica: datosCV.presionDiastolica || 80,\n  colesterol: datosCV.colesterolTotal || 200,\n  hipertension: (datosCV.presionSistolica || 120) >= 140,\n  diabetes: datosCV.diabetes || false,\n  \n  // ✅ INFORMACIÓN DEL SEGUIMIENTO\n  seguimiento_id: seguimientoContext.seguimiento_id,\n  tipo: seguimientoContext.tipo || 'CARDIOVASCULAR',\n  prioridad: prioridad,\n  dias_desde_programacion: seguimientoContext.dias_desde_programacion || 0,\n  \n  // ✅ ANÁLISIS PREVIO (CLAVE PARA CUESTIONARIOS ESPECÍFICOS)\n  analisis_previo: analisisPrevio,\n  recomendaciones_previas: recomendacionesPrevias,\n  \n  // ✅ INFORMACIÓN CLÍNICA ADICIONAL\n  diagnosticos_recientes: diagnosticos.map(d => d.descripcion || d.nombre).join(', '),\n  medicamentos_actuales: prescripciones.map(p => p.medicamento || p.nombre).join(', '),\n  sintomas_triaje: `FC: ${triaje.frecuencia_cardiaca || 'N/A'}, SpO2: ${triaje.saturacion_oxigeno || 'N/A'}, Temp: ${triaje.temperatura || 'N/A'}°C`,\n  factores_riesgo_cv: Object.keys(factoresRiesgo).filter(key => factoresRiesgo[key]).join(', ')\n};\n\nconst objetivo = inputData.objetivo_cuestionario || 'seguimiento_especifico';\n\nconsole.log('✅ Datos procesados - Seguimiento:', paciente.seguimiento_id);\nconsole.log('🎯 Prioridad:', prioridad);\nconsole.log('📊 Tiene análisis previo:', !!analisisPrevio);\nconsole.log('💊 Medicamentos:', paciente.medicamentos_actuales);\nconsole.log('🩺 Diagnósticos:', paciente.diagnosticos_recientes);\n\nreturn {\n  paciente: paciente,\n  objetivo: objetivo,\n  contexto_completo: inputData,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -100
+      ],
+      "id": "744c3607-a784-468e-9480-d5d0e2f2a55d",
+      "name": "Procesar_Datos_PASO3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "🏥 GENERADOR DE CUESTIONARIO CARDIOVASCULAR INTELIGENTE\n\n🧑‍⚕️ INFORMACIÓN DEL PACIENTE:\n- Nombre: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"nombre\"]}}\n- Edad: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"edad\"]}} años\n- Presión Arterial: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"presion_sistolica\"]}}/{{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"presion_diastolica\"]}} mmHg\n- Hipertensión: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"hipertension\"]}}\n- Diabetes: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"diabetes\"]}}\n- Colesterol: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"colesterol\"]}} mg/dL\n\n🏥 CONTEXTO CLÍNICO:\n- Diagnósticos recientes: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"diagnosticos_recientes\"]}}\n- Medicamentos actuales: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"medicamentos_actuales\"]}}\n- Signos vitales: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"sintomas_triaje\"]}}\n- Factores de riesgo CV: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"factores_riesgo_cv\"]}}\n\n📊 SEGUIMIENTO ACTUAL:\n- Prioridad: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"prioridad\"]}}\n- Días desde programación: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"dias_desde_programacion\"]}}\n- Análisis previo: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"analisis_previo\"]}}\n- Recomendaciones anteriores: {{$node[\"Procesar_Datos_PASO3\"].json[\"paciente\"][\"recomendaciones_previas\"]}}\n\n🎯 INSTRUCCIONES ESPECÍFICAS:\nComo especialista en cardiología, analiza TODA la información del paciente y genera un cuestionario PERSONALIZADO que:\n\n1. **EVALÚE ADHERENCIA**: Verificar cumplimiento de medicamentos específicos mencionados\n2. **SÍNTOMAS ESPECÍFICOS**: Preguntar por síntomas relacionados con sus diagnósticos actuales\n3. **FACTORES DE RIESGO**: Monitorear factores de riesgo cardiovascular identificados\n4. **URGENCIA ADAPTADA**: \n   - ALTA: Síntomas de alarma, efectos adversos\n   - MEDIA: Adherencia, síntomas menores, control\n   - BAJA: Prevención, estilo de vida\n\n5. **MÁXIMO 6 PREGUNTAS** enfocadas en su condición específica\n6. **PERSONALIZAR** según edad, diagnósticos y medicamentos\n\n📋 TIPOS DE PREGUNTA DISPONIBLES:\n- \"opcion_multiple\": Para opciones predefinidas\n- \"escala\": Para intensidad (1-10)\n- \"texto_libre\": Para descripción de síntomas\n- \"si_no\": Para confirmaciones\n\n⚠️ RESPONDE SOLO CON JSON VÁLIDO:\n{\n  \"cuestionario\": {\n    \"titulo\": \"Seguimiento [Diagnóstico específico] - [Nombre paciente]\",\n    \"instrucciones\": \"Preguntas personalizadas basadas en su condición cardiovascular actual\",\n    \"preguntas\": [\n      {\n        \"id\": \"adherencia_especifica\",\n        \"pregunta\": \"¿Ha tomado [medicamento específico] como se le indicó?\",\n        \"tipo\": \"opcion_multiple\",\n        \"opciones\": [\"Sí, todos los días\", \"Casi siempre\", \"A veces\", \"Pocas veces\", \"No lo he tomado\"],\n        \"requerida\": true\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        -100
+      ],
+      "id": "21ac6bec-ade4-4101-a2c0-a2a7f25e0e34",
+      "name": "AI_Agent_Especializado"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        120
+      ],
+      "id": "63eb118d-4977-452e-b82b-8fd7ad5df6ed",
+      "name": "Gemini_Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "V53RUrbr514tx1hu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{$json.paciente.seguimiento_id}}",
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -40,
+        120
+      ],
+      "id": "b72a93d1-1bcc-497e-a871-7376cd08b88d",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ ESTRUCTURAR CUESTIONARIO ESPECÍFICO PASO 3\nconst inputData = $input.all()[0]?.json || {};\nconst pacienteData = $node[\"Procesar_Datos_PASO3\"]?.json;\n\nif (!pacienteData?.paciente?.id) {\n  throw new Error('Datos del paciente no disponibles');\n}\n\n// Extraer respuesta IA\nlet respuestaIA = inputData.output || inputData.text || inputData.response || JSON.stringify(inputData);\n\ntry {\n  // Limpiar respuesta\n  const jsonString = respuestaIA.replace(/```json/g, '').replace(/```/g, '').trim();\n  const cleanString = jsonString.startsWith('\"') && jsonString.endsWith('\"') ? \n                     jsonString.slice(1, -1) : jsonString;\n  \n  const cuestionarioJSON = JSON.parse(cleanString);\n  \n  if (!cuestionarioJSON?.cuestionario) {\n    throw new Error('Estructura de cuestionario inválida');\n  }\n\n  // ✅ ESTRUCTURA FINAL PARA PASO 3\n  const resultado = {\n    success: true,\n    cuestionario_id: `cuest_seg_${pacienteData.paciente.seguimiento_id}_${Date.now()}`,\n    seguimiento_id: pacienteData.paciente.seguimiento_id,\n    paciente_id: pacienteData.paciente.id,\n    \n    // Cuestionario listo para frontend\n    cuestionario: cuestionarioJSON.cuestionario,\n    \n    metadata: {\n      fecha_generacion: new Date().toISOString(),\n      tipo: 'cuestionario_personalizado',\n      prioridad: pacienteData.paciente.prioridad,\n      basado_en_diagnosticos: !!pacienteData.paciente.diagnosticos_recientes,\n      basado_en_medicamentos: !!pacienteData.paciente.medicamentos_actuales,\n      version: '3.1'\n    },\n    \n    contexto: {\n      diagnosticos_considerados: pacienteData.paciente.diagnosticos_recientes,\n      medicamentos_considerados: pacienteData.paciente.medicamentos_actuales,\n      factores_riesgo: pacienteData.paciente.factores_riesgo_cv\n    }\n  };\n  \n  console.log('✅ Cuestionario personalizado generado');\n  console.log('🎯 Seguimiento:', resultado.seguimiento_id);\n  console.log('📋 Preguntas:', resultado.cuestionario.preguntas?.length);\n  console.log('💊 Basado en medicamentos:', resultado.metadata.basado_en_medicamentos);\n  \n  return resultado;\n  \n} catch (error) {\n  console.error('❌ Error procesando cuestionario:', error.message);\n  \n  // Fallback mejorado con datos específicos del paciente\n  const diagnosticos = pacienteData.paciente.diagnosticos_recientes;\n  const medicamentos = pacienteData.paciente.medicamentos_actuales;\n  const prioridad = pacienteData.paciente.prioridad;\n  \n  const preguntasFallback = [\n    {\n      id: \"adherencia_medicamentos\",\n      pregunta: medicamentos ? \n        `¿Ha tomado ${medicamentos} como se le indicó?` :\n        \"¿Ha tomado sus medicamentos como se le indicó?\",\n      tipo: \"opcion_multiple\",\n      opciones: [\"Sí, todos los días\", \"Casi siempre\", \"A veces\", \"Pocas veces\", \"No los he tomado\"],\n      requerida: true\n    },\n    {\n      id: \"sintomas_especificos\",\n      pregunta: diagnosticos ? \n        `¿Ha experimentado síntomas relacionados con ${diagnosticos}?` :\n        \"¿Ha experimentado algún síntoma cardiovascular recientemente?\",\n      tipo: \"opcion_multiple\",\n      opciones: [\"Ninguno\", \"Dolor en pecho\", \"Falta de aire\", \"Palpitaciones\", \"Mareos\", \"Fatiga\"],\n      requerida: true\n    }\n  ];\n  \n  if (prioridad === 'ALTA') {\n    preguntasFallback.push({\n      id: \"urgencia_sintomas\",\n      pregunta: \"¿Qué tan intensos han sido los síntomas?\",\n      tipo: \"escala\",\n      opciones: [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"],\n      requerida: true\n    });\n  }\n  \n  return {\n    success: true,\n    cuestionario_id: `fallback_${pacienteData.paciente.seguimiento_id}_${Date.now()}`,\n    seguimiento_id: pacienteData.paciente.seguimiento_id,\n    paciente_id: pacienteData.paciente.id,\n    \n    cuestionario: {\n      titulo: `Seguimiento Cardiovascular - ${pacienteData.paciente.nombre}`,\n      instrucciones: \"Complete las siguientes preguntas sobre su estado actual\",\n      preguntas: preguntasFallback\n    },\n    \n    metadata: {\n      fecha_generacion: new Date().toISOString(),\n      tipo: 'cuestionario_fallback_personalizado',\n      error_original: error.message,\n      version: '3.1'\n    }\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -100
+      ],
+      "id": "38cd8b44-5568-44ed-8ee1-97aef58b3c70",
+      "name": "Estructurar_Respuesta"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        600,
+        -100
+      ],
+      "id": "f6541ea5-32cf-4f43-9103-545b1536da96",
+      "name": "Responder"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Procesar_Datos_PASO3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar_Datos_PASO3": {
+      "main": [
+        [
+          {
+            "node": "AI_Agent_Especializado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI_Agent_Especializado": {
+      "main": [
+        [
+          {
+            "node": "Estructurar_Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini_Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI_Agent_Especializado",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI_Agent_Especializado",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estructurar_Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5bf90c9d-b2f9-4784-a357-ad16f464bdbb",
+  "meta": {
+    "instanceId": "dce2af84f5a7a2d78bec61c80e97cb57a63e291c09c6ed523d0bc3655e26ea7e"
+  },
+  "id": "Xp6dcz2XCgbMLpLp",
+  "tags": []
+}

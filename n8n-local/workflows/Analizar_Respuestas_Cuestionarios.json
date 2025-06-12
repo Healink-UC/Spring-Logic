@@ -1,0 +1,195 @@
+{
+  "name": "Analizar Respuestas Cuestionarios",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "analizar-respuestas-cuestionario",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        0
+      ],
+      "id": "webhook-analizar-respuestas",
+      "name": "Webhook_Analizar_Respuestas",
+      "webhookId": "analizar-resp-cardio-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 🏥 PROCESAR DATOS PARA ANÁLISIS DE RESPUESTAS\nconst webhookData = $input.all()[0].json;\nconsole.log('🔍 Datos de respuestas:', JSON.stringify(webhookData, null, 2));\n\nconst inputData = webhookData.body || webhookData;\n\n// ✅ VALIDAR DATOS REQUERIDOS\nif (!inputData.paciente_id) {\n  throw new Error('paciente_id es requerido');\n}\nif (!inputData.seguimiento_id) {\n  throw new Error('seguimiento_id es requerido');\n}\nif (!inputData.respuestas_cuestionario) {\n  throw new Error('respuestas_cuestionario son requeridas');\n}\n\n// 📊 EXTRAER DATOS ORGANIZADOS\nconst pacienteId = inputData.paciente_id;\nconst seguimientoId = inputData.seguimiento_id;\nconst respuestas = inputData.respuestas_cuestionario;\n\n// 🏥 DATOS CLÍNICOS ACTUALIZADOS\nconst datosActualizados = inputData.datos_actualizados || {};\nconst triaje = datosActualizados.triaje || {};\nconst diagnosticos = datosActualizados.diagnosticos || [];\nconst prescripciones = datosActualizados.prescripciones || [];\nconst recomendaciones = datosActualizados.recomendaciones || [];\n\n// 🎯 DATOS DE LA CAMPAÑA Y SEGUIMIENTOS ANTERIORES\nconst campanaDatos = inputData.campana_info || {};\nconst seguimientosAnteriores = inputData.seguimientos_anteriores || [];\n\n// 🤖 DATOS DE FASTAPI (RIESGO CARDIOVASCULAR Y FACTORES)\nconst riesgoCardiovascular = inputData.riesgo_cardiovascular || {};\nconst factoresInfluyentes = inputData.factores_influyentes || {};\nconst priorizacion = inputData.priorizacion || {};\n\n// 📝 ESTRUCTURAR INFORMACIÓN PARA ANÁLISIS\nconst datosAnalisis = {\n  // Identificadores\n  paciente_id: pacienteId,\n  seguimiento_id: seguimientoId,\n  \n  // Respuestas del cuestionario actual\n  respuestas_actuales: respuestas,\n  \n  // Estado clínico actual\n  estado_clinico: {\n    triaje: {\n      presion_arterial: `${triaje.presion_sistolica || 'N/A'}/${triaje.presion_diastolica || 'N/A'}`,\n      frecuencia_cardiaca: triaje.frecuencia_cardiaca || 'N/A',\n      temperatura: triaje.temperatura || 'N/A',\n      saturacion_oxigeno: triaje.saturacion_oxigeno || 'N/A'\n    },\n    diagnosticos_actuales: diagnosticos.map(d => ({ \n      codigo: d.codigo_cie10 || d.codigo,\n      descripcion: d.descripcion || d.nombre,\n      fecha: d.fecha_diagnostico\n    })),\n    medicamentos_prescritos: prescripciones.map(p => ({\n      medicamento: p.medicamento || p.nombre,\n      dosis: p.dosis,\n      frecuencia: p.frecuencia,\n      duracion: p.duracion\n    })),\n    recomendaciones_medicas: recomendaciones.map(r => r.descripcion || r.texto)\n  },\n  \n  // Análisis de riesgo cardiovascular\n  analisis_riesgo: {\n    nivel_riesgo: riesgoCardiovascular.nivel_riesgo || 'MODERADO',\n    probabilidad_riesgo: riesgoCardiovascular.probabilidad_riesgo || 0.3,\n    factores_riesgo: factoresInfluyentes.factores_riesgo || [],\n    cluster_asignado: priorizacion.cluster || 'MODERADO_JOVEN',\n    recomendaciones_ia: priorizacion.recomendaciones || []\n  },\n  \n  // Historial de seguimientos\n  contexto_historico: {\n    campana: {\n      nombre: campanaDatos.nombre,\n      objetivo: campanaDatos.objetivo,\n      fecha_inicio: campanaDatos.fecha_inicio\n    },\n    seguimientos_previos: seguimientosAnteriores.map(s => ({\n      fecha: s.fecha_programada,\n      tipo: s.tipo,\n      estado: s.estado,\n      respuestas_anteriores: s.respuestas || null,\n      resultado: s.resultado_analisis || 'Sin análisis'\n    }))\n  },\n  \n  // Metadata\n  fecha_analisis: new Date().toISOString(),\n  version_analisis: '1.0'\n};\n\nconsole.log('✅ Datos estructurados para análisis IA');\nconsole.log('📊 Respuestas a analizar:', Object.keys(respuestas).length);\nconsole.log('🎯 Nivel de riesgo:', datosAnalisis.analisis_riesgo.nivel_riesgo);\nconsole.log('📚 Seguimientos anteriores:', seguimientosAnteriores.length);\n\nreturn datosAnalisis;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        0
+      ],
+      "id": "procesar-datos-analisis",
+      "name": "Procesar_Datos_Analisis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "🏥 ANÁLISIS ESPECIALIZADO DE SEGUIMIENTO CARDIOVASCULAR\n\n👨‍⚕️ **ROL**: Eres un cardiólogo especialista analizando el seguimiento de un paciente.\n\n📊 **RESPUESTAS DEL CUESTIONARIO ACTUAL**:\n{{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"respuestas_actuales\"], null, 2)}}\n\n🩺 **ESTADO CLÍNICO ACTUAL**:\n- **Triaje**: {{$node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"triaje\"][\"presion_arterial\"]}} mmHg, FC: {{$node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"triaje\"][\"frecuencia_cardiaca\"]}}, SpO2: {{$node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"triaje\"][\"saturacion_oxigeno\"]}}%\n- **Diagnósticos**: {{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"diagnosticos_actuales\"])}}\n- **Medicamentos**: {{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"medicamentos_prescritos\"])}}\n- **Recomendaciones**: {{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"estado_clinico\"][\"recomendaciones_medicas\"])}}\n\n🤖 **ANÁLISIS DE RIESGO CARDIOVASCULAR (IA)**:\n- **Nivel de Riesgo**: {{$node[\"Procesar_Datos_Analisis\"].json[\"analisis_riesgo\"][\"nivel_riesgo\"]}}\n- **Probabilidad**: {{$node[\"Procesar_Datos_Analisis\"].json[\"analisis_riesgo\"][\"probabilidad_riesgo\"]}}\n- **Cluster**: {{$node[\"Procesar_Datos_Analisis\"].json[\"analisis_riesgo\"][\"cluster_asignado\"]}}\n- **Factores de Riesgo**: {{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"analisis_riesgo\"][\"factores_riesgo\"])}}\n\n📚 **HISTORIAL DE SEGUIMIENTOS**:\n- **Campaña**: {{$node[\"Procesar_Datos_Analisis\"].json[\"contexto_historico\"][\"campana\"][\"nombre\"]}}\n- **Seguimientos Previos**: {{JSON.stringify($node[\"Procesar_Datos_Analisis\"].json[\"contexto_historico\"][\"seguimientos_previos\"])}}\n\n🎯 **INSTRUCCIONES DE ANÁLISIS**:\nAnaliza INTEGRALMENTE las respuestas del cuestionario considerando:\n\n1. **ADHERENCIA TERAPÉUTICA**: Evalúa cumplimiento de medicamentos y recomendaciones\n2. **EVOLUCIÓN CLÍNICA**: Compara con seguimientos anteriores y detecta cambios\n3. **FACTORES DE RIESGO**: Analiza progresión de factores identificados por IA\n4. **SÍNTOMAS NUEVOS**: Identifica síntomas de alarma o deterioro\n5. **CALIDAD DE VIDA**: Evalúa impacto funcional y bienestar\n\n📋 **GENERA TU ANÁLISIS EN JSON**:\n{\n  \"analisis_integral\": {\n    \"resumen_estado\": \"Descripción del estado actual del paciente\",\n    \"adherencia_terapeutica\": {\n      \"nivel\": \"EXCELENTE|BUENA|REGULAR|DEFICIENTE\",\n      \"detalles\": \"Análisis específico de adherencia\"\n    },\n    \"evolucion_clinica\": {\n      \"tendencia\": \"MEJORIA|ESTABLE|DETERIORO\",\n      \"cambios_significativos\": [\"Lista de cambios importantes\"]\n    },\n    \"riesgo_actual\": {\n      \"nivel\": \"BAJO|MODERADO|ALTO|CRITICO\",\n      \"factores_preocupantes\": [\"Factores que requieren atención\"]\n    },\n    \"sintomas_alarma\": {\n      \"presente\": true/false,\n      \"descripcion\": \"Síntomas que requieren atención inmediata\"\n    }\n  },\n  \"recomendaciones_especificas\": [\n    {\n      \"categoria\": \"MEDICACION|ESTILO_VIDA|SEGUIMIENTO|URGENTE\",\n      \"prioridad\": \"ALTA|MEDIA|BAJA\",\n      \"accion\": \"Descripción específica de la recomendación\",\n      \"justificacion\": \"Por qué es necesaria esta recomendación\"\n    }\n  ],\n  \"plan_seguimiento\": {\n    \"frecuencia_recomendada\": \"Cada X días/semanas\",\n    \"proximos_controles\": [\"Lista de controles necesarios\"],\n    \"derivaciones\": [\"Especialistas si es necesario\"]\n  },\n  \"opciones_diagnosticas\": [\n    {\n      \"diagnostico_probable\": \"Descripción del diagnóstico\",\n      \"probabilidad\": \"ALTA|MEDIA|BAJA\",\n      \"evidencia\": \"Evidencia que lo soporta\",\n      \"estudios_requeridos\": [\"Estudios para confirmar\"]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        0
+      ],
+      "id": "ai-especialista-cardiovascular",
+      "name": "AI_Especialista_Cardiovascular"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        200
+      ],
+      "id": "gemini-especialista",
+      "name": "Gemini_Especialista",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "V53RUrbr514tx1hu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{$json.paciente_id}}_analisis",
+        "contextWindowLength": 5
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -200,
+        200
+      ],
+      "id": "memory-analisis",
+      "name": "Memory_Analisis"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 🏥 ESTRUCTURAR ANÁLISIS FINAL DE RESPUESTAS\nconst inputData = $input.all()[0]?.json || {};\nconst datosOriginales = $node[\"Procesar_Datos_Analisis\"]?.json;\n\nif (!datosOriginales?.paciente_id) {\n  throw new Error('Datos del paciente no disponibles');\n}\n\n// Extraer respuesta del AI especialista\nlet respuestaIA = inputData.output || inputData.text || inputData.response || JSON.stringify(inputData);\n\ntry {\n  // Limpiar y parsear respuesta JSON\n  const jsonString = respuestaIA.replace(/```json/g, '').replace(/```/g, '').trim();\n  const cleanString = jsonString.startsWith('\"') && jsonString.endsWith('\"') ? \n                     jsonString.slice(1, -1) : jsonString;\n  \n  const analisisJSON = JSON.parse(cleanString);\n  \n  if (!analisisJSON?.analisis_integral) {\n    throw new Error('Estructura de análisis inválida');\n  }\n\n  // ✅ RESULTADO FINAL ESTRUCTURADO\n  const resultadoFinal = {\n    success: true,\n    analisis_id: `analisis_${datosOriginales.seguimiento_id}_${Date.now()}`,\n    paciente_id: datosOriginales.paciente_id,\n    seguimiento_id: datosOriginales.seguimiento_id,\n    \n    // Análisis completo del especialista IA\n    analisis_especialista: analisisJSON,\n    \n    // Resumen ejecutivo para dashboard\n    resumen_ejecutivo: {\n      estado_general: analisisJSON.analisis_integral?.resumen_estado || 'Estado evaluado',\n      nivel_riesgo: analisisJSON.analisis_integral?.riesgo_actual?.nivel || 'MODERADO',\n      adherencia: analisisJSON.analisis_integral?.adherencia_terapeutica?.nivel || 'REGULAR',\n      requiere_atencion_urgente: analisisJSON.analisis_integral?.sintomas_alarma?.presente || false,\n      recomendaciones_prioritarias: analisisJSON.recomendaciones_especificas\
+        ?.filter(r => r.prioridad === 'ALTA')\
+        ?.map(r => r.accion) || []\n    },\n    \n    // Datos para persistencia\n    datos_persistencia: {\n      fecha_analisis: new Date().toISOString(),\n      analisis_completo: JSON.stringify(analisisJSON),\n      estado_seguimiento: analisisJSON.analisis_integral?.sintomas_alarma?.presente ? 'REQUIERE_ATENCION' : 'COMPLETADO',\n      puntuacion_riesgo: calcularPuntuacionRiesgo(analisisJSON),\n      proxima_evaluacion: calcularProximaEvaluacion(analisisJSON)\n    },\n    \n    // Contexto original para referencia\n    contexto_analisis: {\n      respuestas_evaluadas: Object.keys(datosOriginales.respuestas_actuales).length,\n      factores_riesgo_considerados: datosOriginales.analisis_riesgo.factores_riesgo.length,\n      seguimientos_previos: datosOriginales.contexto_historico.seguimientos_previos.length\n    },\n    \n    metadata: {\n      fecha_generacion: new Date().toISOString(),\n      tipo: 'analisis_respuestas_especializado',\n      version: '1.0',\n      confiabilidad: evaluarConfiabilidad(analisisJSON)\n    }\n  };\n  \n  console.log('✅ Análisis especializado completado');\n  console.log('🎯 Nivel de riesgo:', resultadoFinal.resumen_ejecutivo.nivel_riesgo);\n  console.log('💊 Adherencia:', resultadoFinal.resumen_ejecutivo.adherencia);\n  console.log('⚠️ Requiere atención urgente:', resultadoFinal.resumen_ejecutivo.requiere_atencion_urgente);\n  \n  return resultadoFinal;\n  \n} catch (error) {\n  console.error('❌ Error procesando análisis:', error.message);\n  \n  // Fallback con análisis básico\n  const respuestasCount = Object.keys(datosOriginales.respuestas_actuales).length;\n  const nivelRiesgoBase = datosOriginales.analisis_riesgo.nivel_riesgo;\n  \n  return {\n    success: true,\n    analisis_id: `fallback_${datosOriginales.seguimiento_id}_${Date.now()}`,\n    paciente_id: datosOriginales.paciente_id,\n    seguimiento_id: datosOriginales.seguimiento_id,\n    \n    resumen_ejecutivo: {\n      estado_general: 'Análisis básico - requiere revisión manual',\n      nivel_riesgo: nivelRiesgoBase,\n      adherencia: respuestasCount > 0 ? 'EVALUADA' : 'NO_EVALUADA',\n      requiere_atencion_urgente: nivelRiesgoBase === 'ALTO',\n      recomendaciones_prioritarias: ['Revisión médica manual requerida']\n    },\n    \n    datos_persistencia: {\n      fecha_analisis: new Date().toISOString(),\n      analisis_completo: JSON.stringify({ error: error.message, datos_disponibles: !!datosOriginales }),\n      estado_seguimiento: 'REQUIERE_REVISION',\n      puntuacion_riesgo: 50, // Valor neutro\n      proxima_evaluacion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 días\n    },\n    \n    metadata: {\n      fecha_generacion: new Date().toISOString(),\n      tipo: 'analisis_fallback',\n      error_original: error.message,\n      version: '1.0'\n    }\n  };\n}\n\n// Funciones auxiliares\nfunction calcularPuntuacionRiesgo(analisis) {\n  const nivelRiesgo = analisis.analisis_integral?.riesgo_actual?.nivel;\n  const mapping = { 'BAJO': 25, 'MODERADO': 50, 'ALTO': 75, 'CRITICO': 100 };\n  return mapping[nivelRiesgo] || 50;\n}\n\nfunction calcularProximaEvaluacion(analisis) {\n  const frecuencia = analisis.plan_seguimiento?.frecuencia_recomendada || 'Cada 2 semanas';\n  let dias = 14; // Default\n  \n  if (frecuencia.includes('día')) dias = parseInt(frecuencia.match(/\\d+/)?.[0]) || 7;\n  if (frecuencia.includes('semana')) dias = (parseInt(frecuencia.match(/\\d+/)?.[0]) || 2) * 7;\n  \n  return new Date(Date.now() + dias * 24 * 60 * 60 * 1000).toISOString();\n}\n\nfunction evaluarConfiabilidad(analisis) {\n  let score = 0;\n  if (analisis.analisis_integral) score += 30;\n  if (analisis.recomendaciones_especificas?.length > 0) score += 30;\n  if (analisis.plan_seguimiento) score += 20;\n  if (analisis.opciones_diagnosticas?.length > 0) score += 20;\n  \n  if (score >= 80) return 'ALTA';\n  if (score >= 60) return 'MEDIA';\n  return 'BAJA';\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        0
+      ],
+      "id": "estructurar-analisis-final",
+      "name": "Estructurar_Analisis_Final"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        0
+      ],
+      "id": "responder-analisis",
+      "name": "Responder_Analisis"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook_Analizar_Respuestas": {
+      "main": [
+        [
+          {
+            "node": "Procesar_Datos_Analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar_Datos_Analisis": {
+      "main": [
+        [
+          {
+            "node": "AI_Especialista_Cardiovascular",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI_Especialista_Cardiovascular": {
+      "main": [
+        [
+          {
+            "node": "Estructurar_Analisis_Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini_Especialista": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI_Especialista_Cardiovascular",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory_Analisis": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI_Especialista_Cardiovascular",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estructurar_Analisis_Final": {
+      "main": [
+        [
+          {
+            "node": "Responder_Analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "analizar-resp-v1",
+  "meta": {
+    "instanceId": "analizar-respuestas-cardiovascular"
+  },
+  "id": "AnalRespCardio001",
+  "tags": ["cardiovascular", "analisis", "seguimiento"]
+} 
