@@ -15,8 +15,8 @@ public class SeguimientoDTO implements DTOBase {
     @Schema(readOnly = true, description = "Indica es sólo lectura")
     private Long id;
 
-    @NotNull(message = "El identificador de la atención médica es requerido")
-    private Long atencion_id;
+    @NotNull(message = "El identificador de la citación médica es requerido")
+    private Long citacion_id;
 
     @NotNull(message = "La fecha de programación es requerida")
     private LocalDate fecha_programada;

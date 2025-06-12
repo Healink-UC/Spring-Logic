@@ -27,20 +27,6 @@ public class DiagnosticoController extends ControladorGenerico<Diagnostico, Diag
         this.diagnosticoService = diagnosticoService;
     }
 
-    @GetMapping("/atencion/{atencion_id}")
-    @Operation(summary = "Buscar diagnósticos por atención médica", description = "Obtiene todas los diagnósticos de una atención médica específica")
-    public ResponseEntity<List<DiagnosticoDTO>> buscarPorAtencionId(@PathVariable Long atencionId) {
-        List<Diagnostico> diagnosticos = diagnosticoService.buscarPorAtencionId(atencionId);
-        return ResponseEntity.ok(mapeador.aListaDTO(diagnosticos));
-    }
-
-    @GetMapping("/atencion/{atencion_id}/paginado")
-    @Operation(summary = "Buscar diagnósticos por atención médica (paginado)", description = "Obtiene todas los diagnósticos de una atención médica específica de forma paginada")
-    public ResponseEntity<Page<DiagnosticoDTO>> buscarPorAtencionIdPaginado(
-            @PathVariable Long pacienteId, Pageable pageable) {
-        Page<Diagnostico> pagina = diagnosticoService.buscarPorAtencionId(pacienteId, pageable);
-        return ResponseEntity.ok(pagina.map(diagnostico -> mapeador.aDTO(diagnostico)));
-    }
 
     @GetMapping("/codigo_cie10/{codigo_cie10}")
     @Operation(summary = "Buscar diagnósticos por código CIE 10", description = "Obtiene todas los diagnósticos que tienen el código CIE 10 especificado")

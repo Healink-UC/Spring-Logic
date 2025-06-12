@@ -15,8 +15,8 @@ public class DiagnosticoDTO implements DTOBase {
     @Schema(readOnly = true, description = "Indica es sólo lectura")
     private Long id;
 
-    @NotNull(message = "El identificador de la atención es requerido")
-    private Long atencionId;
+    @NotNull(message = "El identificador de la citación médica es requerido")
+    private Long citacionId;
 
     @NotBlank(message = "El codigo de la CIE10 es requerido")
     private String codigoCie10;

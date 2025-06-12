@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
 import com.healink.integrador.core.integrations.N8nIntegrationService;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedicaService;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -29,15 +29,15 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
 
     private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
     private final SeguimientoRepository seguimientoRepository;
-    private final AtencionMedicaService atencionMedicaService;
+    private final CitacionMedicaService citacionMedicaService;
     private final N8nIntegrationService n8nIntegrationService;
 
     public SeguimientoService(SeguimientoRepository seguimientoRepository,
-                             AtencionMedicaService atencionMedicaService,
+                             CitacionMedicaService citacionMedicaService,
                              N8nIntegrationService n8nIntegrationService) {
         super(seguimientoRepository);
         this.seguimientoRepository = seguimientoRepository;
-        this.atencionMedicaService = atencionMedicaService;
+        this.citacionMedicaService = citacionMedicaService;
         this.n8nIntegrationService = n8nIntegrationService;
     }
 
@@ -53,13 +53,13 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
     }
 
     @Transactional(readOnly = true)
-    public List<Seguimiento> buscarPorAtencionId(Long atencion_id) {
-        return seguimientoRepository.findByAtencionId(atencion_id);
+    public List<Seguimiento> buscarPorCitacionId(Long citacionId) {
+        return seguimientoRepository.findByCitacionId(citacionId);
     }
 
     @Transactional(readOnly = true)
-    public Page<Seguimiento> buscarPorAtencionId(Long diagnostico_id, Pageable pageable) {
-        return seguimientoRepository.findByAtencionId(diagnostico_id, pageable);
+    public Page<Seguimiento> buscarPorCitacionId(Long citacionId, Pageable pageable) {
+        return seguimientoRepository.findByCitacionId(citacionId, pageable);
     }
 
     /**
@@ -78,13 +78,13 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
                 throw new IllegalArgumentException("pacienteId es requerido");
             }
 
-            // Obtener atención médica (puede ser null para pruebas)
-            AtencionMedica atencion = null;
+            // Obtener citación médica (puede ser null para pruebas)
+            CitacionMedica citacion = null;
             if (atencionId != null) {
                 try {
-                    atencion = atencionMedicaService.obtenerPorId(atencionId);
+                    citacion = citacionMedicaService.obtenerPorId(atencionId);
                 } catch (EntityNotFoundException e) {
-                    logger.warn("Atención médica {} no encontrada, continuando sin atención", atencionId);
+                    logger.warn("Citación médica {} no encontrada, continuando sin citación", atencionId);
                 }
             }
 
@@ -102,7 +102,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             Map<String, Object> analisisIA = (Map<String, Object>) datosN8n.get("analisisIA");
 
             // Crear seguimientos en la base de datos
-            List<Long> seguimientosCreados = crearSeguimientosEnBD(seguimientos, atencion, pacienteId, analisisIA);
+            List<Long> seguimientosCreados = crearSeguimientosEnBD(seguimientos, citacion, pacienteId, analisisIA);
 
             // Preparar respuesta
             Map<String, Object> resultado = new HashMap<>();
@@ -127,7 +127,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
      * 🏥 Crear seguimientos reales en la base de datos
      */
     private List<Long> crearSeguimientosEnBD(List<Map<String, Object>> seguimientosN8n, 
-                                           AtencionMedica atencion, Long pacienteId, 
+                                           CitacionMedica citacion, Long pacienteId, 
                                            Map<String, Object> analisisIA) {
         List<Long> idsCreados = new ArrayList<>();
         
@@ -135,8 +135,8 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             try {
                 Seguimiento seguimiento = new Seguimiento();
                 
-                // Relación con atención médica
-                seguimiento.setAtencion(atencion);
+                // Relación con citación médica
+                seguimiento.setCitacion(citacion);
                 
                 // Fechas
                 String fechaProgramadaStr = (String) segN8n.get("fechaProgramada");
@@ -667,9 +667,8 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
      * Obtener ID del paciente desde el seguimiento
      */
     private Long obtenerPacienteIdDeSeguimiento(Seguimiento seguimiento) {
-        if (seguimiento.getAtencion() != null && 
-            seguimiento.getAtencion().getCitacionMedica() != null) {
-            return seguimiento.getAtencion().getCitacionMedica().getPacienteId();
+        if (seguimiento.getCitacion() != null) {
+            return seguimiento.getCitacion().getPacienteId();
         }
         // TODO: Implementar lógica alternativa para obtener paciente
         return 1L; // Valor por defecto para pruebas

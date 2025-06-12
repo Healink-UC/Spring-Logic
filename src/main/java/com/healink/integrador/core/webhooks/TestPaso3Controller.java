@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedicaService;
-import com.healink.integrador.domain.atenciones_medicas.EstadoAtencionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
+import com.healink.integrador.domain.citaciones_medicas.EstadoCitacion;
 import com.healink.integrador.domain.seguimientos.Seguimiento;
 import com.healink.integrador.domain.seguimientos.SeguimientoService;
 import com.healink.integrador.domain.seguimientos.SeguimientoDTO;
@@ -35,18 +35,18 @@ public class TestPaso3Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(TestPaso3Controller.class);
     
-    private final AtencionMedicaService atencionMedicaService;
+    private final CitacionMedicaService citacionMedicaService;
     private final SeguimientoService seguimientoService;
     private final SeguimientoMapper seguimientoMapper;
     private final N8nIntegrationService n8nIntegrationService;
 
     public TestPaso3Controller(
-            AtencionMedicaService atencionMedicaService,
+            CitacionMedicaService citacionMedicaService,
             SeguimientoService seguimientoService,
             SeguimientoMapper seguimientoMapper,
             N8nIntegrationService n8nIntegrationService) {
         
-        this.atencionMedicaService = atencionMedicaService;
+        this.citacionMedicaService = citacionMedicaService;
         this.seguimientoService = seguimientoService;
         this.seguimientoMapper = seguimientoMapper;
         this.n8nIntegrationService = n8nIntegrationService;
@@ -62,16 +62,14 @@ public class TestPaso3Controller {
         try {
             logger.info("🧪 SIMULANDO atención completada para paciente: {}", pacienteId);
             
-            // Crear atención médica simulada
-            AtencionMedica atencionSimulada = new AtencionMedica();
-            atencionSimulada.setCitacionId(null); // Sin citación real
-            atencionSimulada.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(30)));
-            atencionSimulada.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now()));
-            atencionSimulada.setDuracionReal(30);
-            atencionSimulada.setEstado(EstadoAtencionMedica.COMPLETADA);
+            // Crear citación médica simulada como completada
+            CitacionMedica citacionSimulada = new CitacionMedica();
+            citacionSimulada.setHoraProgramada(LocalDateTime.now().minusMinutes(30));
+            citacionSimulada.setHoraAtencion(LocalDateTime.now());
+            citacionSimulada.setDuracionEstimada(30);
+            citacionSimulada.setEstado(EstadoCitacion.ATENDIDA);
             
-            // Guardar atención (esto debería activar la generación automática de seguimientos)
-            // NOTA: Como no tenemos citación real, usaremos el método directo
+            // Usar el método directo para iniciar seguimientos por paciente ID
             logger.info("🔄 Iniciando seguimientos directamente por paciente ID...");
             n8nIntegrationService.iniciarSeguimientosPacientePorId(pacienteId, null);
             
@@ -198,24 +196,20 @@ public class TestPaso3Controller {
             String urlN8n = n8nIntegrationService.obtenerUrlActual();
             
             // Contar seguimientos en el sistema
-            List<Seguimiento> todosSeguimientos = seguimientoService.obtenerSeguimientosPorPaciente(1L); // Temporal para evitar error
-            
-            Map<String, Object> estadoSistema = new HashMap<>();
-            estadoSistema.put("n8n_url", urlN8n);
-            estadoSistema.put("n8n_disponible", urlN8n != null && !urlN8n.isEmpty());
-            estadoSistema.put("seguimientos_total_sistema", todosSeguimientos.size());
-            estadoSistema.put("fecha_verificacion", LocalDateTime.now());
-            estadoSistema.put("componentes", Map.of(
-                "seguimiento_service", "OK",
-                "atencion_service", "OK",
-                "n8n_integration", "OK",
-                "repository_queries", "OK"
-            ));
+            // NOTA: Aquí removimos referencias a atenciones médicas
+            long totalSeguimientos = seguimientoService.obtenerSeguimientosPorPaciente(1L).size();
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("sistema_listo", true);
-            response.put("estado", estadoSistema);
+            response.put("sistema_n8n", Map.of(
+                "url", urlN8n,
+                "status", "OPERATIVO"
+            ));
+            response.put("base_datos", Map.of(
+                "total_seguimientos", totalSeguimientos,
+                "status", "CONECTADO"
+            ));
+            response.put("timestamp", LocalDateTime.now());
             
             return ResponseEntity.ok(response);
             
@@ -224,7 +218,6 @@ public class TestPaso3Controller {
             
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
-            errorResponse.put("sistema_listo", false);
             errorResponse.put("message", "Error: " + e.getMessage());
             
             return ResponseEntity.badRequest().body(errorResponse);
@@ -307,47 +300,52 @@ public class TestPaso3Controller {
     }
 
     /**
-     * 🏗️ NUEVO: Crear atención temporal para pruebas
+     * 🏗️ NUEVO: Crear citación temporal para pruebas
      */
     @PostMapping("/crear-atencion-temporal")
-    @Operation(summary = "Crear atención temporal", description = "Crea una atención médica temporal para pruebas")
+    @Operation(summary = "Crear citación temporal", description = "Crea una citación médica temporal para pruebas")
     public ResponseEntity<Map<String, Object>> crearAtencionTemporal(
             @org.springframework.web.bind.annotation.RequestBody Map<String, Object> request) {
         
-        Map<String, Object> response = new HashMap<>();
-        
         try {
-            Long pacienteId = Long.valueOf(request.get("pacienteId").toString());
-            Integer duracionMinutos = Integer.valueOf(request.getOrDefault("duracionMinutos", 30).toString());
+            logger.info("🧪 CREANDO citación temporal para pruebas: {}", request);
             
-            logger.info("🏗️ CREANDO atención temporal para paciente: {}", pacienteId);
+            Long pacienteId = Long.valueOf(request.get("paciente_id").toString());
+            Integer duracion = Integer.valueOf(request.getOrDefault("duracion", 30).toString());
             
-            // Crear atención temporal
-            AtencionMedica atencionTemporal = new AtencionMedica();
-            atencionTemporal.setCitacionId(null); // Sin citación
-            atencionTemporal.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(duracionMinutos)));
-            atencionTemporal.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now()));
-            atencionTemporal.setDuracionReal(duracionMinutos);
-            atencionTemporal.setEstado(EstadoAtencionMedica.COMPLETADA);
+            // Crear citación médica temporal
+            CitacionMedica citacionTemporal = new CitacionMedica();
+            citacionTemporal.setHoraProgramada(LocalDateTime.now().minusMinutes(duracion));
+            citacionTemporal.setHoraAtencion(LocalDateTime.now());
+            citacionTemporal.setDuracionEstimada(duracion);
+            citacionTemporal.setEstado(EstadoCitacion.ATENDIDA);
             
-            // Simular el guardado (realmente no guardamos para evitar conflictos)
-            Long atencionId = System.currentTimeMillis(); // ID ficticio basado en timestamp
-            
+            Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("atencion_id", atencionId);
-            response.put("paciente_id", pacienteId);
-            response.put("duracion_minutos", duracionMinutos);
-            response.put("mensaje", "Atención temporal creada para pruebas");
+            response.put("message", "Citación temporal creada exitosamente");
+            response.put("citacion_temporal", Map.of(
+                "hora_programada", citacionTemporal.getHoraProgramada(),
+                "hora_atencion", citacionTemporal.getHoraAtencion(),
+                "duracion_estimada", citacionTemporal.getDuracionEstimada(),
+                "estado", citacionTemporal.getEstado()
+            ));
+            response.put("timestamp", LocalDateTime.now());
             
-            logger.info("✅ Atención temporal creada con ID: {}", atencionId);
+            // Iniciar seguimientos automáticamente
+            n8nIntegrationService.iniciarSeguimientosPacientePorId(pacienteId, null);
+            response.put("seguimientos_iniciados", true);
+            
+            return ResponseEntity.ok(response);
             
         } catch (Exception e) {
-            logger.error("❌ Error creando atención temporal: {}", e.getMessage(), e);
-            response.put("success", false);
-            response.put("mensaje", "Error: " + e.getMessage());
+            logger.error("❌ Error creando citación temporal: {}", e.getMessage(), e);
+            
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "Error: " + e.getMessage());
+            
+            return ResponseEntity.badRequest().body(errorResponse);
         }
-        
-        return ResponseEntity.ok(response);
     }
 
     /**

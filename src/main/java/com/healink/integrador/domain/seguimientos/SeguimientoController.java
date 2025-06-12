@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,19 +37,21 @@ public class SeguimientoController extends ControladorGenerico<Seguimiento, Segu
         this.seguimientoService = seguimientoService;
     }
 
-    @GetMapping("/atencion/{atencion_id}")
+    @GetMapping("/citacion/{citacionId}")
     @Operation(summary = "Buscar seguimientos por atención médica", description = "Obtiene todos los seguimientos de una atención médica específica")
-    public ResponseEntity<List<SeguimientoDTO>> buscarPorAtencionId(@PathVariable Long atencion_id) {
-        List<Seguimiento> seguimientos = seguimientoService.buscarPorAtencionId(atencion_id);
+    public ResponseEntity<List<SeguimientoDTO>> buscarPorCitacionId(@PathVariable Long citacionId) {
+        List<Seguimiento> seguimientos = seguimientoService.buscarPorCitacionId(citacionId);
         return ResponseEntity.ok(mapeador.aListaDTO(seguimientos));
     }
 
-    @GetMapping("/atencion/{atencion_id}/paginado")
+    @GetMapping("/citacion/{citacionId}/pageable")
     @Operation(summary = "Buscar seguimientos por atención médica (paginado)", description = "Obtiene todos los seguimientos de una atención médica específica paginada")
-    public ResponseEntity<Page<SeguimientoDTO>> buscarPorAtencionIdPaginado(
-            @PathVariable Long atencion_id, Pageable pageable) {
-        Page<Seguimiento> pagina = seguimientoService.buscarPorAtencionId(atencion_id, pageable);
-        return ResponseEntity.ok(pagina.map(seguimiento -> mapeador.aDTO(seguimiento)));
+    public ResponseEntity<Page<SeguimientoDTO>> buscarPorCitacionId(@PathVariable Long citacionId,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Seguimiento> seguimientos = seguimientoService.buscarPorCitacionId(citacionId, pageable);
+        return ResponseEntity.ok(seguimientos.map(seguimiento -> mapeador.aDTO(seguimiento)));
     }
 
     /**

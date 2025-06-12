@@ -161,12 +161,11 @@ public class InteraccionChatbotService extends ServicioGenerico<InteraccionChatb
      * Obtener paciente desde seguimiento
      */
     private Paciente obtenerPacienteDeSeguimiento(Seguimiento seguimiento) {
-        if (seguimiento.getAtencion() != null && 
-            seguimiento.getAtencion().getCitacionMedica() != null) {
-            Long pacienteId = seguimiento.getAtencion().getCitacionMedica().getPacienteId();
-            return pacienteService.obtenerPorId(pacienteId);
+        // Obtener paciente desde la citación médica del seguimiento
+        if (seguimiento.getCitacion() != null && seguimiento.getCitacion().getPacienteId() != null) {
+            return pacienteService.obtenerPorId(seguimiento.getCitacion().getPacienteId());
         }
-        throw new RuntimeException("No se pudo obtener el paciente del seguimiento");
+        throw new RuntimeException("No se pudo obtener el paciente del seguimiento - citación no disponible");
     }
 
     /**

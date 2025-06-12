@@ -14,20 +14,22 @@ import com.healink.integrador.core.Repository.RepositorioGenerico;
 @Repository
 public interface SeguimientoRepository extends RepositorioGenerico<Seguimiento> {
 
-    List<Seguimiento> findByAtencionId(Long atencion_id);
+    @Query("SELECT s FROM Seguimiento s WHERE s.citacion.id = :citacionId")
+    List<Seguimiento> findByCitacionId(@Param("citacionId") Long citacionId);
 
-    Page<Seguimiento> findByAtencionId(Long atencion_id, Pageable pageable);
+    @Query("SELECT s FROM Seguimiento s WHERE s.citacion.id = :citacionId")
+    Page<Seguimiento> findByCitacionId(@Param("citacionId") Long citacionId, Pageable pageable);
 
     /**
-     * NUEVO: Buscar seguimientos por paciente ID a través de la atención médica
+     * NUEVO: Buscar seguimientos por paciente ID a través de la citación médica
      */
-    @Query("SELECT s FROM Seguimiento s JOIN s.atencion a JOIN a.citacionMedica c WHERE c.pacienteId = :pacienteId ORDER BY s.fecha_programada DESC")
+    @Query("SELECT s FROM Seguimiento s JOIN s.citacion c WHERE c.pacienteId = :pacienteId ORDER BY s.fecha_programada DESC")
     List<Seguimiento> findByPacienteId(@Param("pacienteId") Long pacienteId);
 
     /**
      * NUEVO: Buscar seguimientos pendientes por paciente (hoy o anteriores y no completados)
      */
-    @Query("SELECT s FROM Seguimiento s JOIN s.atencion a JOIN a.citacionMedica c " +
+    @Query("SELECT s FROM Seguimiento s JOIN s.citacion c " +
            "WHERE c.pacienteId = :pacienteId " +
            "AND s.fecha_programada <= :fechaHoy " +
            "AND (s.estado = 'PENDIENTE' OR s.estado = 'PROGRAMADO') " +
@@ -37,7 +39,7 @@ public interface SeguimientoRepository extends RepositorioGenerico<Seguimiento> 
     /**
      * NUEVO: Buscar seguimientos disponibles para hoy por paciente
      */
-    @Query("SELECT s FROM Seguimiento s JOIN s.atencion a JOIN a.citacionMedica c " +
+    @Query("SELECT s FROM Seguimiento s JOIN s.citacion c " +
            "WHERE c.pacienteId = :pacienteId " +
            "AND s.fecha_programada = :fechaHoy " +
            "AND (s.estado = 'PENDIENTE' OR s.estado = 'PROGRAMADO') " +
