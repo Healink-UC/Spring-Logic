@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-healink
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Configuración básica
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      
+      # Configuración de webhooks
+      - WEBHOOK_URL=http://localhost:5678
+      
+      # Configuración de la base de datos (SQLite por defecto)
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.n8n/database.sqlite
+      
+      # Configuración de seguridad (para desarrollo)
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_DISABLE_UI=false
+      
+      # Configuración de logs
+      - N8N_LOG_LEVEL=info
+      
+      # Permitir ejecuciones en paralelo
+      - EXECUTIONS_PROCESS=main
+      - EXECUTIONS_MODE=regular
+      
+      # Configuración de timezone
+      - GENERIC_TIMEZONE=America/Bogota
+      
+    volumes:
+      # Persistir datos de n8n
+      - n8n_data:/home/node/.n8n
+      
+      # Opcional: Montar carpeta local para workflows
+      - ./workflows:/home/node/.n8n/workflows
+      
+    networks:
+      - n8n-network
+
+  # OPCIONAL: PostgreSQL para n8n (más robusto que SQLite)
+  # n8n-postgres:
+  #   image: postgres:15
+  #   container_name: n8n-postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=n8n
+  #     - POSTGRES_USER=n8n
+  #     - POSTGRES_PASSWORD=n8n123
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - n8n-network
+
+volumes:
+  n8n_data:
+    driver: local
+  # postgres_data:
+  #   driver: local
+
+networks:
+  n8n-network:
+    driver: bridge 
