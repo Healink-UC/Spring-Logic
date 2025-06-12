@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class SeguimientoService extends ServicioGenerico<Seguimiento> {
 
     private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
-    private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
     private final SeguimientoRepository seguimientoRepository;
     private final CitacionMedicaService citacionMedicaService;
     private final N8nIntegrationService n8nIntegrationService;

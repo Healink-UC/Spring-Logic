@@ -6,6 +6,7 @@ import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 public class SeguimientoDTO implements DTOBase {
