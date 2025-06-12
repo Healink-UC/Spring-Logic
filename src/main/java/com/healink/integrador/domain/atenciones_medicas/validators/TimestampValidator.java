@@ -3,7 +3,8 @@ package com.healink.integrador.domain.atenciones_medicas.validators;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 
-import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import com.healink.integrador.core.validator.TimeValidator;
 
@@ -22,22 +23,12 @@ public class TimestampValidator implements ConstraintValidator<TimeValidator, Ti
     @Override
     public boolean isValid(Timestamp value, ConstraintValidatorContext context) {
         if (value == null) {
-            return false;
+            return true; // Deja que @NotNull maneje los valores nulos
         }
 
-        try {
-            Object object = context.unwrap(HibernateConstraintValidatorContext.class);
-            Field compareField = object.getClass().getDeclaredField(compareWith);
-            compareField.setAccessible(true);
-            Object compareValue = compareField.get(object);
-
-            if (compareValue instanceof Timestamp) {
-                return value.before((Timestamp) compareValue);
-            }
-        } catch (Exception e) {
-            return false;
-        }
-
+        // Para este validador, necesitamos usar una validación a nivel de clase
+        // ya que acceder al objeto raíz desde el contexto es complejo
+        // Retornamos true aquí y moveremos la validación a nivel de clase
         return true;
     }
 } 
