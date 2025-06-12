@@ -1,7 +1,7 @@
 package com.healink.integrador.domain.citaciones_medicas;
 
 import com.healink.integrador.core.dto.DTOBase;
-import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,35 +10,36 @@ import java.time.LocalDateTime;
 @Data
 public class CitacionMedicaDTO implements DTOBase {
 
+    @Schema(readOnly = true, description = "ID de la cita médica")
     private Long id;
 
-    @NotNull(message = "El ID de paciente es requerido")
+    @Schema(description = "ID del paciente")
     private Long pacienteId;
 
-    @NotNull(message = "El ID de la campana es requerido")
+    @Schema(description = "ID de la campaña")
     private Long campanaId;
 
-    @NotNull(message = "El ID del medico es requerido")
+    @Schema(description = "ID del médico")
     private Long medicoId;
 
-    @NotNull(message = "El campo hora programada es requerido")
+    @Schema(description = "Hora programada de la cita")
     private LocalDateTime horaProgramada;
 
-    @NotNull(message = "El campo hora atención es requerido")
+    @Schema(description = "Hora de atención")
     private LocalDateTime horaAtencion;
 
-    @NotNull(message = "El campo duración estimada es requerido")
-    private Integer duracionEstimada; // en minutos
+    @Schema(description = "Duración estimada en minutos")
+    private Integer duracionEstimada;
 
-    @NotNull(message = "El campo estado es requerido")
+    @Schema(description = "Estado de la cita")
     private String estado;
 
-    @NotNull(message = "El campo predicción asistencia es requerido")
-    private BigDecimal prediccionAsistencia; // 0-100%
+    @Schema(description = "Predicción de asistencia (0-100%)")
+    private BigDecimal prediccionAsistencia;
 
-    @NotNull(message = "El campo codigoTicket es requerido")
-    private String codigoTicket;  // 1-5
+    @Schema(description = "Código del ticket")
+    private String codigoTicket;
 
-    @NotNull(message = "El campo notas es requerido")
+    @Schema(description = "Notas adicionales")
     private String notas;
 }

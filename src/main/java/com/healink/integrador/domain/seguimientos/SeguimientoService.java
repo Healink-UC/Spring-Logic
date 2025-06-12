@@ -22,11 +22,14 @@ import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 public class SeguimientoService extends ServicioGenerico<Seguimiento> {
 
+    private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
     private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
     private final SeguimientoRepository seguimientoRepository;
     private final CitacionMedicaService citacionMedicaService;
