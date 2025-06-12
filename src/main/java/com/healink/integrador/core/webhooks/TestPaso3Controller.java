@@ -529,8 +529,8 @@ public class TestPaso3Controller {
             // Crear payload de prueba directo
             Map<String, Object> datosCV = new HashMap<>();
             datosCV.put("pacienteId", pacienteId);
-            datosCV.put("edad", calcularEdad(paciente));
-            datosCV.put("sexo", obtenerSexo(paciente));
+            //datosCV.put("edad", calcularEdad(paciente));
+            //datosCV.put("sexo", obtenerSexo(paciente));
             datosCV.put("presionSistolica", 130);
             datosCV.put("presionDiastolica", 85);
             datosCV.put("frecuenciaCardiaca", 75);
@@ -547,8 +547,8 @@ public class TestPaso3Controller {
             Map<String, Object> historialClinico = new HashMap<>();
             historialClinico.put("datos_cardiovasculares", datosCV);
             historialClinico.put("datos_basicos", Map.of(
-                "edad", calcularEdad(paciente),
-                "genero", obtenerSexo(paciente)
+                //"edad", calcularEdad(paciente),
+                //"genero", obtenerSexo(paciente)
             ));
             
             Map<String, Object> payload = new HashMap<>();

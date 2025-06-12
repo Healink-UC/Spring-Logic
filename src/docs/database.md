@@ -203,15 +203,6 @@ erDiagram
 
     DIAGNOSTICOS {
         int id PK
-        int citacion_id FK
-        timestamp fecha_hora_inicio
-        timestamp fecha_hora_fin
-        int duracion_real "minutos"
-        varchar estado "EN_PROCESO|COMPLETADA"
-    }
-
-    DIAGNOSTICOS {
-        int id PK
         int atencion_id FK
         varchar codigo_cie10
         text descripcion

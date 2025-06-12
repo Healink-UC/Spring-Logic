@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,24 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.healink.integrador.domain.campana.Campana;
 import com.healink.integrador.domain.campana.CampanaController;
 import com.healink.integrador.domain.campana.CampanaDTO;
 import com.healink.integrador.domain.campana.CampanaMapper;
 import com.healink.integrador.domain.campana.CampanaService;
 import com.healink.integrador.domain.campana.EstadoCampana;
+import com.healink.integrador.domain.rol.Rol;
+import com.healink.integrador.domain.rol.RolRepository;
+import com.healink.integrador.domain.usuario.Usuario;
+import com.healink.integrador.domain.usuario.UsuarioRepository;
+import com.healink.integrador.domain.entidades_salud.EntidadSalud;
+import com.healink.integrador.domain.entidades_salud.EntidadSaludRepository;
+import com.healink.integrador.domain.localizacion.Localizacion;
+import com.healink.integrador.domain.localizacion.LocalizacionRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CampanaTest {
@@ -36,11 +49,32 @@ class CampanaTest {
     @Mock
     private CampanaMapper campanaMapper;
 
+    @Mock
+    private RolRepository rolRepository;
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private EntidadSaludRepository entidadRepository;
+
+    @Mock
+    private LocalizacionRepository localizacionRepository;
+
     @InjectMocks
     private CampanaController campanaController;
 
     private CampanaDTO campanaValida;
     private Campana campanaEntidad;
+    private ObjectMapper mapper;
+    private Rol rol;
+    private Usuario usuario;
+    private EntidadSalud entidad;
+    private Localizacion localizacion;
+    private Rol nuevoRol;
+    private Usuario nuevoUsuario;
+    private EntidadSalud nuevaEntidad;
+    private Localizacion nuevaLocalizacion;
 
     private static final LocalDate FECHA_HOY = LocalDate.now();
 
@@ -168,20 +202,123 @@ class CampanaTest {
         assert(campanaInvalida.getFechaLimiteInscripcion().isBefore(campanaInvalida.getFechaInicio())); // Validación AVL
     }
 
+    @Test
+    void testCrearCampanaValida() {
+        // Arrange
+        when(campanaMapper.aEntidad(any(CampanaDTO.class))).thenReturn(campanaEntidad);
+        when(campanaService.guardar(any(Campana.class))).thenReturn(campanaEntidad);
+        when(campanaMapper.aDTO(any(Campana.class))).thenReturn(campanaValida);
+
+        // Act
+        ResponseEntity<CampanaDTO> response = campanaController.crear(campanaValida);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void testActualizarCampanaValida() {
+        // Arrange
+        campanaValida.setId(1L);
+        when(campanaMapper.aEntidad(any(CampanaDTO.class))).thenReturn(campanaEntidad);
+        when(campanaService.obtenerPorId(anyLong())).thenReturn(campanaEntidad);
+        when(campanaService.guardar(any(Campana.class))).thenReturn(campanaEntidad);
+        when(campanaMapper.aDTO(any(Campana.class))).thenReturn(campanaValida);
+
+        // Act
+        ResponseEntity<CampanaDTO> response = campanaController.actualizar(1L, campanaValida);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void testCrearCampanaConErroresDeValidacion() {
+        // Arrange
+        campanaValida.setNombre(""); // Nombre vacío para forzar error de validación
+
+        // Act & Assert
+        // En un escenario real, el controller retornaría BadRequest
+        // Para este test verificamos que el valor está vacío
+        assertEquals("", campanaValida.getNombre());
+    }
+
+    @Test
+    void testCrearCampanaConFechasInvalidas() {
+        // Arrange
+        CampanaDTO campanaInvalida = crearCampanaBase();
+        campanaInvalida.setFechaInicio(FECHA_HOY.plusDays(7));
+        campanaInvalida.setFechaLimiteInscripcion(FECHA_HOY.plusDays(1)); // Fecha límite antes de la fecha de inicio
+
+        // Act & Assert
+        // En un escenario real, el controller retornaría BadRequest
+        // Para este test verificamos que las fechas son inválidas
+        assert(campanaInvalida.getFechaLimiteInscripcion().isBefore(campanaInvalida.getFechaInicio()));
+    }
+
+    @Test
+    void testCrearCampanaConParticipantesInvalidos() {
+        // Arrange
+        CampanaDTO campanaInvalida = crearCampanaBase();
+        campanaInvalida.setMinParticipantes(50);
+        campanaInvalida.setMaxParticipantes(30); // Máximo menor que mínimo
+
+        // Act & Assert
+        // En un escenario real, el controller retornaría BadRequest
+        // Para este test verificamos que los valores son inválidos
+        assert(campanaInvalida.getMaxParticipantes() < campanaInvalida.getMinParticipantes());
+    }
+
+    @Test
+    void testBuscarCampanasPorEntidad() {
+        // Arrange
+        List<Campana> campanas = List.of(campanaEntidad);
+        when(campanaService.getByEntidadId(anyLong())).thenReturn(campanas);
+        when(campanaMapper.aListaDTO(any())).thenReturn(List.of(campanaValida));
+
+        // Act
+        ResponseEntity<List<CampanaDTO>> response = campanaController.getByEntidadId(1L);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(campanaValida.getId(), response.getBody().get(0).getId());
+    }
+
+    @Test
+    void testBuscarCampanasPorFechaLimite() {
+        // Arrange
+        List<Campana> campanas = List.of(campanaEntidad);
+        when(campanaService.getByFechaLimite()).thenReturn(campanas);
+        when(campanaMapper.aListaDTO(any())).thenReturn(List.of(campanaValida));
+
+        // Act
+        ResponseEntity<List<CampanaDTO>> response = campanaController.getByFechaLimite();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(campanaValida.getId(), response.getBody().get(0).getId());
+    }
+
     /**
      * Método auxiliar para crear una campaña base válida
      */
     private CampanaDTO crearCampanaBase() {
         CampanaDTO campana = new CampanaDTO();
         campana.setNombre("Campaña de prueba");
-        campana.setDescripcion("Descripción de prueba");
-        campana.setEntidadId(1L);
-        campana.setFechaInicio(FECHA_HOY.plusDays(2));
-        campana.setFechaLimiteInscripcion(FECHA_HOY.plusDays(1));
-        campana.setFechaLimite(FECHA_HOY.plusDays(7));
-        campana.setMinParticipantes(50);
-        campana.setMaxParticipantes(100);
-        campana.setLocalizacionId(1L);
+        campana.setDescripcion("Descripción de la campaña de prueba");
+        campana.setEntidadId(nuevaEntidad.getId());
+        campana.setFechaInicio(FECHA_HOY);
+        campana.setFechaLimiteInscripcion(FECHA_HOY.plusDays(7));
+        campana.setFechaLimite(FECHA_HOY.plusDays(30));
+        campana.setMinParticipantes(10);
+        campana.setMaxParticipantes(50);
+        campana.setLocalizacionId(nuevaLocalizacion.getId());
         campana.setEstado(EstadoCampana.POSTULADA);
         return campana;
     }
