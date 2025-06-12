@@ -25,8 +25,8 @@ public class Diagnostico extends EntidadAuditable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "citacion_id")
-    private CitacionMedica citacion;
-
+    private CitacionMedica citacion;    
+    
     @Column(name = "codigo_cie10", nullable = false)
     private String codigoCie10;
 

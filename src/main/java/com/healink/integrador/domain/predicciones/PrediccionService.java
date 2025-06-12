@@ -1,9 +1,9 @@
 package com.healink.integrador.domain.predicciones;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 import com.healink.integrador.core.service.ServicioGenerico;
 
@@ -34,4 +34,5 @@ public class PrediccionService extends ServicioGenerico<Prediccion> {
             return List.of();
         }
     }
+  
 }
