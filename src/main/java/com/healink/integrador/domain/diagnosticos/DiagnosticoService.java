@@ -34,13 +34,13 @@ public class DiagnosticoService extends ServicioGenerico<Diagnostico> {
     }
 
     @Transactional(readOnly = true)
-    public List<Diagnostico> buscarPorAtencionId(Long atencion_id) {
-        return diagnosticoRepository.findByAtencionId(atencion_id);
+    public List<Diagnostico> buscarPorCitacionId(Long citacion_id) {
+        return diagnosticoRepository.findByCitacionId(citacion_id);
     }
 
     @Transactional(readOnly = true)
-    public Page<Diagnostico> buscarPorAtencionId(Long atencion_id, Pageable pageable) {
-        return diagnosticoRepository.findByAtencionId(atencion_id, pageable);
+    public Page<Diagnostico> buscarPorCitacionId(Long citacion_id, Pageable pageable) {
+        return diagnosticoRepository.findByCitacionId(citacion_id, pageable);
     }
 
     @Transactional(readOnly = true)

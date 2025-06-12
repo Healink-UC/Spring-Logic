@@ -11,9 +11,9 @@ import com.healink.integrador.core.Repository.RepositorioGenerico;
 @Repository
 public interface DiagnosticoRepository extends RepositorioGenerico<Diagnostico> {
 
-    List<Diagnostico> findByAtencionId(Long atencion_id);
+    List<Diagnostico> findByCitacionId(Long citacion_id);
 
-    Page<Diagnostico> findByAtencionId(Long atencion_id, Pageable pageable);
+    Page<Diagnostico> findByCitacionId(Long citacion_id, Pageable pageable);
 
     List<Diagnostico> findByCodigoCie10(String codigo_cie10);
 

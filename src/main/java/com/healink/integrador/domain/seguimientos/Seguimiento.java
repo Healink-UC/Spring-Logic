@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 
 import java.time.LocalDate;
 
@@ -24,23 +24,23 @@ public class Seguimiento extends EntidadAuditable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "atencion_id")
-    private AtencionMedica atencion;
+    @JoinColumn(name = "citacion_id")
+    private CitacionMedica citacion;
 
     @Column(name = "fecha_programada", nullable = false)
     private LocalDate fecha_programada;
 
-    @Column(name = "fecha_realizada", nullable = false)
+    @Column(name = "fecha_realizada", nullable = true)
     private LocalDate fecha_realizada;
     
     @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoSeguimiento tipo;
     
-    @Column(name = "resultado", nullable = false)
+    @Column(name = "resultado", nullable = false, length = 1000)
     private String resultado;
 
-    @Column(name = "notas", nullable = false)
+    @Column(name = "notas", nullable = false, length = 2000)
     private String notas;
 
     @Column(name = "estado", nullable = false)

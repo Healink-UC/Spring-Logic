@@ -27,30 +27,30 @@ public class DiagnosticoController extends ControladorGenerico<Diagnostico, Diag
         this.diagnosticoService = diagnosticoService;
     }
 
-    @GetMapping("/atencion/{atencion_id}")
-    @Operation(summary = "Buscar diagnósticos por atención médica", description = "Obtiene todas los diagnósticos de una atención médica específica")
-    public ResponseEntity<List<DiagnosticoDTO>> buscarPorAtencionId(@PathVariable Long atencionId) {
-        List<Diagnostico> diagnosticos = diagnosticoService.buscarPorAtencionId(atencionId);
+    @GetMapping("/citacion/{citacion_id}")
+    @Operation(summary = "Buscar diagnósticos por citación médica", description = "Obtiene todos los diagnósticos de una citación médica específica")
+    public ResponseEntity<List<DiagnosticoDTO>> buscarPorCitacionId(@PathVariable Long citacion_id) {
+        List<Diagnostico> diagnosticos = diagnosticoService.buscarPorCitacionId(citacion_id);
         return ResponseEntity.ok(mapeador.aListaDTO(diagnosticos));
     }
 
-    @GetMapping("/atencion/{atencion_id}/paginado")
-    @Operation(summary = "Buscar diagnósticos por atención médica (paginado)", description = "Obtiene todas los diagnósticos de una atención médica específica de forma paginada")
-    public ResponseEntity<Page<DiagnosticoDTO>> buscarPorAtencionIdPaginado(
-            @PathVariable Long pacienteId, Pageable pageable) {
-        Page<Diagnostico> pagina = diagnosticoService.buscarPorAtencionId(pacienteId, pageable);
+    @GetMapping("/citacion/{citacion_id}/paginado")
+    @Operation(summary = "Buscar diagnósticos por citación médica (paginado)", description = "Obtiene todos los diagnósticos de una citación médica específica de forma paginada")
+    public ResponseEntity<Page<DiagnosticoDTO>> buscarPorCitacionIdPaginado(
+            @PathVariable Long citacion_id, Pageable pageable) {
+        Page<Diagnostico> pagina = diagnosticoService.buscarPorCitacionId(citacion_id, pageable);
         return ResponseEntity.ok(pagina.map(diagnostico -> mapeador.aDTO(diagnostico)));
     }
 
     @GetMapping("/codigo_cie10/{codigo_cie10}")
-    @Operation(summary = "Buscar diagnósticos por código CIE 10", description = "Obtiene todas los diagnósticos que tienen el código CIE 10 especificado")
+    @Operation(summary = "Buscar diagnósticos por código CIE 10", description = "Obtiene todos los diagnósticos que tienen el código CIE 10 especificado")
     public ResponseEntity<List<DiagnosticoDTO>> buscarPorCodigoCie10(@PathVariable String codigo_cie10) {
         List<Diagnostico> diagnosticos = diagnosticoService.buscarPorCodigoCie10(codigo_cie10);
         return ResponseEntity.ok(mapeador.aListaDTO(diagnosticos));
     }
 
     @GetMapping("/codigo_cie10/{codigo_cie10}/paginado")
-    @Operation(summary = "Buscar diagnósticos por código CIE 10 (paginado)", description = "Obtiene todas los diagnósticos que tienen el código CIE 10 especificado de forma paginada")
+    @Operation(summary = "Buscar diagnósticos por código CIE 10 (paginado)", description = "Obtiene todos los diagnósticos que tienen el código CIE 10 especificado de forma paginada")
     public ResponseEntity<Page<DiagnosticoDTO>> buscarPorCodigoCie10Paginado(
             @PathVariable String codigo_cie10, Pageable pageable) {
         Page<Diagnostico> pagina = diagnosticoService.buscarPorCodigoCie10(codigo_cie10, pageable);

@@ -139,6 +139,12 @@ class ControladorAuthTest {
         when(gestorAutenticacion.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(usuarioMock);
+        
+        // Mockear la búsqueda del usuario completo que hace el servicio
+        when(usuarioService.findByTipoIdentificacionAndIdentificacion(
+                TipoIdentificacion.CC, "1234567890"))
+                .thenReturn(java.util.Optional.of(usuarioMock));
+                
         when(proveedorTokenJWT.createToken(usuarioMock)).thenReturn("token-jwt");
         when(usuarioMapper.aDTO(usuarioMock)).thenReturn(usuarioDTOMock);
 
@@ -156,6 +162,7 @@ class ControladorAuthTest {
 
         // Verify
         verify(gestorAutenticacion).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(usuarioService).findByTipoIdentificacionAndIdentificacion(TipoIdentificacion.CC, "1234567890");
         verify(proveedorTokenJWT).createToken(usuarioMock);
         verify(usuarioMapper).aDTO(usuarioMock);
     }
