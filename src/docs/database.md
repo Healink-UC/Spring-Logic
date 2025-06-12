@@ -17,6 +17,10 @@ erDiagram
         varchar creado_por "AUDITABLE - Convertido a ID en DTO"
         timestamp fecha_actualizacion "AUDITABLE - Incluido en DTO"
         timestamp fecha_creacion "AUDITABLE - Incluido en DTO"
+        varchar actualizado_por "AUDITABLE - Incluido en DTO"
+        varchar creado_por "AUDITABLE - Convertido a ID en DTO"
+        timestamp fecha_actualizacion "AUDITABLE - Incluido en DTO"
+        timestamp fecha_creacion "AUDITABLE - Incluido en DTO"
     }
 
     ROLES {
