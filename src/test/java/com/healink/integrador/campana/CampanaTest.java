@@ -46,48 +46,25 @@ class CampanaTest {
 
     @BeforeEach
     void setup() {
-        // Eliminar todas las entidades previas si es necesario
-        rolRepository.deleteAll();
-        usuarioRepository.deleteAll();
-        entidadRepository.deleteAll();
-        localizacionRepository.deleteAll();
+        // Configurar campaña válida por defecto
+        campanaValida = new CampanaDTO();
+        campanaValida.setId(1L);
+        campanaValida.setNombre("Campaña de prueba");
+        campanaValida.setDescripcion("Descripción de prueba");
+        campanaValida.setEntidadId(1L);
+        campanaValida.setFechaInicio(FECHA_HOY.plusDays(2));
+        campanaValida.setFechaLimiteInscripcion(FECHA_HOY.plusDays(1));
+        campanaValida.setFechaLimite(FECHA_HOY.plusDays(7));
+        campanaValida.setMinParticipantes(50);
+        campanaValida.setMaxParticipantes(100);
+        campanaValida.setLocalizacionId(1L);
+        campanaValida.setEstado(EstadoCampana.POSTULADA);
 
-        // pre Configuraciones
-        mapper = new ObjectMapper();
-        JsonNode permisos;
-        // crear un json para la prueba, comprobando una posible excepcion
-        {
-            try {
-                permisos = mapper.readTree("{\"crear\": true, \"editar\": false}");
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error initializing permisos JSON", e);
-            }
-        }
-
-        rol = new Rol(null, "administrador", "una descripcion", permisos);
-        // usuario = new Usuario(
-        //         null, TipoIdentificacion.CC, USUARIO,
-        //         "pepito", "perez", "correo@me.com", PASSWORD,
-        //         "12123123",
-        //         Estado.ACTIVO, rol, 1L, null, null);
-        // entidad = new EntidadSalud(null, "Salud Total", "Cra 123", "3123123123", "saludtotal@gmail.com");
-
-        localizacion = new Localizacion(
-                null, "Antioquia", "Medellin",
-                "San Antonio", "Centro", 0.0, 0.0);
-
-        nuevoRol = rolRepository.save(rol);
-        usuario.setRolId(nuevoRol.getId());
-        usuario.setRol(nuevoRol);
-
-        nuevoUsuario = usuarioRepository.save(usuario);
-
-        nuevaEntidad = entidadRepository.save(entidad);
-        nuevaLocalizacion = localizacionRepository.save(localizacion);
-
+        // Configurar entidad mock
+        campanaEntidad = new Campana();
+        campanaEntidad.setId(1L);
+        campanaEntidad.setNombre("Campaña de prueba");
     }
-
-    // clases válidas
 
     @Test
     void guardarNuevaCampanaTest() {

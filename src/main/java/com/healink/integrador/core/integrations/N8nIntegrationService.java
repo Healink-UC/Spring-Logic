@@ -73,20 +73,7 @@ public class N8nIntegrationService {
     }
     
     /**
-     * 🎯 EVENTO: Listener para citaciones atendidas - ACTIVACIÓN AUTOMÁTICA DE SEGUIMIENTOS
-     */
-    @EventListener
-    public void manejarCitacionAtendida(CitacionAtendidaEvent evento) {
-        logger.info("🎯 EVENTO RECIBIDO: Citación atendida {}", evento.getCitacionMedica().getId());
-        try {
-            iniciarSeguimientosPaciente(evento.getCitacionMedica());
-        } catch (Exception e) {
-            logger.error("❌ Error procesando evento de citación atendida: {}", e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una citación médica (ATENDIDA)
+     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una citación médica
      */
     public void iniciarSeguimientosPaciente(CitacionMedica citacionMedica) {
         try {
@@ -96,11 +83,11 @@ public class N8nIntegrationService {
             logger.info("=== INICIANDO SEGUIMIENTOS AUTOMÁTICOS ===");
             logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}", 
                        pacienteId, citacionMedica.getId(), campanaId);
+            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}", 
+                       pacienteId, citacionMedica.getId(), campanaId);
             
-            // Verificar que el paciente ID es válido
             if (pacienteId == null) {
-                logger.warn("No se puede obtener paciente ID de citación para citación {}", 
-                           citacionMedica.getId());
+                logger.warn("No se puede obtener paciente ID de citación {}", citacionMedica.getId());
                 logger.info("Para pruebas con datos reales, usa el endpoint /api/test/n8n/test-paciente/{pacienteId}");
                 return;
             }
@@ -116,11 +103,11 @@ public class N8nIntegrationService {
             
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
-            payload.put("evento", "citacion_atendida");
+            payload.put("evento", "citacion_completada");
             payload.put("citacion_id", citacionMedica.getId());
             payload.put("paciente_id", pacienteId);
-            payload.put("campana_id", campanaId); // Puede ser null
-            payload.put("fecha_atencion", citacionMedica.getHoraAtencion() != null ? citacionMedica.getHoraAtencion() : citacionMedica.getFechaCreacion());
+            payload.put("campana_id", campanaId);
+            payload.put("fecha_citacion", citacionMedica.getFechaCreacion());
             payload.put("historial_clinico", historialCompleto);
             payload.put("timestamp", System.currentTimeMillis());
             payload.put("modo", "produccion");
@@ -151,7 +138,6 @@ public class N8nIntegrationService {
             citacionTemporal.setPacienteId(pacienteId);
             citacionTemporal.setCampanaId(campanaId);
             citacionTemporal.setFechaCreacion(LocalDateTime.now());
-            citacionTemporal.setHoraAtencion(LocalDateTime.now());
             
             // Obtener historial clínico completo directamente por paciente ID
             Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, citacionTemporal);
@@ -164,11 +150,11 @@ public class N8nIntegrationService {
             
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
-            payload.put("evento", "citacion_atendida");
+            payload.put("evento", "citacion_completada");
             payload.put("citacion_id", null); // Sin citación específica
             payload.put("paciente_id", pacienteId);
             payload.put("campana_id", campanaId);
-            payload.put("fecha_atencion", LocalDateTime.now());
+            payload.put("fecha_citacion", LocalDateTime.now());
             payload.put("historial_clinico", historialCompleto);
             payload.put("timestamp", System.currentTimeMillis());
             payload.put("modo", "test_paciente_real");
@@ -193,6 +179,7 @@ public class N8nIntegrationService {
     /**
      * Obtener historial clínico completo - DATOS CARDIOVASCULARES REALES
      */
+    private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, CitacionMedica citacionMedica) {
     private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, CitacionMedica citacionMedica) {
         Map<String, Object> historial = new HashMap<>();
         
@@ -294,6 +281,10 @@ public class N8nIntegrationService {
             
             // Actualizar datos cardiovasculares en el historial
             historial.put("datos_cardiovasculares", datosCardiovasculares);
+            // Información de la campaña (si está disponible)
+            if (citacionMedica != null && citacionMedica.getCampanaId() != null) {
+                historial.put("campana_id", citacionMedica.getCampanaId());
+            }
             
             logger.info("✅ Historial completo extraído para paciente {} - {} secciones", 
                        pacienteId, historial.keySet().size());
@@ -324,9 +315,8 @@ public class N8nIntegrationService {
         return null;
     }
     
-    /**
-     * Llamar webhook de n8n con manejo de errores mejorado
-     */
+    // ====== MÉTODOS AUXILIARES ======
+    
     private String llamarWebhookN8n(String endpoint, Map<String, Object> payload) {
         try {
             String url = n8nBaseUrl + endpoint;
