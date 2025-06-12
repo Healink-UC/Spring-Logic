@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.healink.integrador.core.service.ServicioGenerico;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedicaService;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -26,13 +26,13 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
 
     private static final Logger logger = LoggerFactory.getLogger(SeguimientoService.class);
     private final SeguimientoRepository seguimientoRepository;
-    private final AtencionMedicaService atencionMedicaService;
+    private final CitacionMedicaService citacionMedicaService;
 
     public SeguimientoService(SeguimientoRepository seguimientoRepository,
-                             AtencionMedicaService atencionMedicaService) {
+                             CitacionMedicaService citacionMedicaService) {
         super(seguimientoRepository);
         this.seguimientoRepository = seguimientoRepository;
-        this.atencionMedicaService = atencionMedicaService;
+        this.citacionMedicaService = citacionMedicaService;
     }
 
     @Override
@@ -66,19 +66,19 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             
             // Extraer datos principales
             Long pacienteId = extractLong(datosN8n, "pacienteId");
-            Long atencionId = extractLong(datosN8n, "atencion_id");
+            Long citacionId = extractLong(datosN8n, "citacion_id");
             
             if (pacienteId == null) {
                 throw new IllegalArgumentException("pacienteId es requerido");
             }
 
-            // Obtener atención médica (puede ser null para pruebas)
-            AtencionMedica atencion = null;
-            if (atencionId != null) {
+            // Obtener citación médica (puede ser null para pruebas)
+            CitacionMedica citacion = null;
+            if (citacionId != null) {
                 try {
-                    atencion = atencionMedicaService.obtenerPorId(atencionId);
+                    citacion = citacionMedicaService.obtenerPorId(citacionId);
                 } catch (EntityNotFoundException e) {
-                    logger.warn("Atención médica {} no encontrada, continuando sin atención", atencionId);
+                    logger.warn("Citación médica {} no encontrada, continuando sin citación", citacionId);
                 }
             }
 
@@ -96,12 +96,12 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             Map<String, Object> analisisIA = (Map<String, Object>) datosN8n.get("analisisIA");
 
             // Crear seguimientos en la base de datos
-            List<Long> seguimientosCreados = crearSeguimientosEnBD(seguimientos, atencion, pacienteId, analisisIA);
+            List<Long> seguimientosCreados = crearSeguimientosEnBD(seguimientos, citacion, pacienteId, analisisIA);
 
             // Preparar respuesta
             Map<String, Object> resultado = new HashMap<>();
             resultado.put("pacienteId", pacienteId);
-            resultado.put("atencionId", atencionId);
+            resultado.put("citacionId", citacionId);
             resultado.put("seguimientosCreados", seguimientosCreados.size());
             resultado.put("ids", seguimientosCreados);
             resultado.put("fechaProcesamiento", LocalDateTime.now());
@@ -121,7 +121,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
      * 🏥 Crear seguimientos reales en la base de datos
      */
     private List<Long> crearSeguimientosEnBD(List<Map<String, Object>> seguimientosN8n, 
-                                           AtencionMedica atencion, Long pacienteId, 
+                                           CitacionMedica citacion, Long pacienteId, 
                                            Map<String, Object> analisisIA) {
         List<Long> idsCreados = new ArrayList<>();
         
@@ -129,8 +129,8 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             try {
                 Seguimiento seguimiento = new Seguimiento();
                 
-                // Relación con atención médica
-                seguimiento.setAtencion(atencion);
+                // Relación con citación médica
+                seguimiento.setCitacion(citacion);
                 
                 // Fechas
                 String fechaProgramadaStr = (String) segN8n.get("fechaProgramada");

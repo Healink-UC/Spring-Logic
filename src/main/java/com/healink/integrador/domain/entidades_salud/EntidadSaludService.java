@@ -4,6 +4,7 @@ import com.healink.integrador.core.service.ServicioGenerico;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,19 @@ public class EntidadSaludService extends ServicioGenerico<EntidadSalud> {
     @Transactional(readOnly = true)
     public Optional<EntidadSalud> findByUsuarioId(Long usuarioId) {
         return entidadSaludRepository.findByUsuarioId(usuarioId);
+    }
+    
+    /**
+     * Buscar entidades de salud creadas por un administrador específico
+     * @param tipoIdentificacion tipo de documento (ej: "CC", "NIT", "CE")
+     * @param identificacion número de identificación
+     * @return lista de entidades creadas por ese administrador
+     */
+    @Transactional(readOnly = true)
+    public List<EntidadSalud> buscarPorAdministrador(String tipoIdentificacion, String identificacion) {
+        // Construir el identificador en formato "TipoIdentificacion:Identificacion"
+        String creadoPor = tipoIdentificacion + ":" + identificacion;
+        return entidadSaludRepository.findByCreadoPor(creadoPor);
     }
 
 }
