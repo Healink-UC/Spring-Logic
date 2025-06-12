@@ -1,33 +1,33 @@
-package com.healink.integrador.domain.atenciones_medicas;
+// package com.healink.integrador.domain.atenciones_medicas;
 
-import java.util.Optional;
+// import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+// import org.springframework.stereotype.Service;
+// import org.springframework.transaction.annotation.Transactional;
 
-import com.healink.integrador.core.service.ServicioGenerico;
+// import com.healink.integrador.core.service.ServicioGenerico;
 
-import jakarta.persistence.EntityNotFoundException;
+// import jakarta.persistence.EntityNotFoundException;
 
-@Service
-@Transactional
-public class AtencionMedicaService extends ServicioGenerico<AtencionMedica> {
+// @Service
+// @Transactional
+// public class AtencionMedicaService extends ServicioGenerico<AtencionMedica> {
 
-    private final AtencionMedicaRepository atencionMedicaRepository;
+//     private final AtencionMedicaRepository atencionMedicaRepository;
 
-    public AtencionMedicaService(AtencionMedicaRepository atencionMedicaRepository) {
-        super(atencionMedicaRepository);
-        this.atencionMedicaRepository = atencionMedicaRepository;
-    }    
+//     public AtencionMedicaService(AtencionMedicaRepository atencionMedicaRepository) {
+//         super(atencionMedicaRepository);
+//         this.atencionMedicaRepository = atencionMedicaRepository;
+//     }    
 
-    @Override
-    public AtencionMedica obtenerPorId(Long id) {
-        return atencionMedicaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Atención Médica no encontrado con ID: " + id));
-    }
+//     @Override
+//     public AtencionMedica obtenerPorId(Long id) {
+//         return atencionMedicaRepository.findById(id)
+//                 .orElseThrow(() -> new EntityNotFoundException("Atención Médica no encontrado con ID: " + id));
+//     }
 
-    @Transactional(readOnly = true)
-    public Optional<AtencionMedica> buscarPorCitacionId(Long citacion_id) {
-        return atencionMedicaRepository.findByCitacionId(citacion_id);
-    }
-}
+//     @Transactional(readOnly = true)
+//     public Optional<AtencionMedica> buscarPorCitacionId(Long citacion_id) {
+//         return atencionMedicaRepository.findByCitacionId(citacion_id);
+//     }
+// }

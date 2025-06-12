@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.healink.integrador.core.entity.EntidadAuditable;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
+import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 
 import java.time.LocalDate;
 
@@ -24,8 +24,8 @@ public class Diagnostico extends EntidadAuditable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "atencion_id")
-    private AtencionMedica atencion;    
+    @JoinColumn(name = "citacion_id")
+    private CitacionMedica citacion;    
     
     @Column(name = "codigo_cie10", nullable = false)
     private String codigoCie10;

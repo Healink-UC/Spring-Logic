@@ -11,7 +11,7 @@ import com.healink.integrador.core.Repository.RepositorioGenerico;
 @Repository
 public interface SeguimientoRepository extends RepositorioGenerico<Seguimiento> {
 
-    List<Seguimiento> findByAtencionId(Long atencion_id);
+    List<Seguimiento> findByCitacionId(Long citacion_id);
 
-    Page<Seguimiento> findByAtencionId(Long atencion_id, Pageable pageable);
+    Page<Seguimiento> findByCitacionId(Long citacion_id, Pageable pageable);
 }

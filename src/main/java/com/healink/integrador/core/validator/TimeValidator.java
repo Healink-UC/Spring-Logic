@@ -4,11 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.time.LocalDate;
-import java.sql.Timestamp;
 
 import com.healink.integrador.domain.atenciones_medicas.validators.TimestampValidator;
-import com.healink.integrador.domain.campana.validators.CompararFechasValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -1,14 +1,14 @@
-package com.healink.integrador.domain.atenciones_medicas;
+// package com.healink.integrador.domain.atenciones_medicas;
 
-import java.util.Optional;
+// import java.util.Optional;
 
-import org.springframework.stereotype.Repository;
+// import org.springframework.stereotype.Repository;
 
-import com.healink.integrador.core.Repository.RepositorioGenerico;
+// import com.healink.integrador.core.Repository.RepositorioGenerico;
 
-@Repository
-public interface AtencionMedicaRepository extends RepositorioGenerico<AtencionMedica> {
+// @Repository
+// public interface AtencionMedicaRepository extends RepositorioGenerico<AtencionMedica> {
 
-    Optional<AtencionMedica> findByCitacionId(Long citacion_id);
+//     Optional<AtencionMedica> findByCitacionId(Long citacion_id);
 
-}
+// }
