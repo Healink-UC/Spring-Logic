@@ -197,18 +197,9 @@ erDiagram
         decimal prob_rehospitalizacion "0-100%"
     }
 
-    ATENCIONES_MEDICAS {
-        int id PK
-        int citacion_id FK
-        timestamp fecha_hora_inicio
-        timestamp fecha_hora_fin
-        int duracion_real "minutos"
-        varchar estado "EN_PROCESO|COMPLETADA"
-    }
-
     DIAGNOSTICOS {
         int id PK
-        int atencion_id FK
+        int citacion_id FK
         varchar codigo_cie10
         text descripcion
         boolean es_principal
@@ -228,7 +219,7 @@ erDiagram
 
     SEGUIMIENTOS {
         int id PK
-        int atencion_id FK
+        int citacion_id FK
         date fecha_programada
         date fecha_realizada
         varchar tipo "LLAMADA|SMS|PRESENCIAL"
@@ -311,14 +302,13 @@ erDiagram
     DATOS_CLINICOS ||--o{ HISTORIAS_CLINICAS : incluye
     CITACIONES ||--o{ HISTORIAS_CLINICAS : registra
 
-    CITACIONES ||--o{ ATENCIONES_MEDICAS : genera
-    PERSONAL_MEDICO ||--o{ ATENCIONES_MEDICAS : realiza
+    PERSONAL_MEDICO ||--o{ CITACIONES : atiende
 
-    ATENCIONES_MEDICAS ||--o{ DIAGNOSTICOS : produce
+    CITACIONES ||--o{ DIAGNOSTICOS : genera
     DIAGNOSTICOS ||--o{ PRESCRIPCIONES : requiere
     DIAGNOSTICOS ||--o{ RECOMENDACIONES : genera
 
-    ATENCIONES_MEDICAS ||--o{ SEGUIMIENTOS : programa
+    CITACIONES ||--o{ SEGUIMIENTOS : programa
     SEGUIMIENTOS ||--o| INTERACCIONES_CHATBOT : utiliza
 
     PACIENTES ||--o{ PREDICCIONES : tiene

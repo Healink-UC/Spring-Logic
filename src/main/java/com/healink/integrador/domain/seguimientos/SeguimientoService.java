@@ -72,7 +72,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             
             // Extraer datos principales
             Long pacienteId = extractLong(datosN8n, "pacienteId");
-            Long atencionId = extractLong(datosN8n, "atencion_id");
+            Long citacionId = extractLong(datosN8n, "citacion_id");
             
             if (pacienteId == null) {
                 throw new IllegalArgumentException("pacienteId es requerido");
@@ -80,11 +80,11 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
 
             // Obtener citación médica (puede ser null para pruebas)
             CitacionMedica citacion = null;
-            if (atencionId != null) {
+            if (citacionId != null) {
                 try {
-                    citacion = citacionMedicaService.obtenerPorId(atencionId);
+                    citacion = citacionMedicaService.obtenerPorId(citacionId);
                 } catch (EntityNotFoundException e) {
-                    logger.warn("Citación médica {} no encontrada, continuando sin citación", atencionId);
+                    logger.warn("Citación médica {} no encontrada, continuando sin citación", citacionId);
                 }
             }
 
@@ -107,7 +107,7 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
             // Preparar respuesta
             Map<String, Object> resultado = new HashMap<>();
             resultado.put("pacienteId", pacienteId);
-            resultado.put("atencionId", atencionId);
+            resultado.put("citacionId", citacionId);
             resultado.put("seguimientosCreados", seguimientosCreados.size());
             resultado.put("ids", seguimientosCreados);
             resultado.put("fechaProcesamiento", LocalDateTime.now());

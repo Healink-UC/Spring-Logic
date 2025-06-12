@@ -24,6 +24,8 @@ import com.healink.integrador.domain.seguimientos.SeguimientoService;
 import com.healink.integrador.domain.seguimientos.SeguimientoDTO;
 import com.healink.integrador.domain.seguimientos.SeguimientoMapper;
 import com.healink.integrador.core.integrations.N8nIntegrationService;
+import com.healink.integrador.domain.paciente.Paciente;
+import com.healink.integrador.domain.paciente.PacienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,17 +41,20 @@ public class TestPaso3Controller {
     private final SeguimientoService seguimientoService;
     private final SeguimientoMapper seguimientoMapper;
     private final N8nIntegrationService n8nIntegrationService;
+    private final PacienteService pacienteService;
 
     public TestPaso3Controller(
             CitacionMedicaService citacionMedicaService,
             SeguimientoService seguimientoService,
             SeguimientoMapper seguimientoMapper,
-            N8nIntegrationService n8nIntegrationService) {
+            N8nIntegrationService n8nIntegrationService,
+            PacienteService pacienteService) {
         
         this.citacionMedicaService = citacionMedicaService;
         this.seguimientoService = seguimientoService;
         this.seguimientoMapper = seguimientoMapper;
         this.n8nIntegrationService = n8nIntegrationService;
+        this.pacienteService = pacienteService;
     }
 
     /**
@@ -456,5 +461,128 @@ public class TestPaso3Controller {
         }
         
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 🎯 NUEVO: Probar flujo completo de seguimientos desde citación atendida
+     */
+    @PostMapping("/test-flujo-seguimientos-citacion/{pacienteId}")
+    public ResponseEntity<Map<String, Object>> probarFlujoSeguimientosCitacion(@PathVariable Long pacienteId) {
+        logger.info("🧪 PROBANDO FLUJO COMPLETO DE SEGUIMIENTOS: Paciente {}", pacienteId);
+        
+        try {
+            // 1. Crear citación temporal
+            CitacionMedica citacionTemp = new CitacionMedica();
+            citacionTemp.setPacienteId(pacienteId);
+            citacionTemp.setCampanaId(1L);
+            citacionTemp.setMedicoId(1L);
+            citacionTemp.setHoraProgramada(LocalDateTime.now());
+            citacionTemp.setEstado(EstadoCitacion.AGENDADA);
+            citacionTemp.setNotas("Prueba flujo seguimientos automáticos");
+            
+            CitacionMedica citacionGuardada = citacionMedicaService.guardar(citacionTemp);
+            logger.info("📋 Citación creada: {}", citacionGuardada.getId());
+            
+            // 2. Marcar como atendida (esto debe disparar el evento y llamar a n8n)
+            CitacionMedica citacionAtendida = citacionMedicaService.marcarComoAtendida(citacionGuardada.getId());
+            logger.info("✅ Citación {} marcada como ATENDIDA", citacionAtendida.getId());
+            
+            // 3. Preparar respuesta
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Flujo de seguimientos ejecutado desde citación");
+            response.put("paciente_id", pacienteId);
+            response.put("citacion_id", citacionAtendida.getId());
+            response.put("estado_citacion", citacionAtendida.getEstado());
+            response.put("hora_atencion", citacionAtendida.getHoraAtencion());
+            response.put("url_webhook_n8n", n8nIntegrationService.obtenerUrlActual());
+            response.put("seguimientos_activados", true);
+            response.put("timestamp", LocalDateTime.now());
+            response.put("nota", "Revisa los logs para confirmar llamada a n8n");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error en flujo de seguimientos: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of(
+                "success", false,
+                "error", e.getMessage(),
+                "paciente_id", pacienteId
+            ));
+        }
+    }
+
+    /**
+     * 🔧 NUEVO: Endpoint directo para probar el webhook de n8n
+     */
+    @PostMapping("/test-webhook-n8n-directo/{pacienteId}")
+    public ResponseEntity<Map<String, Object>> probarWebhookN8nDirecto(@PathVariable Long pacienteId) {
+        logger.info("🌐 PROBANDO WEBHOOK N8N DIRECTO: Paciente {}", pacienteId);
+        
+        try {
+            // Obtener datos del paciente
+            Paciente paciente = pacienteService.obtenerPorId(pacienteId);
+            if (paciente == null) {
+                throw new RuntimeException("Paciente no encontrado: " + pacienteId);
+            }
+            
+            // Crear payload de prueba directo
+            Map<String, Object> datosCV = new HashMap<>();
+            datosCV.put("pacienteId", pacienteId);
+            datosCV.put("edad", calcularEdad(paciente));
+            datosCV.put("sexo", obtenerSexo(paciente));
+            datosCV.put("presionSistolica", 130);
+            datosCV.put("presionDiastolica", 85);
+            datosCV.put("frecuenciaCardiaca", 75);
+            datosCV.put("colesterolTotal", 210);
+            datosCV.put("colesterolHDL", 45);
+            datosCV.put("colesterolLDL", 140);
+            datosCV.put("trigliceridos", 160);
+            datosCV.put("glucosa", 95);
+            datosCV.put("tabaquismo", false);
+            datosCV.put("hipertension", true);
+            datosCV.put("diabetes", false);
+            datosCV.put("antecedentesCardiovasculares", false);
+            
+            Map<String, Object> historialClinico = new HashMap<>();
+            historialClinico.put("datos_cardiovasculares", datosCV);
+            historialClinico.put("datos_basicos", Map.of(
+                "edad", calcularEdad(paciente),
+                "genero", obtenerSexo(paciente)
+            ));
+            
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("evento", "citacion_atendida");
+            payload.put("paciente_id", pacienteId);
+            payload.put("citacion_id", 999L); // ID temporal
+            payload.put("campana_id", 1L);
+            payload.put("fecha_atencion", LocalDateTime.now());
+            payload.put("historial_clinico", historialClinico);
+            payload.put("timestamp", System.currentTimeMillis());
+            payload.put("modo", "test_directo");
+            
+            // Llamar directamente al webhook
+            String response = n8nIntegrationService.llamarWebhookN8nDirecto("/orquestador-seguimientos", payload);
+            
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("success", true);
+            resultado.put("message", "Webhook n8n llamado directamente");
+            resultado.put("paciente_id", pacienteId);
+            resultado.put("url_webhook", n8nIntegrationService.obtenerUrlActual() + "/orquestador-seguimientos");
+            resultado.put("payload_enviado", payload);
+            resultado.put("respuesta_n8n", response);
+            resultado.put("timestamp", LocalDateTime.now());
+            
+            return ResponseEntity.ok(resultado);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error probando webhook n8n directo: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of(
+                "success", false,
+                "error", e.getMessage(),
+                "paciente_id", pacienteId,
+                "url_webhook", n8nIntegrationService.obtenerUrlActual()
+            ));
+        }
     }
 } 

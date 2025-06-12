@@ -1,6 +1,7 @@
 package com.healink.integrador.core.integrations;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,13 +12,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestClientException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healink.integrador.domain.atenciones_medicas.AtencionMedica;
 import com.healink.integrador.domain.historia_clinica.HistoriaClinica;
 import com.healink.integrador.domain.historia_clinica.HistoriaClinicaService;
 import com.healink.integrador.domain.paciente.Paciente;
 import com.healink.integrador.domain.paciente.PacienteService;
 import com.healink.integrador.domain.citaciones_medicas.CitacionMedica;
 import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
+import com.healink.integrador.domain.citaciones_medicas.CitacionAtendidaEvent;
 import com.healink.integrador.domain.datos_clinicos.DatosClinicos;
 import com.healink.integrador.domain.triaje.Triaje;
 import com.healink.integrador.domain.diagnosticos.Diagnostico;
@@ -46,7 +47,8 @@ public class N8nIntegrationService {
     
     private static final Logger logger = LoggerFactory.getLogger(N8nIntegrationService.class);
     
-    @Value("${n8n.webhook.base-url:https://n8n-inte.onrender.com/webhook}")
+    // @Value("${n8n.webhook.base-url:https://n8n-inte.onrender.com/webhook}")
+    @Value("${n8n.webhook.base-url:http://localhost:5678/webhook}")
     private String n8nBaseUrl;
     
     private final RestTemplate restTemplate;
@@ -71,34 +73,40 @@ public class N8nIntegrationService {
     }
     
     /**
-     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una atención médica
+     * 🎯 EVENTO: Listener para citaciones atendidas - ACTIVACIÓN AUTOMÁTICA DE SEGUIMIENTOS
      */
-    public void iniciarSeguimientosPaciente(AtencionMedica atencionMedica) {
+    @EventListener
+    public void manejarCitacionAtendida(CitacionAtendidaEvent evento) {
+        logger.info("🎯 EVENTO RECIBIDO: Citación atendida {}", evento.getCitacionMedica().getId());
         try {
-            Long pacienteId = obtenerPacienteIdDeAtencion(atencionMedica);
-            Long campanaId = obtenerCampanaIdDeAtencion(atencionMedica);
+            iniciarSeguimientosPaciente(evento.getCitacionMedica());
+        } catch (Exception e) {
+            logger.error("❌ Error procesando evento de citación atendida: {}", e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una citación médica (ATENDIDA)
+     */
+    public void iniciarSeguimientosPaciente(CitacionMedica citacionMedica) {
+        try {
+            Long pacienteId = citacionMedica.getPacienteId();
+            Long campanaId = citacionMedica.getCampanaId();
             
             logger.info("=== INICIANDO SEGUIMIENTOS AUTOMÁTICOS ===");
-            logger.info("Paciente ID: {}, Atención ID: {}, Campaña ID: {}", 
-                       pacienteId, atencionMedica.getId(), campanaId);
+            logger.info("Paciente ID: {}, Citación ID: {}, Campaña ID: {}", 
+                       pacienteId, citacionMedica.getId(), campanaId);
             
-            // CAMBIO: Si no hay paciente ID de citación, verificar si se puede extraer de otra forma
+            // Verificar que el paciente ID es válido
             if (pacienteId == null) {
-                logger.warn("No se puede obtener paciente ID de citación para atención {}", 
-                           atencionMedica.getId());
+                logger.warn("No se puede obtener paciente ID de citación para citación {}", 
+                           citacionMedica.getId());
                 logger.info("Para pruebas con datos reales, usa el endpoint /api/test/n8n/test-paciente/{pacienteId}");
                 return;
             }
             
-            // Verificar que el paciente tiene datos completos antes de proceder
-            if (pacienteId == null) {
-                logger.warn("No se puede iniciar seguimientos: Paciente ID es null para atención {}", 
-                           atencionMedica.getId());
-                return;
-            }
-            
             // Obtener historial clínico completo
-            Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, atencionMedica);
+            Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, citacionMedica);
             
             // Verificar que hay datos médicos mínimos
             if (historialCompleto.isEmpty()) {
@@ -108,11 +116,11 @@ public class N8nIntegrationService {
             
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
-            payload.put("evento", "atencion_completada");
-            payload.put("atencion_id", atencionMedica.getId());
+            payload.put("evento", "citacion_atendida");
+            payload.put("citacion_id", citacionMedica.getId());
             payload.put("paciente_id", pacienteId);
             payload.put("campana_id", campanaId); // Puede ser null
-            payload.put("fecha_atencion", atencionMedica.getFechaCreacion());
+            payload.put("fecha_atencion", citacionMedica.getHoraAtencion() != null ? citacionMedica.getHoraAtencion() : citacionMedica.getFechaCreacion());
             payload.put("historial_clinico", historialCompleto);
             payload.put("timestamp", System.currentTimeMillis());
             payload.put("modo", "produccion");
@@ -123,9 +131,9 @@ public class N8nIntegrationService {
             logger.info("✅ Seguimientos iniciados para paciente {}: {}", pacienteId, response);
             
         } catch (Exception e) {
-            logger.error("❌ Error iniciando seguimientos para atención {}: {}", 
-                        atencionMedica.getId(), e.getMessage(), e);
-            // No relanzar excepción para no afectar el guardado de la atención médica
+            logger.error("❌ Error iniciando seguimientos para citación {}: {}", 
+                        citacionMedica.getId(), e.getMessage(), e);
+            // No relanzar excepción para no afectar el guardado de la citación médica
         }
     }
     
@@ -137,14 +145,16 @@ public class N8nIntegrationService {
             logger.info("=== INICIANDO SEGUIMIENTOS POR PACIENTE ID ===");
             logger.info("Paciente ID: {}, Campaña ID: {}", pacienteId, campanaId);
             
-            // Crear atención médica temporal para mantener la estructura
-            AtencionMedica atencionTemporal = new AtencionMedica();
-            atencionTemporal.setId(null); // Sin ID hardcodeado
-            atencionTemporal.setCitacionId(null); // Sin citación
-            atencionTemporal.setFechaCreacion(LocalDateTime.now());
+            // Crear citación médica temporal para mantener la estructura
+            CitacionMedica citacionTemporal = new CitacionMedica();
+            citacionTemporal.setId(null); // Sin ID hardcodeado
+            citacionTemporal.setPacienteId(pacienteId);
+            citacionTemporal.setCampanaId(campanaId);
+            citacionTemporal.setFechaCreacion(LocalDateTime.now());
+            citacionTemporal.setHoraAtencion(LocalDateTime.now());
             
             // Obtener historial clínico completo directamente por paciente ID
-            Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, atencionTemporal);
+            Map<String, Object> historialCompleto = obtenerHistorialCompleto(pacienteId, citacionTemporal);
             
             // Verificar que hay datos médicos mínimos
             if (historialCompleto.isEmpty()) {
@@ -154,8 +164,8 @@ public class N8nIntegrationService {
             
             // Preparar payload limpio para n8n
             Map<String, Object> payload = new HashMap<>();
-            payload.put("evento", "atencion_completada");
-            payload.put("atencion_id", null); // Sin atención específica
+            payload.put("evento", "citacion_atendida");
+            payload.put("citacion_id", null); // Sin citación específica
             payload.put("paciente_id", pacienteId);
             payload.put("campana_id", campanaId);
             payload.put("fecha_atencion", LocalDateTime.now());
@@ -183,7 +193,7 @@ public class N8nIntegrationService {
     /**
      * Obtener historial clínico completo - DATOS CARDIOVASCULARES REALES
      */
-    private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, AtencionMedica atencionMedica) {
+    private Map<String, Object> obtenerHistorialCompleto(Long pacienteId, CitacionMedica citacionMedica) {
         Map<String, Object> historial = new HashMap<>();
         
         try {
@@ -261,79 +271,6 @@ public class N8nIntegrationService {
                 historial.put("historia_clinica", datosHistoriaClinica);
                 logger.info("📋 Historia clínica básica extraída para paciente {}", pacienteId);
                 
-                /*
-                if (historiaClinica != null) {
-                    Map<String, Object> datosHistoriaClinica = new HashMap<>();
-                    
-                    // Datos clínicos
-                    if (historiaClinica.getDatosClinicos() != null) {
-                        DatosClinicos datosClinicos = historiaClinica.getDatosClinicos();
-                        Map<String, Object> datosClinicosMap = new HashMap<>();
-                        datosClinicosMap.put("peso", datosClinicos.getPeso());
-                        datosClinicosMap.put("estatura", datosClinicos.getEstatura());
-                        datosClinicosMap.put("imc", datosClinicos.getImc());
-                        datosHistoriaClinica.put("datos_clinicos", datosClinicosMap);
-                        
-                        // Actualizar datos cardiovasculares con valores reales
-                        if (datosClinicos.getImc() != null) {
-                            datosCardiovasculares.put("imc", datosClinicos.getImc());
-                        }
-                    }
-                    
-                    // Triaje
-                    if (historiaClinica.getTriaje() != null) {
-                        Triaje triaje = historiaClinica.getTriaje();
-                        Map<String, Object> triajeMap = new HashMap<>();
-                        triajeMap.put("presion_sistolica", triaje.getPresionSistolica());
-                        triajeMap.put("presion_diastolica", triaje.getPresionDiastolica());
-                        triajeMap.put("frecuencia_cardiaca", triaje.getFrecuenciaCardiaca());
-                        triajeMap.put("temperatura", triaje.getTemperatura());
-                        triajeMap.put("saturacion_oxigeno", triaje.getSaturacionOxigeno());
-                        datosHistoriaClinica.put("triaje", triajeMap);
-                        
-                        // Actualizar datos cardiovasculares con valores del triaje
-                        if (triaje.getPresionSistolica() != null) {
-                            datosCardiovasculares.put("presionSistolica", triaje.getPresionSistolica());
-                        }
-                        if (triaje.getPresionDiastolica() != null) {
-                            datosCardiovasculares.put("presionDiastolica", triaje.getPresionDiastolica());
-                        }
-                        if (triaje.getFrecuenciaCardiaca() != null) {
-                            datosCardiovasculares.put("frecuenciaCardiaca", triaje.getFrecuenciaCardiaca());
-                        }
-                    }
-                    
-                    // Diagnósticos
-                    if (historiaClinica.getDiagnosticos() != null && !historiaClinica.getDiagnosticos().isEmpty()) {
-                        List<Map<String, Object>> diagnosticos = new ArrayList<>();
-                        for (Diagnostico diagnostico : historiaClinica.getDiagnosticos()) {
-                            diagnosticos.add(extraerDiagnosticos(diagnostico));
-                        }
-                        datosHistoriaClinica.put("diagnosticos", diagnosticos);
-                    }
-                    
-                    // Prescripciones
-                    if (historiaClinica.getPrescripciones() != null && !historiaClinica.getPrescripciones().isEmpty()) {
-                        List<Map<String, Object>> medicamentos = new ArrayList<>();
-                        for (Prescripcion prescripcion : historiaClinica.getPrescripciones()) {
-                            medicamentos.addAll(extraerMedicamentos(prescripcion));
-                        }
-                        datosHistoriaClinica.put("medicamentos", medicamentos);
-                    }
-                    
-                    // Recomendaciones
-                    if (historiaClinica.getRecomendaciones() != null && !historiaClinica.getRecomendaciones().isEmpty()) {
-                        List<Map<String, Object>> recomendaciones = new ArrayList<>();
-                        for (Recomendacion recomendacion : historiaClinica.getRecomendaciones()) {
-                            recomendaciones.add(extraerRecomendaciones(recomendacion));
-                        }
-                        datosHistoriaClinica.put("recomendaciones", recomendaciones);
-                    }
-                    
-                    historial.put("historia_clinica", datosHistoriaClinica);
-                    logger.info("📋 Historia clínica extraída para paciente {}", pacienteId);
-                }
-                */
             } catch (Exception e) {
                 logger.warn("⚠️ No se pudo obtener historia clínica para paciente {}: {}", pacienteId, e.getMessage());
             }
@@ -341,19 +278,6 @@ public class N8nIntegrationService {
             // Predicciones de FastAPI si están disponibles
             try {
                 // TODO: Comentado temporalmente hasta implementar métodos en PrediccionService
-                /*
-                List<Prediccion> predicciones = prediccionService.obtenerPrediccionesPorPaciente(pacienteId);
-                if (predicciones != null && !predicciones.isEmpty()) {
-                    Prediccion ultimaPrediccion = predicciones.get(predicciones.size() - 1);
-                    Map<String, Object> prediccionMap = new HashMap<>();
-                    prediccionMap.put("riesgo_cardiovascular", ultimaPrediccion.getRiesgoCardiovascular());
-                    prediccionMap.put("prediccion_detalle", ultimaPrediccion.getPrediccionDetalle());
-                    prediccionMap.put("fecha_prediccion", ultimaPrediccion.getFechaPrediccion());
-                    
-                    historial.put("prediccion_fastapi", prediccionMap);
-                    logger.info("🤖 Predicción FastAPI incluida para paciente {}", pacienteId);
-                }
-                */
                 
                 // Datos simulados de predicción FastAPI por ahora
                 Map<String, Object> prediccionMap = new HashMap<>();
@@ -396,34 +320,6 @@ public class N8nIntegrationService {
     private Integer calcularEdad(Paciente paciente) {
         if (paciente.getFechaNacimiento() != null) {
             return Period.between(paciente.getFechaNacimiento(), LocalDate.now()).getYears();
-        }
-        return null;
-    }
-    
-    private Long obtenerPacienteIdDeAtencion(AtencionMedica atencionMedica) {
-        try {
-            if (atencionMedica.getCitacionId() != null) {
-                CitacionMedica citacion = citacionMedicaService.obtenerPorId(atencionMedica.getCitacionId());
-                if (citacion != null) {
-                    return citacion.getPacienteId();
-                }
-            }
-        } catch (Exception e) {
-            logger.warn("No se pudo obtener paciente ID de citación: {}", e.getMessage());
-        }
-        return null;
-    }
-    
-    private Long obtenerCampanaIdDeAtencion(AtencionMedica atencionMedica) {
-        try {
-            if (atencionMedica.getCitacionId() != null) {
-                CitacionMedica citacion = citacionMedicaService.obtenerPorId(atencionMedica.getCitacionId());
-                if (citacion != null) {
-                    return citacion.getCampanaId();
-                }
-            }
-        } catch (Exception e) {
-            logger.warn("No se pudo obtener campaña ID de citación: {}", e.getMessage());
         }
         return null;
     }
@@ -481,9 +377,9 @@ public class N8nIntegrationService {
     }
     
     // NUEVO: Método público para pruebas con datos reales
-    public Map<String, Object> obtenerHistorialCompletoParaPrueba(Long pacienteId, AtencionMedica atencionMedica) {
+    public Map<String, Object> obtenerHistorialCompletoParaPrueba(Long pacienteId, CitacionMedica citacionMedica) {
         logger.info("Obteniendo historial completo para prueba - Paciente ID: {}", pacienteId);
-        return obtenerHistorialCompleto(pacienteId, atencionMedica);
+        return obtenerHistorialCompleto(pacienteId, citacionMedica);
     }
     
     // NUEVO: Método público para llamadas directas a webhooks

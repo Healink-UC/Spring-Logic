@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/citaciones-medicas")
@@ -19,6 +21,7 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
 
         private final CitacionMedicaService citacionMedicaService;
         private final CitacionMedicaMapper citacionMedicaMapper;
+        private static final Logger logger = LoggerFactory.getLogger(CitacionMedicaController.class);
 
         public CitacionMedicaController(CitacionMedicaService citacionMedicaService,
                         CitacionMedicaMapper citacionMedicaMapper) {
@@ -179,6 +182,81 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
                         errorResponse.put("citacion_id", citacionId);
                         
                         return ResponseEntity.badRequest().body(errorResponse);
+                }
+        }
+
+        /**
+         * 🧪 NUEVO: Endpoint específico para marcar citación como atendida (para pruebas)
+         */
+        @PostMapping("/{id}/marcar-atendida")
+        public ResponseEntity<Map<String, Object>> marcarCitacionComoAtendida(@PathVariable Long id) {
+                try {
+                        logger.info("🩺 ENDPOINT: Marcando citación {} como ATENDIDA", id);
+                        
+                        CitacionMedica citacionActualizada = citacionMedicaService.marcarComoAtendida(id);
+                        
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("success", true);
+                        response.put("message", "Citación marcada como atendida exitosamente");
+                        response.put("citacion", citacionActualizada);
+                        response.put("seguimientos_activados", true);
+                        response.put("timestamp", LocalDateTime.now());
+                        
+                        logger.info("✅ Citación {} marcada como ATENDIDA - Seguimientos activados", id);
+                        return ResponseEntity.ok(response);
+                        
+                } catch (Exception e) {
+                        logger.error("❌ Error marcando citación {} como atendida: {}", id, e.getMessage());
+                        return ResponseEntity.status(500).body(Map.of(
+                                "success", false,
+                                "error", e.getMessage()
+                        ));
+                }
+        }
+
+        /**
+         * 🔧 NUEVO: Endpoint para probar el flujo completo con datos de paciente específico
+         */
+        @PostMapping("/test-flujo-completo/{pacienteId}")
+        public ResponseEntity<Map<String, Object>> probarFlujoCompleto(@PathVariable Long pacienteId) {
+                try {
+                        logger.info("🧪 PROBANDO FLUJO COMPLETO: Creando citación temporal para paciente {}", pacienteId);
+                        
+                        // Crear una citación temporal
+                        CitacionMedica citacionTemp = new CitacionMedica();
+                        citacionTemp.setPacienteId(pacienteId);
+                        citacionTemp.setCampanaId(1L); // Campaña por defecto
+                        citacionTemp.setMedicoId(1L); // Médico por defecto
+                        citacionTemp.setHoraProgramada(LocalDateTime.now());
+                        citacionTemp.setEstado(EstadoCitacion.AGENDADA);
+                        citacionTemp.setNotas("Prueba flujo completo de seguimientos");
+                        
+                        // Guardar citación
+                        CitacionMedica citacionGuardada = citacionMedicaService.guardar(citacionTemp);
+                        logger.info("📋 Citación temporal creada: {}", citacionGuardada.getId());
+                        
+                        // Marcar como atendida (esto debería activar seguimientos)
+                        CitacionMedica citacionAtendida = citacionMedicaService.marcarComoAtendida(citacionGuardada.getId());
+                        
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("success", true);
+                        response.put("message", "Flujo completo ejecutado exitosamente");
+                        response.put("citacion_creada", citacionGuardada.getId());
+                        response.put("citacion_atendida", citacionAtendida);
+                        response.put("paciente_id", pacienteId);
+                        response.put("seguimientos_activados", true);
+                        response.put("timestamp", LocalDateTime.now());
+                        
+                        logger.info("✅ FLUJO COMPLETO EJECUTADO para paciente {}", pacienteId);
+                        return ResponseEntity.ok(response);
+                        
+                } catch (Exception e) {
+                        logger.error("❌ Error en flujo completo para paciente {}: {}", pacienteId, e.getMessage());
+                        return ResponseEntity.status(500).body(Map.of(
+                                "success", false,
+                                "error", e.getMessage(),
+                                "paciente_id", pacienteId
+                        ));
                 }
         }
 
