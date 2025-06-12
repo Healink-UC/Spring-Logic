@@ -44,9 +44,11 @@ spring:
 # Configuración de integración con n8n
 n8n:
   webhook:
+    # base-url: ${N8N_BASE_URL:https://n8n-inte.onrender.com/webhook}
     base-url: ${N8N_BASE_URL:http://localhost:5678/webhook}
   api:
-    key: ${N8N_API_KEY:x@O+Yh4FcJtmTk(J-*Wrfs;dKQ$BER%v}
+    key: ${N8N_API_KEY:}
+    # key: ${N8N_API_KEY:x@O+Yh4FcJtmTk(J-*Wrfs;dKQ$BER%v}
   integration:
     enabled: ${N8N_INTEGRATION_ENABLED:true}
     timeout:

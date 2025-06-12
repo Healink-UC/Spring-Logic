@@ -5,36 +5,37 @@ import java.time.LocalDate;
 import com.healink.integrador.core.dto.DTOBase;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class SeguimientoDTO implements DTOBase {
 
-    @Schema(readOnly = true, description = "ID del seguimiento")
+    @Schema(readOnly = true, description = "Indica es sólo lectura")
     private Long id;
 
-    @Schema(description = "ID de la citación médica asociada")
-    private Long citacionId;
+    @NotNull(message = "El identificador de la citación médica es requerido")
+    private Long citacion_id;
 
-    @Schema(description = "Fecha programada para el seguimiento")
+    @NotNull(message = "La fecha de programación es requerida")
     private LocalDate fecha_programada;
     
-    @Schema(description = "Fecha en que se realizó el seguimiento")
     private LocalDate fecha_realizada;
     
-    @Schema(description = "Tipo de seguimiento")
+    @NotNull(message = "El tipo de seguimiento es requerido")
     private String tipo;
 
-    @Schema(description = "Resultado del seguimiento")
+    @NotBlank(message = "El resultado es requerido")
     private String resultado;
 
-    @Schema(description = "Notas adicionales")
     private String notas;
 
-    @Schema(description = "Estado del seguimiento")
+    @NotNull(message = "El estado es requerido")
     private String estado;
 
-    @Schema(description = "Nivel de prioridad")
+    @NotNull(message = "La prioridad es requerido")
     private String prioridad;
+
 
 }
