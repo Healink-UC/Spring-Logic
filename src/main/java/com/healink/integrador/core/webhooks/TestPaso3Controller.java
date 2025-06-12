@@ -230,4 +230,233 @@ public class TestPaso3Controller {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
+
+    @PostMapping("/crear-seguimientos-hoy/{pacienteId}")
+    @Operation(
+        summary = "🧪 PRUEBAS: Crear seguimientos para hoy",
+        description = "Endpoint temporal para crear seguimientos de prueba con fecha de hoy"
+    )
+    public ResponseEntity<Map<String, Object>> crearSeguimientosHoy(@PathVariable Long pacienteId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            logger.info("🧪 CREANDO seguimientos de prueba para HOY - paciente: {}", pacienteId);
+            
+            // Datos simulados para crear seguimientos hoy
+            Map<String, Object> datosSimulados = Map.of(
+                "pacienteId", pacienteId,
+                "atencion_id", 1L, // Atención ficticia
+                "planSeguimiento", Map.of(
+                    "seguimientos", List.of(
+                        Map.of(
+                            "diasDespues", 0, // HOY
+                            "mensaje", "Seguimiento cardiovascular de urgencia para pruebas",
+                            "tipo", "chatbot_cuestionario",
+                            "prioridad", "ALTA",
+                            "numeroSeguimiento", 1
+                        ),
+                        Map.of(
+                            "diasDespues", 0, // HOY
+                            "mensaje", "Evaluación de medicamentos para pruebas",
+                            "tipo", "chatbot_cuestionario",
+                            "prioridad", "MEDIA",
+                            "numeroSeguimiento", 2
+                        )
+                    )
+                ),
+                "analisisIA", Map.of(
+                    "nivelRiesgo", "ALTO",
+                    "recomendaciones", "Seguimiento urgente cardiovascular",
+                    "factoresRiesgo", List.of("hipertension", "colesterol")
+                )
+            );
+            
+            // Crear seguimientos usando el servicio existente
+            Map<String, Object> resultado = seguimientoService.procesarSeguimientosDesdeN8n(datosSimulados);
+            
+            response.put("success", true);
+            response.put("mensaje", "✅ Seguimientos de prueba creados para HOY");
+            response.put("paciente_id", pacienteId);
+            response.put("resultado", resultado);
+            response.put("fecha_creacion", LocalDateTime.now());
+            
+            logger.info("✅ Seguimientos de prueba creados exitosamente para paciente {}", pacienteId);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error creando seguimientos de prueba: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("mensaje", "Error: " + e.getMessage());
+            response.put("paciente_id", pacienteId);
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * ❤️ NUEVO: Health check simple para verificar conexión
+     */
+    @GetMapping("/health")
+    @Operation(summary = "Health check", description = "Verificar que el servicio está funcionando")
+    public ResponseEntity<Map<String, Object>> health() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("timestamp", LocalDateTime.now());
+        response.put("service", "TestPaso3Controller");
+        response.put("version", "1.0.0");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 🏗️ NUEVO: Crear atención temporal para pruebas
+     */
+    @PostMapping("/crear-atencion-temporal")
+    @Operation(summary = "Crear atención temporal", description = "Crea una atención médica temporal para pruebas")
+    public ResponseEntity<Map<String, Object>> crearAtencionTemporal(
+            @org.springframework.web.bind.annotation.RequestBody Map<String, Object> request) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            Long pacienteId = Long.valueOf(request.get("pacienteId").toString());
+            Integer duracionMinutos = Integer.valueOf(request.getOrDefault("duracionMinutos", 30).toString());
+            
+            logger.info("🏗️ CREANDO atención temporal para paciente: {}", pacienteId);
+            
+            // Crear atención temporal
+            AtencionMedica atencionTemporal = new AtencionMedica();
+            atencionTemporal.setCitacionId(null); // Sin citación
+            atencionTemporal.setFechaHoraInicio(Timestamp.valueOf(LocalDateTime.now().minusMinutes(duracionMinutos)));
+            atencionTemporal.setFechaHoraFin(Timestamp.valueOf(LocalDateTime.now()));
+            atencionTemporal.setDuracionReal(duracionMinutos);
+            atencionTemporal.setEstado(EstadoAtencionMedica.COMPLETADA);
+            
+            // Simular el guardado (realmente no guardamos para evitar conflictos)
+            Long atencionId = System.currentTimeMillis(); // ID ficticio basado en timestamp
+            
+            response.put("success", true);
+            response.put("atencion_id", atencionId);
+            response.put("paciente_id", pacienteId);
+            response.put("duracion_minutos", duracionMinutos);
+            response.put("mensaje", "Atención temporal creada para pruebas");
+            
+            logger.info("✅ Atención temporal creada con ID: {}", atencionId);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error creando atención temporal: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("mensaje", "Error: " + e.getMessage());
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 🧹 NUEVO: Eliminar seguimientos para pruebas
+     */
+    @org.springframework.web.bind.annotation.DeleteMapping("/eliminar-seguimientos/{pacienteId}")
+    @Operation(summary = "Eliminar seguimientos de prueba", description = "Elimina todos los seguimientos de un paciente para pruebas")
+    public ResponseEntity<Map<String, Object>> eliminarSeguimientos(@PathVariable Long pacienteId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            logger.info("🧹 ELIMINANDO seguimientos para paciente: {}", pacienteId);
+            
+            // Obtener todos los seguimientos del paciente
+            List<Seguimiento> seguimientos = seguimientoService.obtenerSeguimientosPorPaciente(pacienteId);
+            
+            // Eliminar uno por uno
+            int eliminados = 0;
+            for (Seguimiento seguimiento : seguimientos) {
+                try {
+                    seguimientoService.eliminarPorId(seguimiento.getId());
+                    eliminados++;
+                } catch (Exception e) {
+                    logger.warn("⚠️ No se pudo eliminar seguimiento {}: {}", seguimiento.getId(), e.getMessage());
+                }
+            }
+            
+            response.put("success", true);
+            response.put("eliminados", eliminados);
+            response.put("total_encontrados", seguimientos.size());
+            response.put("paciente_id", pacienteId);
+            response.put("mensaje", String.format("✅ %d seguimientos eliminados de %d encontrados", eliminados, seguimientos.size()));
+            
+            logger.info("✅ {} seguimientos eliminados para paciente {}", eliminados, pacienteId);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error eliminando seguimientos: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("mensaje", "Error: " + e.getMessage());
+            response.put("paciente_id", pacienteId);
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 📋 NUEVO: Crear seguimientos directos sin workflow
+     */
+    @PostMapping("/crear-seguimientos-directos")
+    @Operation(summary = "Crear seguimientos directos", description = "Crea seguimientos directamente en la base de datos para pruebas")
+    public ResponseEntity<Map<String, Object>> crearSeguimientosDirectos(
+            @org.springframework.web.bind.annotation.RequestBody Map<String, Object> request) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            Long pacienteId = Long.valueOf(request.get("pacienteId").toString());
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> seguimientosData = (List<Map<String, Object>>) request.get("seguimientos");
+            
+            logger.info("📋 CREANDO seguimientos directos para paciente: {}", pacienteId);
+            
+            // Simular procesamiento usando el servicio existente
+            Map<String, Object> datosParaProcesar = new HashMap<>();
+            datosParaProcesar.put("pacienteId", pacienteId);
+            datosParaProcesar.put("atencion_id", System.currentTimeMillis()); // ID ficticio
+            
+            // Crear estructura de plan de seguimiento
+            Map<String, Object> planSeguimiento = new HashMap<>();
+            List<Map<String, Object>> seguimientosParaPlan = new java.util.ArrayList<>();
+            
+            for (int i = 0; i < seguimientosData.size(); i++) {
+                Map<String, Object> segData = seguimientosData.get(i);
+                Map<String, Object> seguimientoParaPlan = new HashMap<>();
+                seguimientoParaPlan.put("diasDespues", 0); // Hoy
+                seguimientoParaPlan.put("mensaje", segData.getOrDefault("resultado", "Seguimiento cardiovascular"));
+                seguimientoParaPlan.put("tipo", "chatbot_cuestionario");
+                seguimientoParaPlan.put("prioridad", segData.getOrDefault("prioridad", "MEDIA"));
+                seguimientoParaPlan.put("numeroSeguimiento", i + 1);
+                seguimientosParaPlan.add(seguimientoParaPlan);
+            }
+            
+            planSeguimiento.put("seguimientos", seguimientosParaPlan);
+            datosParaProcesar.put("planSeguimiento", planSeguimiento);
+            
+            // Agregar análisis IA simulado
+            datosParaProcesar.put("analisisIA", Map.of(
+                "nivelRiesgo", "MEDIO",
+                "recomendaciones", "Seguimiento cardiovascular de rutina",
+                "factoresRiesgo", List.of("seguimiento_general")
+            ));
+            
+            // Procesar usando el servicio existente
+            Map<String, Object> resultado = seguimientoService.procesarSeguimientosDesdeN8n(datosParaProcesar);
+            
+            response.put("success", true);
+            response.put("paciente_id", pacienteId);
+            response.put("seguimientos_creados", seguimientosData.size());
+            response.put("resultado_procesamiento", resultado);
+            response.put("mensaje", "✅ Seguimientos directos creados exitosamente");
+            
+            logger.info("✅ {} seguimientos directos creados para paciente {}", seguimientosData.size(), pacienteId);
+            
+        } catch (Exception e) {
+            logger.error("❌ Error creando seguimientos directos: {}", e.getMessage(), e);
+            response.put("success", false);
+            response.put("mensaje", "Error: " + e.getMessage());
+        }
+        
+        return ResponseEntity.ok(response);
+    }
 } 

@@ -46,7 +46,7 @@ public class N8nIntegrationService {
     
     private static final Logger logger = LoggerFactory.getLogger(N8nIntegrationService.class);
     
-    @Value("${n8n.webhook.base-url:https://jddc2025.app.n8n.cloud/webhook}")
+    @Value("${n8n.webhook.base-url:https://n8n-inte.onrender.com/webhook}")
     private String n8nBaseUrl;
     
     private final RestTemplate restTemplate;
