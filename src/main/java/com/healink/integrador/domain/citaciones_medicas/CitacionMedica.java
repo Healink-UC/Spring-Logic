@@ -37,7 +37,7 @@ public class CitacionMedica extends EntidadAuditable {
     @Column(name = "hora_programada")
     private LocalDateTime horaProgramada;
 
-    @Column(name = "hora_atencion")
+    @Column(name = "hora_atencion", nullable = true)
     private LocalDateTime horaAtencion;
 
     @Column(name = "duracion_estimada")
