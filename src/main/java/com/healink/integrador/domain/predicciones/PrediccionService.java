@@ -23,4 +23,15 @@ public class PrediccionService extends ServicioGenerico<Prediccion> {
     public Optional<List<Prediccion>> buscarPorPacienteId(Long pacienteId) {
         return prediccionesRepository.findByPacienteId(pacienteId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Prediccion> buscarPorPacienteYTipo(Long pacienteId, String tipoString) {
+        try {
+            TipoPrediccion tipo = TipoPrediccion.valueOf(tipoString.toUpperCase());
+            return prediccionesRepository.findByPacienteIdAndTipo(pacienteId, tipo);
+        } catch (IllegalArgumentException e) {
+            // Si el tipo no es válido, retornar lista vacía
+            return List.of();
+        }
+    }
 }

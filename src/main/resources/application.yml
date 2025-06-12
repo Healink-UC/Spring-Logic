@@ -40,3 +40,18 @@ spring:
       org.springframework.security: DEBUG
       org.hibernate: INFO
       com.healink.integrador: DEBUG
+
+# Configuración de integración con n8n
+n8n:
+  webhook:
+    base-url: ${N8N_BASE_URL:http://localhost:5678/webhook}
+  api:
+    key: ${N8N_API_KEY:x@O+Yh4FcJtmTk(J-*Wrfs;dKQ$BER%v}
+  integration:
+    enabled: ${N8N_INTEGRATION_ENABLED:true}
+    timeout:
+      connect: 10s
+      read: 30s
+    retry:
+      max-attempts: 3
+      delay: 5s

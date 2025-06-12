@@ -347,18 +347,9 @@ erDiagram
 - Se creó `UsuarioMapperHelper` para manejar esta conversión
 - Si no se encuentra el usuario, devuelve null
 
-**Búsqueda de Embajadores por NIT Creador (Nuevo)**:
-- Nuevo endpoint en EntidadSaludController: `GET /api/entidades-salud/embajadores-nit/{nit}`
-- Busca embajadores que tengan "NIT:{numero}" en el campo `creado_por`
-- Devuelve lista de EmbajadorDTO con información completa
-- Útil para que las entidades puedan ver qué embajadores han creado
-
 **Archivos modificados**:
 - `UsuarioDTO.java`: Campo `creadoPor` cambiado a `creadoPorId` (Long)
 - `UsuarioMapper.java`: Actualizado para usar conversión automática con helper
 - `UsuarioMapperHelper.java`: Nueva clase para conversión de string a ID (NUEVO)
-- `EmbajadorRepository.java`: Agregado método `findByCreadoPor` (NUEVO)
-- `EmbajadorService.java`: Agregado método `findByNitCreador` (NUEVO)
-- `EntidadSaludController.java`: Agregado endpoint `/embajadores-nit/{nit}` (NUEVO)
 - `DTOAuditable.java`: Nueva clase base (opcional) - ELIMINADA
 - `MapeadorAuditable.java`: Nuevo mapper base (opcional) - ELIMINADA
