@@ -22,8 +22,6 @@ import com.healink.integrador.domain.citaciones_medicas.CitacionMedicaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
