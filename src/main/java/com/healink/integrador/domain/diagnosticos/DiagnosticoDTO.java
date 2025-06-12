@@ -12,25 +12,25 @@ import lombok.Data;
 @Data
 public class DiagnosticoDTO implements DTOBase {
 
-    @Schema(readOnly = true, description = "Indica es sólo lectura")
+    @Schema(readOnly = true, description = "ID del diagnóstico")
     private Long id;
 
-    @NotNull(message = "El identificador de la atención es requerido")
-    private Long atencionId;
+    @Schema(description = "ID de la citación médica asociada")
+    private Long citacionId;
 
-    @NotBlank(message = "El codigo de la CIE10 es requerido")
+    @Schema(description = "Código CIE-10 del diagnóstico")
     private String codigoCie10;
 
-    @NotBlank(message = "La descripción es requerida")
+    @Schema(description = "Descripción del diagnóstico")
     private String descripcion;
 
-    @NotNull(message = "Es requerido indicar si es el diagnóstico principal")
-    private boolean es_principal;
+    @Schema(description = "Indica si es el diagnóstico principal")
+    private Boolean es_principal;
 
-    @NotBlank(message = "Es requerido indicar la severidad del diagnóstico")
+    @Schema(description = "Severidad del diagnóstico")
     private String severidad;
 
-    @NotNull(message = "La fecha de diagnostico es requerida")
+    @Schema(description = "Fecha del diagnóstico")
     private LocalDate fecha_diagnostico;
 
 }

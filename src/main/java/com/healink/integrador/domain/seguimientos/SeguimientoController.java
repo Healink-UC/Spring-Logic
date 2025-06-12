@@ -27,18 +27,18 @@ public class SeguimientoController extends ControladorGenerico<Seguimiento, Segu
         this.seguimientoService = seguimientoService;
     }
 
-    @GetMapping("/atencion/{atencion_id}")
-    @Operation(summary = "Buscar seguimientos por atención médica", description = "Obtiene todos los seguimientos de una atención médica específica")
-    public ResponseEntity<List<SeguimientoDTO>> buscarPorDiagnosticoId(@PathVariable Long diagnosticoId) {
-        List<Seguimiento> seguimientos = seguimientoService.buscarPorAtencionId(diagnosticoId);
+    @GetMapping("/citacion/{citacion_id}")
+    @Operation(summary = "Buscar seguimientos por citación médica", description = "Obtiene todos los seguimientos de una citación médica específica")
+    public ResponseEntity<List<SeguimientoDTO>> buscarPorCitacionId(@PathVariable Long citacion_id) {
+        List<Seguimiento> seguimientos = seguimientoService.buscarPorCitacionId(citacion_id);
         return ResponseEntity.ok(mapeador.aListaDTO(seguimientos));
     }
 
-    @GetMapping("/atencion/{atencion_id}/paginado")
-    @Operation(summary = "Buscar seguimientos por atención médica (paginado)", description = "Obtiene todos los seguimientos de una atención médica específica paginada")
-    public ResponseEntity<Page<SeguimientoDTO>> buscarPorDiagnosticoIdPaginado(
-            @PathVariable Long diagnosticoId, Pageable pageable) {
-        Page<Seguimiento> pagina = seguimientoService.buscarPorAtencionId(diagnosticoId, pageable);
+    @GetMapping("/citacion/{citacion_id}/paginado")
+    @Operation(summary = "Buscar seguimientos por citación médica (paginado)", description = "Obtiene todos los seguimientos de una citación médica específica paginada")
+    public ResponseEntity<Page<SeguimientoDTO>> buscarPorCitacionIdPaginado(
+            @PathVariable Long citacion_id, Pageable pageable) {
+        Page<Seguimiento> pagina = seguimientoService.buscarPorCitacionId(citacion_id, pageable);
         return ResponseEntity.ok(pagina.map(seguimiento -> mapeador.aDTO(seguimiento)));
     }
 }
