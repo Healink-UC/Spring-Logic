@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -98,6 +99,32 @@ class CampanaTest {
         campanaEntidad = new Campana();
         campanaEntidad.setId(1L);
         campanaEntidad.setNombre("Campaña de prueba");
+
+        // Inicializar las entidades que faltan para evitar NullPointerException
+        nuevaEntidad = new EntidadSalud();
+        nuevaEntidad.setId(1L);
+        nuevaEntidad.setRazonSocial("Entidad de Salud Test");
+        nuevaEntidad.setDireccion("Dirección Test");
+        nuevaEntidad.setTelefono("3001234567");
+        nuevaEntidad.setCorreo("test@entidad.com");
+
+        nuevaLocalizacion = new Localizacion();
+        nuevaLocalizacion.setId(1L);
+        nuevaLocalizacion.setDepartamento("Caldas");
+        nuevaLocalizacion.setMunicipio("Manizales");
+        nuevaLocalizacion.setVereda("Test");
+        nuevaLocalizacion.setLocalidad("Localidad Test");
+
+        // Inicializar otras entidades para completitud
+        nuevoRol = new Rol();
+        nuevoRol.setId(1L);
+        nuevoRol.setNombre("ADMIN");
+
+        nuevoUsuario = new Usuario();
+        nuevoUsuario.setId(1L);
+        nuevoUsuario.setNombres("Usuario Test");
+        nuevoUsuario.setApellidos("Apellidos Test");
+        nuevoUsuario.setCorreo("usuario@test.com");
     }
 
     @Test
@@ -221,9 +248,9 @@ class CampanaTest {
     void testActualizarCampanaValida() {
         // Arrange
         campanaValida.setId(1L);
-        when(campanaMapper.aEntidad(any(CampanaDTO.class))).thenReturn(campanaEntidad);
-        when(campanaService.obtenerPorId(anyLong())).thenReturn(campanaEntidad);
-        when(campanaService.guardar(any(Campana.class))).thenReturn(campanaEntidad);
+        campanaEntidad.setId(1L);
+        when(campanaService.obtenerPorId(1L)).thenReturn(campanaEntidad);
+        lenient().when(campanaService.guardar(any(Campana.class))).thenReturn(campanaEntidad);
         when(campanaMapper.aDTO(any(Campana.class))).thenReturn(campanaValida);
 
         // Act
