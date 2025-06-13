@@ -203,7 +203,7 @@ erDiagram
 
     DIAGNOSTICOS {
         int id PK
-        int atencion_id FK
+        int citacion_id FK
         varchar codigo_cie10
         text descripcion
         boolean es_principal
