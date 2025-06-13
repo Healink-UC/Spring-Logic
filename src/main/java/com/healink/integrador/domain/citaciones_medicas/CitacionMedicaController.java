@@ -88,6 +88,9 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
                 if (dto.getHoraAtencion() != null) {
                         entity.setHoraAtencion(dto.getHoraAtencion());
                 }
+                if (dto.getHoraFinAtencion() != null) {
+                        entity.setHoraFinAtencion(dto.getHoraFinAtencion());
+                }
                 if (dto.getDuracionEstimada() != null) {
                         entity.setDuracionEstimada(dto.getDuracionEstimada());
                 }
