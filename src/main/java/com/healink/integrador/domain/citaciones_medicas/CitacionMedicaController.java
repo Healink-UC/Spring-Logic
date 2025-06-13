@@ -290,6 +290,108 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
         }
 
         /**
+         * 🏁 NUEVO: Finalizar atención médica estableciendo hora de fin
+         */
+        @PutMapping("/{citacionId}/finalizar-atencion")
+        @Operation(summary = "Finalizar atención médica", 
+                   description = "Establece la hora de fin de atención médica")
+        public ResponseEntity<Map<String, Object>> finalizarAtencionMedica(
+                        @PathVariable Long citacionId,
+                        @RequestBody(required = false) Map<String, Object> request) {
+                try {
+                        LocalDateTime horaFin = null;
+                        
+                        // Extraer hora de fin del request si está presente
+                        if (request != null && request.containsKey("hora_fin_atencion")) {
+                                String horaStr = (String) request.get("hora_fin_atencion");
+                                if (horaStr != null && !horaStr.isEmpty()) {
+                                        horaFin = LocalDateTime.parse(horaStr);
+                                }
+                        }
+                        
+                        CitacionMedica citacionActualizada = citacionMedicaService.finalizarAtencionMedica(citacionId, horaFin);
+                        
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("success", true);
+                        response.put("message", "Atención médica finalizada correctamente");
+                        response.put("citacion", citacionMedicaMapper.aDTO(citacionActualizada));
+                        response.put("hora_fin_atencion", citacionActualizada.getHoraFinAtencion());
+                        response.put("timestamp", LocalDateTime.now());
+                        
+                        return ResponseEntity.ok(response);
+                        
+                } catch (Exception e) {
+                        Map<String, Object> errorResponse = new HashMap<>();
+                        errorResponse.put("success", false);
+                        errorResponse.put("message", "Error finalizando atención médica: " + e.getMessage());
+                        errorResponse.put("citacion_id", citacionId);
+                        
+                        return ResponseEntity.badRequest().body(errorResponse);
+                }
+        }
+
+        /**
+         * ⏱️ NUEVO: Completar atención médica completa (inicio y fin)
+         */
+        @PutMapping("/{citacionId}/completar-atencion-completa")
+        @Operation(summary = "Completar atención médica completa", 
+                   description = "Establece hora de inicio y fin de atención médica en una sola operación")
+        public ResponseEntity<Map<String, Object>> completarAtencionCompleta(
+                        @PathVariable Long citacionId,
+                        @RequestBody Map<String, Object> request) {
+                try {
+                        LocalDateTime horaInicio = null;
+                        LocalDateTime horaFin = null;
+                        
+                        // Extraer horas del request
+                        if (request.containsKey("hora_atencion")) {
+                                String horaInicioStr = (String) request.get("hora_atencion");
+                                if (horaInicioStr != null && !horaInicioStr.isEmpty()) {
+                                        horaInicio = LocalDateTime.parse(horaInicioStr);
+                                }
+                        }
+                        
+                        if (request.containsKey("hora_fin_atencion")) {
+                                String horaFinStr = (String) request.get("hora_fin_atencion");
+                                if (horaFinStr != null && !horaFinStr.isEmpty()) {
+                                        horaFin = LocalDateTime.parse(horaFinStr);
+                                }
+                        }
+                        
+                        CitacionMedica citacionActualizada = citacionMedicaService.completarAtencionCompleta(citacionId, horaInicio, horaFin);
+                        
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("success", true);
+                        response.put("message", "Atención médica completa finalizada correctamente");
+                        response.put("citacion", citacionMedicaMapper.aDTO(citacionActualizada));
+                        response.put("hora_atencion", citacionActualizada.getHoraAtencion());
+                        response.put("hora_fin_atencion", citacionActualizada.getHoraFinAtencion());
+                        response.put("duracion_real_minutos", calcularDuracionRealMinutos(citacionActualizada));
+                        response.put("timestamp", LocalDateTime.now());
+                        
+                        return ResponseEntity.ok(response);
+                        
+                } catch (Exception e) {
+                        Map<String, Object> errorResponse = new HashMap<>();
+                        errorResponse.put("success", false);
+                        errorResponse.put("message", "Error completando atención completa: " + e.getMessage());
+                        errorResponse.put("citacion_id", citacionId);
+                        
+                        return ResponseEntity.badRequest().body(errorResponse);
+                }
+        }
+
+        /**
+         * 📊 UTILIDAD: Calcular duración real de atención en minutos
+         */
+        private Long calcularDuracionRealMinutos(CitacionMedica citacion) {
+                if (citacion.getHoraAtencion() != null && citacion.getHoraFinAtencion() != null) {
+                        return java.time.Duration.between(citacion.getHoraAtencion(), citacion.getHoraFinAtencion()).toMinutes();
+                }
+                return null;
+        }
+
+        /**
          * 🔧 NUEVO: Endpoint para probar el flujo completo con datos de paciente específico
          */
         @PostMapping("/test-flujo-completo/{pacienteId}")

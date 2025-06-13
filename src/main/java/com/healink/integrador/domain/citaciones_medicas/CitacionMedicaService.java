@@ -119,4 +119,58 @@ public class CitacionMedicaService extends ServicioGenerico<CitacionMedica> {
         // Marcar como atendida (esto activará automáticamente los seguimientos)
         return actualizarEstadoCitacion(citacionId, EstadoCitacion.ATENDIDA);
     }
+
+    /**
+     * 🏁 NUEVO: Finalizar atención médica estableciendo hora de fin
+     */
+    @Transactional
+    public CitacionMedica finalizarAtencionMedica(Long citacionId, LocalDateTime horaFin) {
+        logger.info("🏁 Finalizando atención médica para citación {}", citacionId);
+        
+        CitacionMedica citacion = this.obtenerPorId(citacionId);
+        if (citacion == null) {
+            throw new RuntimeException("Citación no encontrada con ID: " + citacionId);
+        }
+
+        // Establecer hora de fin de atención
+        if (horaFin != null) {
+            citacion.setHoraFinAtencion(horaFin);
+            logger.info("Hora de fin de atención establecida: {}", citacion.getHoraFinAtencion());
+        } else {
+            citacion.setHoraFinAtencion(LocalDateTime.now());
+            logger.info("Hora de fin de atención establecida automáticamente: {}", citacion.getHoraFinAtencion());
+        }
+
+        // Guardar cambios
+        return this.guardar(citacion);
+    }
+
+    /**
+     * ⏱️ NUEVO: Completar atención médica con inicio y fin
+     */
+    @Transactional
+    public CitacionMedica completarAtencionCompleta(Long citacionId, LocalDateTime horaInicio, LocalDateTime horaFin) {
+        logger.info("⏱️ Completando atención completa para citación {} (inicio: {}, fin: {})", 
+                   citacionId, horaInicio, horaFin);
+        
+        CitacionMedica citacion = this.obtenerPorId(citacionId);
+        if (citacion == null) {
+            throw new RuntimeException("Citación no encontrada con ID: " + citacionId);
+        }
+
+        // Establecer hora de inicio si se proporciona
+        if (horaInicio != null) {
+            citacion.setHoraAtencion(horaInicio);
+            logger.info("Hora de inicio de atención establecida: {}", citacion.getHoraAtencion());
+        }
+
+        // Establecer hora de fin si se proporciona
+        if (horaFin != null) {
+            citacion.setHoraFinAtencion(horaFin);
+            logger.info("Hora de fin de atención establecida: {}", citacion.getHoraFinAtencion());
+        }
+
+        // Marcar como atendida
+        return actualizarEstadoCitacion(citacionId, EstadoCitacion.ATENDIDA);
+    }
 }

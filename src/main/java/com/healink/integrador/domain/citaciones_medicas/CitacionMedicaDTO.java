@@ -25,8 +25,11 @@ public class CitacionMedicaDTO implements DTOBase {
     @Schema(description = "Hora programada de la cita")
     private LocalDateTime horaProgramada;
 
-    @Schema(description = "Hora de atención")
+    @Schema(description = "Hora de inicio de atención")
     private LocalDateTime horaAtencion;
+
+    @Schema(description = "Hora de fin de atención")
+    private LocalDateTime horaFinAtencion;
 
     @Schema(description = "Duración estimada en minutos")
     private Integer duracionEstimada;
