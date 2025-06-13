@@ -23,6 +23,19 @@ public class PersonalMedicoController extends ControladorGenerico<PersonalMedico
         this.personalMedicoService = personalMedicoService;
     }
 
+    /**
+     * Buscar personal médico por ID con relaciones lazy cargadas
+     * Este endpoint soluciona el LazyInitializationException
+     */
+    @GetMapping("/{id}/details")
+    @Operation(summary = "Buscar personal médico por ID con detalles completos")
+    public ResponseEntity<PersonalMedicoDTO> getByIdWithDetails(@PathVariable Long id) {
+        log.info("Buscando personal médico por ID con detalles: {}", id);
+        return personalMedicoService.findByIdWithRelations(id)
+                .map(personalMedico -> ResponseEntity.ok(mapeador.aDTO(personalMedico)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/usuario/{usuarioId}")
     @Operation(summary = "Buscar personal médico por ID de usuario")
     public ResponseEntity<PersonalMedicoDTO> getByUsuario(@PathVariable Long usuarioId) {
