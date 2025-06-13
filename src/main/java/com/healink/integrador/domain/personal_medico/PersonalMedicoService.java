@@ -37,4 +37,26 @@ public class PersonalMedicoService extends ServicioGenerico<PersonalMedico> {
     public List<PersonalMedico> findByEntidadAndEspecialidad(Long entidadId, String especialidad) {
         return personalMedicoRepository.findByEntidadIdAndEspecialidad(entidadId, especialidad);
     }
+
+    /**
+     * Buscar personal médico por ID con relaciones lazy cargadas
+     * Este método soluciona el LazyInitializationException
+     */
+    @Transactional(readOnly = true)
+    public Optional<PersonalMedico> findByIdWithRelations(Long id) {
+        Optional<PersonalMedico> personalMedico = personalMedicoRepository.findById(id);
+        
+        if (personalMedico.isPresent()) {
+            PersonalMedico pm = personalMedico.get();
+            // Forzar la carga de las relaciones lazy
+            if (pm.getUsuario() != null) {
+                pm.getUsuario().getNombres(); // Trigger lazy loading
+            }
+            if (pm.getEntidadSalud() != null) {
+                pm.getEntidadSalud().getRazonSocial(); // Trigger lazy loading
+            }
+        }
+        
+        return personalMedico;
+    }
 } 
