@@ -50,16 +50,29 @@ public class CitacionMedicaController extends ControladorGenerico<CitacionMedica
                         // Obtener la entidad existente
                         CitacionMedica existingEntity = citacionMedicaService.obtenerPorId(id);
                         log.debug("Cita médica existente recuperada: {}", existingEntity);
+                        
+                        // Capturar estado anterior para detectar cambios
+                        EstadoCitacion estadoAnterior = existingEntity.getEstado();
 
                         // Actualizar solo los campos no nulos usando lógica personalizada
                         actualizarCamposNoNulos(dto, existingEntity);
                         log.debug("Cita médica actualizada con datos del DTO");
 
-                        // Guardar la entidad actualizada
-                        CitacionMedica updatedEntity = citacionMedicaService.guardar(existingEntity);
-                        log.info("Cita médica actualizada exitosamente con ID: {}", updatedEntity.getId());
+                        // 🎯 VERIFICAR CAMBIO DE ESTADO PARA ACTIVAR SEGUIMIENTOS
+                        EstadoCitacion estadoNuevo = existingEntity.getEstado();
+                        if (estadoNuevo == EstadoCitacion.ATENDIDA && estadoAnterior != EstadoCitacion.ATENDIDA) {
+                                log.info("🚀 DETECTADO CAMBIO A ATENDIDA - Usando método especializado para activar seguimientos");
+                                // Usar el método especializado que publica el evento
+                                CitacionMedica updatedEntity = citacionMedicaService.actualizarEstadoCitacion(id, EstadoCitacion.ATENDIDA);
+                                log.info("✅ Citación actualizada con seguimientos activados: {}", updatedEntity.getId());
+                                return ResponseEntity.ok(mapeador.aDTO(updatedEntity));
+                        } else {
+                                // Actualización normal sin cambio a ATENDIDA
+                                CitacionMedica updatedEntity = citacionMedicaService.guardar(existingEntity);
+                                log.info("Cita médica actualizada exitosamente con ID: {}", updatedEntity.getId());
+                                return ResponseEntity.ok(mapeador.aDTO(updatedEntity));
+                        }
 
-                        return ResponseEntity.ok(mapeador.aDTO(updatedEntity));
                 } catch (EntityNotFoundException e) {
                         log.warn("Cita médica no encontrada con ID: {}", id);
                         return ResponseEntity.notFound().build();

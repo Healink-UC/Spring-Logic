@@ -121,7 +121,7 @@ public class CitacionMedicaService extends ServicioGenerico<CitacionMedica> {
     }
 
     /**
-     * 🏁 NUEVO: Finalizar atención médica estableciendo hora de fin
+     * 🏁 NUEVO: Finalizar atención médica estableciendo hora de fin Y marcando como ATENDIDA
      */
     @Transactional
     public CitacionMedica finalizarAtencionMedica(Long citacionId, LocalDateTime horaFin) {
@@ -141,8 +141,12 @@ public class CitacionMedicaService extends ServicioGenerico<CitacionMedica> {
             logger.info("Hora de fin de atención establecida automáticamente: {}", citacion.getHoraFinAtencion());
         }
 
-        // Guardar cambios
-        return this.guardar(citacion);
+        // Guardar cambios primero (para mantener la hora de fin)
+        CitacionMedica citacionConHoraFin = this.guardar(citacion);
+        
+        // AHORA marcar como atendida (esto disparará el evento y los seguimientos)
+        logger.info("🎯 Marcando citación como ATENDIDA para activar seguimientos automáticos");
+        return actualizarEstadoCitacion(citacionId, EstadoCitacion.ATENDIDA);
     }
 
     /**

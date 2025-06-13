@@ -73,6 +73,19 @@ public class N8nIntegrationService {
     }
 
     /**
+     * 🎯 EVENT LISTENER: Escucha cuando una citación es marcada como atendida
+     */
+    @EventListener
+    public void onCitacionAtendida(CitacionAtendidaEvent event) {
+        logger.info("🎯 EVENT LISTENER ACTIVADO: CitacionAtendidaEvent recibido");
+        CitacionMedica citacionMedica = event.getCitacionMedica();
+        logger.info("📋 Procesando citación atendida ID: {}", citacionMedica.getId());
+        
+        // Llamar al método principal para iniciar seguimientos
+        iniciarSeguimientosPaciente(citacionMedica);
+    }
+
+    /**
      * PUNTO DE ENTRADA: Dispara el flujo orquestador cuando se completa una
      * citación médica
      */
