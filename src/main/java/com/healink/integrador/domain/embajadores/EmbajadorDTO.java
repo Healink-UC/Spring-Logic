@@ -1,6 +1,7 @@
 package com.healink.integrador.domain.embajadores;
 
 import com.healink.integrador.core.dto.DTOBase;
+import com.healink.integrador.domain.usuario.UsuarioDTO;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,5 +27,7 @@ public class EmbajadorDTO implements DTOBase {
 
     @NotNull(message = "La localidad es requerida")
     private String localidad;
+
+    private UsuarioDTO usuario;
 
 }

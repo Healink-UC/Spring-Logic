@@ -53,13 +53,13 @@ public class SeguimientoService extends ServicioGenerico<Seguimiento> {
     }
 
     @Transactional(readOnly = true)
-    public List<Seguimiento> buscarPorCitacionId(Long citacionId) {
-        return seguimientoRepository.findByCitacionId(citacionId);
+    public List<Seguimiento> buscarPorCitacionId(Long citacion_id) {
+        return seguimientoRepository.findByCitacionId(citacion_id);
     }
 
     @Transactional(readOnly = true)
-    public Page<Seguimiento> buscarPorCitacionId(Long citacionId, Pageable pageable) {
-        return seguimientoRepository.findByCitacionId(citacionId, pageable);
+    public Page<Seguimiento> buscarPorCitacionId(Long citacion_id, Pageable pageable) {
+        return seguimientoRepository.findByCitacionId(citacion_id, pageable);
     }
 
     /**

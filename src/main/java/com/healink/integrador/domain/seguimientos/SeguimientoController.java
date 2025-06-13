@@ -1,7 +1,6 @@
 package com.healink.integrador.domain.seguimientos;
 
 import java.util.List;
-import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -47,8 +46,8 @@ public class SeguimientoController extends ControladorGenerico<Seguimiento, Segu
     @GetMapping("/citacion/{citacionId}/pageable")
     @Operation(summary = "Buscar seguimientos por atención médica (paginado)", description = "Obtiene todos los seguimientos de una atención médica específica paginada")
     public ResponseEntity<Page<SeguimientoDTO>> buscarPorCitacionId(@PathVariable Long citacionId,
-                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Seguimiento> seguimientos = seguimientoService.buscarPorCitacionId(citacionId, pageable);
         return ResponseEntity.ok(seguimientos.map(seguimiento -> mapeador.aDTO(seguimiento)));
@@ -92,8 +91,9 @@ public class SeguimientoController extends ControladorGenerico<Seguimiento, Segu
     public ResponseEntity<SeguimientoDTO> completarSeguimiento(
             @PathVariable Long seguimientoId,
             @RequestBody Map<String, Object> respuestasEvaluacion) {
-        
-        Seguimiento seguimientoCompletado = seguimientoService.completarSeguimiento(seguimientoId, respuestasEvaluacion);
+
+        Seguimiento seguimientoCompletado = seguimientoService.completarSeguimiento(seguimientoId,
+                respuestasEvaluacion);
         return ResponseEntity.ok(mapeador.aDTO(seguimientoCompletado));
     }
 
@@ -113,33 +113,32 @@ public class SeguimientoController extends ControladorGenerico<Seguimiento, Segu
     @PostMapping("/{seguimientoId}/generar-cuestionario-especifico")
     public ResponseEntity<Map<String, Object>> generarCuestionarioEspecifico(
             @PathVariable Long seguimientoId) {
-        
+
         try {
             logger.info("🎯 Generando cuestionario específico para seguimiento: {}", seguimientoId);
-            
+
             // Obtener seguimiento completo
             Seguimiento seguimiento = seguimientoService.obtenerPorId(seguimientoId);
-            
+
             // Preparar datos para el workflow del compañero
             Map<String, Object> datosParaWorkflow = seguimientoService.prepararDatosParaWorkflowCompanero(seguimiento);
-            
+
             // Llamar al workflow del compañero con n8n
             // TODO: Integrar con n8nIntegrationService cuando esté listo
-            Map<String, Object> cuestionarioGenerado = seguimientoService.generarCuestionarioConWorkflowCompanero(datosParaWorkflow);
-            
+            Map<String, Object> cuestionarioGenerado = seguimientoService
+                    .generarCuestionarioConWorkflowCompanero(datosParaWorkflow);
+
             return ResponseEntity.ok(Map.of(
-                "success", true,
-                "seguimiento_id", seguimientoId,
-                "cuestionario", cuestionarioGenerado,
-                "contexto", datosParaWorkflow
-            ));
-            
+                    "success", true,
+                    "seguimiento_id", seguimientoId,
+                    "cuestionario", cuestionarioGenerado,
+                    "contexto", datosParaWorkflow));
+
         } catch (Exception e) {
             logger.error("❌ Error generando cuestionario específico: {}", e.getMessage(), e);
             return ResponseEntity.badRequest().body(Map.of(
-                "success", false,
-                "message", "Error: " + e.getMessage()
-            ));
+                    "success", false,
+                    "message", "Error: " + e.getMessage()));
         }
     }
 }

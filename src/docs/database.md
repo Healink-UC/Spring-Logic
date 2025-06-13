@@ -203,7 +203,7 @@ erDiagram
 
     DIAGNOSTICOS {
         int id PK
-        int citacion_id FK
+        int atencion_id FK
         varchar codigo_cie10
         text descripcion
         boolean es_principal
@@ -347,3 +347,28 @@ erDiagram
 - `UsuarioMapperHelper.java`: Nueva clase para conversión de string a ID (NUEVO)
 - `DTOAuditable.java`: Nueva clase base (opcional) - ELIMINADA
 - `MapeadorAuditable.java`: Nuevo mapper base (opcional) - ELIMINADA
+
+**Nueva Entidad PersonalMedico (Actualización más reciente)**:
+- Se creó completamente la entidad `PersonalMedico` con estructura CRUD completa
+- Incluye los campos: `id`, `especialidad`, `entidadId`, `usuarioId`
+- Extiende `EntidadAuditable` para campos de auditoría automáticos
+- Relaciones con `Usuario` y `EntidadSalud` configuradas con Lazy Loading
+
+**Endpoints API PersonalMedico**:
+- `GET /api/personal-medico` - Listar todo el personal médico
+- `GET /api/personal-medico/{id}` - Obtener personal médico por ID
+- `POST /api/personal-medico` - Crear nuevo personal médico
+- `PUT /api/personal-medico/{id}` - Actualizar personal médico
+- `DELETE /api/personal-medico/{id}` - Eliminar personal médico
+- `GET /api/personal-medico/usuario/{usuarioId}` - Buscar por usuario
+- `GET /api/personal-medico/entidad/{entidadId}` - Buscar por entidad de salud
+- `GET /api/personal-medico/especialidad/{especialidad}` - Buscar por especialidad
+- `GET /api/personal-medico/entidad/{entidadId}/especialidad/{especialidad}` - Buscar por entidad y especialidad
+
+**Archivos creados para PersonalMedico**:
+- `PersonalMedico.java`: Entidad JPA con auditoría
+- `PersonalMedicoDTO.java`: DTO con validaciones y campos de auditoría
+- `PersonalMedicoRepository.java`: Repositorio con consultas personalizadas
+- `PersonalMedicoService.java`: Servicio con lógica de negocio
+- `PersonalMedicoController.java`: Controlador REST con endpoints CRUD y búsquedas
+- `PersonalMedicoMapper.java`: Mapper MapStruct con relaciones

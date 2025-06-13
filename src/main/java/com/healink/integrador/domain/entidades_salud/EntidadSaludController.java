@@ -6,11 +6,13 @@ import com.healink.integrador.domain.embajadores.EmbajadorDTO;
 import com.healink.integrador.domain.embajadores.EmbajadorMapper;
 import com.healink.integrador.domain.embajadores.EmbajadorService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -44,6 +46,25 @@ public class EntidadSaludController extends ControladorGenerico<EntidadSalud, En
         return entidadSaludService.findByRazonSocial(razon_social)
                 .map(entidad_salud -> ResponseEntity.ok(mapeador.aDTO(entidad_salud)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/por-administrador")
+    @Operation(summary = "Listar entidades de salud por administrador", 
+               description = "Obtiene todas las entidades de salud creadas por un administrador específico usando TipoIdentificacion:Identificacion")
+    public ResponseEntity<List<EntidadSaludDTO>> listarPorAdministrador(
+            @Parameter(description = "Tipo de identificación del administrador (ej: CC, NIT, CE)", example = "CC")
+            @RequestParam String tipoIdentificacion,
+            @Parameter(description = "Número de identificación del administrador", example = "12345678")
+            @RequestParam String identificacion) {
+        
+        List<EntidadSalud> entidades = entidadSaludService.buscarPorAdministrador(tipoIdentificacion, identificacion);
+        
+        if (entidades.isEmpty()) {
+            return ResponseEntity.ok(List.of()); // Retorna lista vacía si no encuentra nada
+        }
+        
+        List<EntidadSaludDTO> entidadesDTO = mapeador.aListaDTO(entidades);
+        return ResponseEntity.ok(entidadesDTO);
     }
 
     @GetMapping("/embajadores-nit/{nit}")
