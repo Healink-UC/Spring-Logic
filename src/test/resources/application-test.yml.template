@@ -1,0 +1,46 @@
+spring:
+  profiles:
+    active: test
+
+  # Configuración de base de datos PostgreSQL para tests
+  datasource:
+    url: jdbc:postgresql:[database]:[port]/healinkdb?sslmode=require
+    driver-class-name: org.postgresql.Driver
+    username: [database-owner]
+    password: [database-password]
+
+  # Configuración JPA para tests
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # Configuración de seguridad para tests
+  security:
+    user:
+      name: test
+      password: test
+      roles: ADMIN
+
+# Configuración de logging para tests
+logging:
+  level:
+    com.healink.integrador: INFO
+    org.springframework.security: WARN
+    org.hibernate: WARN
+    root: WARN
+
+# JWT para tests
+jwt:
+  secret: [test-secret-key-for-testing-purposes-only-xxxxxxxxxx]
+  expiration: 3600000
+
+# Configuración específica para Mockito
+mockito:
+  strictness: STRICT_STUBS
